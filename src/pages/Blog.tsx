@@ -133,23 +133,23 @@ export default function Blog({ onViewPost }: BlogProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {posts.slice(0, 2).map((post) => (
                 <div key={post.id} className="group cursor-pointer scroll-entrance initial-visible hover:scale-105 transition-all duration-500">
-                  <div className="bg-gray-100 overflow-hidden hover:bg-gray-200 hover:shadow-xl transition-all duration-500">
-                    {/* Imagen arriba - Más chata */}
-                    <div className="bg-gray-200 aspect-[4/3] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 relative">
+                  <div className="bg-gray-100 overflow-hidden hover:bg-gray-200 hover:shadow-xl transition-all duration-500 relative">
+                    {/* Imagen más chata */}
+                    <div className="bg-gray-200 aspect-[16/6] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 relative">
                       <span className="text-gray-500 group-hover:text-gray-700 transition-colors duration-500">
                         imagen
                       </span>
-                    </div>
-                    
-                    {/* Contenido abajo - Más compacto */}
-                    <div className="p-4">
-                      <h3 className="text-gray-900 font-bold text-base mb-2 group-hover:text-gray-700 transition-colors duration-500">
-                        {post.title}
-                      </h3>
-                      <div className="flex items-center justify-between">
-                        <p className="text-gray-500 text-xs group-hover:text-gray-700 transition-colors duration-500">
+                      
+                      {/* Título y fecha superpuestos en la imagen */}
+                      <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center items-center p-4">
+                        <h3 className="text-white font-bold text-base mb-2 group-hover:text-gray-200 transition-colors duration-500 text-center">
+                          {post.title}
+                        </h3>
+                        <p className="text-gray-200 text-xs group-hover:text-gray-300 transition-colors duration-500 mb-4">
                           {formatDate(post.published_date)}
                         </p>
+                        
+                        {/* Botón superpuesto en la parte inferior de la imagen */}
                         <button
                           onClick={() => onViewPost(post.slug)}
                           className="px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium"
