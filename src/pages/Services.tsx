@@ -68,7 +68,7 @@ export default function Services() {
             {services.map((service, index) => (
               <div
                 key={index}
-                className={`grid md:grid-cols-2 gap-12 items-center reveal hover:scale-105 transition-all duration-500 group scroll-entrance scale-up scroll-stagger-${index + 3}`}
+                className={`grid md:grid-cols-2 gap-12 items-center reveal hover:scale-105 transition-all duration-500 group scroll-entrance scale-up scroll-stagger-${index + 3} smooth-exit`}
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className={`${index % 2 === 1 ? 'md:order-2' : ''} group-hover:scale-105 transition-transform duration-300`}>
@@ -79,7 +79,7 @@ export default function Services() {
                     {service.description}
                   </p>
                   <div className="mt-6">
-                    <button className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg">
+                    <button className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg smooth-exit">
                       Conoce más
                     </button>
                   </div>
@@ -95,7 +95,7 @@ export default function Services() {
           </div>
 
           <div className="text-center mt-20 reveal scroll-entrance bounce-in scroll-stagger-6">
-            <div className="bg-gray-50 rounded-2xl p-12 max-w-4xl mx-auto">
+            <div className="bg-gray-50 rounded-2xl p-12 max-w-4xl mx-auto smooth-exit">
               <h3 className="text-3xl font-bold text-gray-900 mb-6 scroll-entrance scroll-stagger-1">
                 ¿Listo para impulsar tu negocio?
               </h3>
@@ -103,10 +103,10 @@ export default function Services() {
                 Descubre cómo nuestros servicios pueden transformar tu presencia digital
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg scroll-entrance slide-left scroll-stagger-3">
+                <button className="px-8 py-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg scroll-entrance slide-left scroll-stagger-3 smooth-exit">
                   Solicitar consulta
                 </button>
-                <button className="px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900 hover:text-white transition-all duration-300 font-medium hover:scale-105 scroll-entrance slide-right scroll-stagger-4">
+                <button className="px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900 hover:text-white transition-all duration-300 font-medium hover:scale-105 scroll-entrance slide-right scroll-stagger-4 smooth-exit">
                   Ver portafolio
                 </button>
               </div>

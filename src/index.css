@@ -6,6 +6,17 @@
   html {
     font-family: theme('fontFamily.sans');
   }
+  
+  /* Cambiar el color de selección de texto de azul a negro */
+  ::selection {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  ::-moz-selection {
+    background-color: #000000;
+    color: #ffffff;
+  }
 }
 
 /* Custom animations and utilities */
@@ -75,7 +86,7 @@
     right: 0;
     bottom: -2px;
     height: 2px;
-    background-color: currentColor;
+    background-color: #000000;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 250ms ease;
@@ -594,4 +605,254 @@
   .fast-stagger-4 { transition-delay: 0.2s; }
   .fast-stagger-5 { transition-delay: 0.25s; }
   .fast-stagger-6 { transition-delay: 0.3s; }
+
+  /* Exit animations */
+  @keyframes fadeOutUp {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+  }
+
+  @keyframes fadeOutDown {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+  }
+
+  @keyframes fadeOutLeft {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+  }
+
+  @keyframes fadeOutRight {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+  }
+
+  @keyframes scaleOut {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+  }
+
+  @keyframes slideOutUp {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes slideOutDown {
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+  }
+
+  @keyframes rotateOut {
+    0% {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(180deg) scale(0.5);
+    }
+  }
+
+  /* Exit animation classes */
+  .exit-fade-up {
+    animation: fadeOutUp 0.5s ease-in forwards;
+  }
+
+  .exit-fade-down {
+    animation: fadeOutDown 0.5s ease-in forwards;
+  }
+
+  .exit-fade-left {
+    animation: fadeOutLeft 0.5s ease-in forwards;
+  }
+
+  .exit-fade-right {
+    animation: fadeOutRight 0.5s ease-in forwards;
+  }
+
+  .exit-scale-out {
+    animation: scaleOut 0.4s ease-in forwards;
+  }
+
+  .exit-slide-up {
+    animation: slideOutUp 0.6s ease-in forwards;
+  }
+
+  .exit-slide-down {
+    animation: slideOutDown 0.6s ease-in forwards;
+  }
+
+  .exit-rotate-out {
+    animation: rotateOut 0.7s ease-in forwards;
+  }
+
+  /* Page transition exit animations */
+  .page-exit {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .page-exit.exiting {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  .page-exit.exiting-left {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  .page-exit.exiting-right {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  .page-exit.exiting-scale {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  /* Component exit animations */
+  .component-exit {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .component-exit.exiting {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  /* Staggered exit animations */
+  .exit-stagger-1 { animation-delay: 0.05s; }
+  .exit-stagger-2 { animation-delay: 0.1s; }
+  .exit-stagger-3 { animation-delay: 0.15s; }
+  .exit-stagger-4 { animation-delay: 0.2s; }
+  .exit-stagger-5 { animation-delay: 0.25s; }
+  .exit-stagger-6 { animation-delay: 0.3s; }
+
+  /* Smooth transitions for all interactive elements */
+  .smooth-exit {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .smooth-exit:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .smooth-exit:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Efecto de nieve/gotas cayendo en el navbar */
+  @keyframes snowfall {
+    0% {
+      transform: translateY(-100vh) translateX(0) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100vh) translateX(50px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .snowflake {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: snowfall linear infinite;
+  }
+
+  .snowflake:nth-child(odd) {
+    width: 3px;
+    height: 3px;
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
+  }
+
+  .snowflake:nth-child(3n) {
+    width: 2px;
+    height: 2px;
+    background: radial-gradient(circle, rgba(100, 100, 100, 0.4) 0%, rgba(100, 100, 100, 0.1) 50%, transparent 100%);
+  }
+
+  .snowflake:nth-child(5n) {
+    width: 5px;
+    height: 5px;
+    background: radial-gradient(circle, rgba(200, 200, 200, 0.6) 0%, rgba(200, 200, 200, 0.2) 50%, transparent 100%);
+  }
+
+  /* Diferentes velocidades de caída */
+  .snowflake:nth-child(1) { animation-duration: 8s; animation-delay: 0s; }
+  .snowflake:nth-child(2) { animation-duration: 12s; animation-delay: 1s; }
+  .snowflake:nth-child(3) { animation-duration: 10s; animation-delay: 2s; }
+  .snowflake:nth-child(4) { animation-duration: 14s; animation-delay: 0.5s; }
+  .snowflake:nth-child(5) { animation-duration: 9s; animation-delay: 3s; }
+  .snowflake:nth-child(6) { animation-duration: 11s; animation-delay: 1.5s; }
+  .snowflake:nth-child(7) { animation-duration: 13s; animation-delay: 2.5s; }
+  .snowflake:nth-child(8) { animation-duration: 7s; animation-delay: 4s; }
+  .snowflake:nth-child(9) { animation-duration: 15s; animation-delay: 0.8s; }
+  .snowflake:nth-child(10) { animation-duration: 6s; animation-delay: 3.5s; }
+  .snowflake:nth-child(11) { animation-duration: 16s; animation-delay: 1.2s; }
+  .snowflake:nth-child(12) { animation-duration: 8.5s; animation-delay: 2.8s; }
+  .snowflake:nth-child(13) { animation-duration: 9.5s; animation-delay: 4.2s; }
+  .snowflake:nth-child(14) { animation-duration: 11.5s; animation-delay: 0.3s; }
+  .snowflake:nth-child(15) { animation-duration: 7.5s; animation-delay: 3.2s; }
+  .snowflake:nth-child(16) { animation-duration: 12.5s; animation-delay: 1.8s; }
+  .snowflake:nth-child(17) { animation-duration: 10.5s; animation-delay: 2.2s; }
+  .snowflake:nth-child(18) { animation-duration: 13.5s; animation-delay: 0.7s; }
+  .snowflake:nth-child(19) { animation-duration: 8.8s; animation-delay: 3.8s; }
+  .snowflake:nth-child(20) { animation-duration: 14.5s; animation-delay: 1.7s; }
 }

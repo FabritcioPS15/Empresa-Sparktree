@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 interface HeaderProps {
   currentPage: string;
   onNavigate: (page: string) => void;
+  isExiting?: boolean;
 }
 
-export default function Header({ currentPage, onNavigate }: HeaderProps) {
+export default function Header({ currentPage, onNavigate, isExiting = false }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState({
@@ -54,16 +55,32 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 component-exit overflow-hidden ${
+      isExiting ? 'exiting' : ''
+    } ${
       isScrolled 
         ? 'bg-white/80 backdrop-blur-md shadow-xl py-2 border-b border-white/20' 
         : 'bg-white/60 backdrop-blur-sm shadow-lg py-3 sm:py-4 border-b border-white/10'
     }`}>
+      {/* Efecto de nieve/gotas cayendo */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 20 }, (_, i) => (
+          <div
+            key={i}
+            className="snowflake"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${6 + Math.random() * 10}s`
+            }}
+          />
+        ))}
+      </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 transition-all duration-300">
         <div className="flex items-center justify-between">
           <button
             onClick={() => onNavigate('home')}
-            className={`font-bold text-gray-900 hover:text-gray-700 transition-all duration-300 ${
+            className={`font-bold text-gray-900 hover:text-gray-700 transition-all duration-300 smooth-exit ${
               isScrolled ? 'text-lg' : 'text-xl'
             }`}
           >
@@ -77,7 +94,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 data-nav-item={item.id}
-                className={`nav-item-micro text-sm font-medium transition-all duration-300 relative px-4 py-2 rounded-lg group ${
+                className={`nav-item-micro text-sm font-medium transition-all duration-300 relative px-4 py-2 rounded-lg group smooth-exit ${
                   currentPage === item.id
                     ? 'text-gray-900 scale-125 font-bold nav-item-float bg-white shadow-md'
                     : 'text-gray-600 hover:text-gray-900 hover:scale-105 hover:bg-white/50'
@@ -101,7 +118,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               href="https://wa.me/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex btn-fill items-center gap-2 px-4 py-2 text-sm font-medium"
+              className="hidden sm:flex btn-fill items-center gap-2 px-4 py-2 text-sm font-medium smooth-exit"
             >
               <span className="btn-fill-content flex items-center gap-2">
                 <FaWhatsapp size={18} />
@@ -112,7 +129,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors smooth-exit"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <FaX size={20} /> : <FaBars size={20} />}
@@ -131,7 +148,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`mobile-nav-item text-left py-3 px-4 rounded-lg transition-all duration-300 ${
+                className={`mobile-nav-item text-left py-3 px-4 rounded-lg transition-all duration-300 smooth-exit ${
                   currentPage === item.id
                     ? 'mobile-nav-item-active text-gray-900 font-semibold'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -150,7 +167,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
               href="https://wa.me/"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-fill flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium mt-2"
+              className="btn-fill flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium mt-2 smooth-exit"
             >
               <span className="btn-fill-content flex items-center gap-2">
                 <FaWhatsapp size={18} />

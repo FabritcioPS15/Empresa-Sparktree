@@ -61,7 +61,7 @@ export default function Portfolio() {
             {projects.slice(0, 2).map((project, index) => (
               <div
                 key={index}
-                className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-${index + 3} ${index === 0 ? 'md:col-span-1' : ''}`}
+                className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-${index + 3} ${index === 0 ? 'md:col-span-1' : ''} smooth-exit`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="bg-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center mb-4 group-hover:bg-gray-300 transition-all duration-300 group-hover:shadow-lg relative overflow-hidden">
@@ -71,7 +71,7 @@ export default function Portfolio() {
                 <h3 className="text-center text-gray-900 font-medium group-hover:text-gray-700 transition-colors">{project.title}</h3>
               </div>
             ))}
-            <div className="md:col-span-1 md:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-5" style={{ animationDelay: '0.2s' }}>
+            <div className="md:col-span-1 md:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-5 smooth-exit" style={{ animationDelay: '0.2s' }}>
               <div className="bg-gray-200 rounded-xl h-full flex items-center justify-center mb-4 group-hover:bg-gray-300 transition-all duration-300 min-h-[500px] group-hover:shadow-lg relative overflow-hidden">
                 <span className="text-gray-500 group-hover:text-gray-700 transition-colors">imagen</span>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -81,7 +81,7 @@ export default function Portfolio() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="md:col-span-1 md:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-left scroll-stagger-6" style={{ animationDelay: '0.3s' }}>
+            <div className="md:col-span-1 md:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-left scroll-stagger-6 smooth-exit" style={{ animationDelay: '0.3s' }}>
               <div className="bg-gray-200 rounded-xl h-full flex items-center justify-center mb-4 group-hover:bg-gray-300 transition-all duration-300 min-h-[500px] group-hover:shadow-lg relative overflow-hidden">
                 <span className="text-gray-500 group-hover:text-gray-700 transition-colors">imagen</span>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -89,7 +89,7 @@ export default function Portfolio() {
               <h3 className="text-center text-gray-900 font-medium group-hover:text-gray-700 transition-colors">{projects[3].title}</h3>
             </div>
             {projects.slice(4, 6).map((project, index) => (
-              <div key={index} className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-right scroll-stagger-${index + 7}`} style={{ animationDelay: `${0.4 + index * 0.1}s` }}>
+              <div key={index} className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-right scroll-stagger-${index + 7} smooth-exit`} style={{ animationDelay: `${0.4 + index * 0.1}s` }}>
                 <div className="bg-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center mb-4 group-hover:bg-gray-300 transition-all duration-300 group-hover:shadow-lg relative overflow-hidden">
                   <span className="text-gray-500 group-hover:text-gray-700 transition-colors">imagen</span>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -101,7 +101,7 @@ export default function Portfolio() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {projects.slice(0, 3).map((project, index) => (
-              <div key={index} className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-${index + 9}`} style={{ animationDelay: `${0.6 + index * 0.1}s` }}>
+              <div key={index} className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-${index + 9} smooth-exit`} style={{ animationDelay: `${0.6 + index * 0.1}s` }}>
                 <div className="bg-gray-200 rounded-xl aspect-[3/4] flex items-center justify-center mb-4 group-hover:bg-gray-300 transition-all duration-300 group-hover:shadow-lg relative overflow-hidden">
                   <span className="text-gray-500 group-hover:text-gray-700 transition-colors">imagen</span>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -112,7 +112,7 @@ export default function Portfolio() {
           </div>
 
           <div className="text-center reveal scroll-entrance bounce-in scroll-stagger-12">
-            <button className="text-gray-900 font-medium hover:text-gray-600 transition-all duration-300 hover:scale-105 hover:shadow-md px-6 py-3 rounded-lg hover:bg-gray-100">
+            <button className="text-gray-900 font-medium hover:text-gray-600 transition-all duration-300 hover:scale-105 hover:shadow-md px-6 py-3 rounded-lg hover:bg-gray-100 smooth-exit">
               Ver más ↓
             </button>
           </div>

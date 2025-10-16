@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
@@ -12,15 +12,35 @@ type PageType = 'home' | 'blog' | 'portfolio' | 'services';
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [currentBlogSlug, setCurrentBlogSlug] = useState<string | null>(null);
+  const [isExiting, setIsExiting] = useState(false);
+  const [nextPage, setNextPage] = useState<PageType | null>(null);
+  const [nextBlogSlug, setNextBlogSlug] = useState<string | null>(null);
 
   const handleViewPost = (slug: string) => {
-    setCurrentBlogSlug(slug);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isExiting) return;
+    
+    setIsExiting(true);
+    setNextBlogSlug(slug);
+    
+    setTimeout(() => {
+      setCurrentBlogSlug(slug);
+      setNextBlogSlug(null);
+      setIsExiting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 500);
   };
 
   const handleBackToBlog = () => {
-    setCurrentBlogSlug(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isExiting) return;
+    
+    setIsExiting(true);
+    setNextBlogSlug(null);
+    
+    setTimeout(() => {
+      setCurrentBlogSlug(null);
+      setIsExiting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 500);
   };
 
   const renderPage = () => {
@@ -43,18 +63,38 @@ function App() {
   };
 
   const handleNavigate = (page: string) => {
-    setCurrentPage(page as PageType);
-    setCurrentBlogSlug(null);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (isExiting) return;
+    
+    const newPage = page as PageType;
+    if (newPage === currentPage) return;
+    
+    setIsExiting(true);
+    setNextPage(newPage);
+    
+    setTimeout(() => {
+      setCurrentPage(newPage);
+      setCurrentBlogSlug(null);
+      setNextPage(null);
+      setIsExiting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 500);
   };
 
   return (
     <div className="min-h-screen bg-white">
-      <Header currentPage={currentPage} onNavigate={handleNavigate} />
-      <main>
+      <Header 
+        currentPage={currentPage} 
+        onNavigate={handleNavigate} 
+        isExiting={isExiting}
+      />
+      <main className={`page-exit ${isExiting ? 'exiting' : ''}`}>
         {renderPage()}
       </main>
-      <Footer onNavigate={handleNavigate} currentPage={currentPage} />
+      <Footer 
+        onNavigate={handleNavigate} 
+        currentPage={currentPage} 
+        isExiting={isExiting}
+      />
     </div>
   );
 }

@@ -97,7 +97,7 @@ export default function Blog({ onViewPost }: BlogProps) {
           <div className="space-y-4">
             {/* Primera fila - 1 post grande */}
             <div className="scroll-entrance initial-visible">
-              <div className="group cursor-pointer hover:scale-105 transition-all duration-500">
+              <div className="group cursor-pointer hover:scale-105 transition-all duration-500 smooth-exit">
                 <div className="bg-gray-100 p-2 hover:bg-gray-200 hover:shadow-xl transition-all duration-500 relative overflow-visible">
                   <div className="grid grid-cols-6 gap-10 items-center">
                     {/* Contenido de texto - 70% */}
@@ -118,7 +118,7 @@ export default function Blog({ onViewPost }: BlogProps) {
                         </span>
                         <button
                           onClick={() => onViewPost(posts[2].slug)}
-                          className="absolute bottom-2 right-2 px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium"
+                          className="absolute bottom-2 right-2 px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium smooth-exit"
                         >
                           Descubre más
                         </button>
@@ -132,7 +132,7 @@ export default function Blog({ onViewPost }: BlogProps) {
             {/* Segunda fila - 2 posts pequeños */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {posts.slice(0, 2).map((post) => (
-                <div key={post.id} className="group cursor-pointer scroll-entrance initial-visible hover:scale-105 transition-all duration-500">
+                <div key={post.id} className="group cursor-pointer scroll-entrance initial-visible hover:scale-105 transition-all duration-500 smooth-exit">
                   <div className="bg-gray-100 overflow-hidden hover:bg-gray-200 hover:shadow-xl transition-all duration-500 relative">
                     {/* Imagen más chata */}
                     <div className="bg-gray-200 aspect-[16/6] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 relative">
@@ -152,7 +152,7 @@ export default function Blog({ onViewPost }: BlogProps) {
                         {/* Botón superpuesto en la parte inferior de la imagen */}
                         <button
                           onClick={() => onViewPost(post.slug)}
-                          className="px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium"
+                          className="px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium smooth-exit"
                         >
                           Descubre más
                         </button>

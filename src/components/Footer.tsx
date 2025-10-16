@@ -1,12 +1,13 @@
 import { FormEvent, useEffect, useRef, useState } from 'react';
-import { FaWhatsapp, FaInstagram, FaLinkedin, FaTiktok, FaArrowUp } from 'react-icons/fa6';
+import { FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa6';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
   currentPage: string;
+  isExiting?: boolean;
 }
 
-export default function Footer({ onNavigate, currentPage }: FooterProps) {
+export default function Footer({ onNavigate, currentPage, isExiting = false }: FooterProps) {
   const footerRef = useRef<HTMLElement | null>(null);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const mainLinks = [
@@ -21,8 +22,6 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
     { label: 'LinkedIn', href: 'https://linkedin.com', Icon: FaLinkedin },
     { label: 'TikTok', href: 'https://tiktok.com', Icon: FaTiktok },
   ];
-
-  const currentYear = new Date().getFullYear();
 
   function handleNewsletterSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -72,7 +71,9 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
   }, []);
 
   return (
-    <footer ref={footerRef} className="bg-white border-t border-gray-200 relative overflow-hidden">
+    <footer ref={footerRef} className={`bg-white border-t border-gray-200 relative overflow-hidden component-exit ${
+      isExiting ? 'exiting' : ''
+    }`}>
       {/* Decorative background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-white via-gray-50 to-white" />
       {/* Soft top wave (under shimmer) */}
@@ -93,7 +94,7 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
               <button
                 key={link.id}
                 onClick={() => onNavigate(link.id)}
-                className={`block mb-3 text-left transition-all duration-300 link-underline ${
+                className={`block mb-3 text-left transition-all duration-300 link-underline smooth-exit ${
                   currentPage === link.id
                     ? 'text-gray-900 font-semibold scale-105'
                     : 'text-gray-700 hover:text-gray-900'
@@ -115,7 +116,7 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-3 transition-colors"
+                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-3 transition-colors smooth-exit"
                 style={{ transitionDelay: `${index * 60}ms` }}
                 aria-label={link.label}
                 title={link.label}
@@ -139,7 +140,7 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm font-medium"
+                  className="px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm font-medium smooth-exit"
                 >
                   Suscribirme
                 </button>
@@ -152,14 +153,14 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
           <div className="flex items-center gap-4 scroll-entrance fast slide-left fast-stagger-5">
             <button
               onClick={() => onNavigate('home')}
-              className="text-gray-700 hover:text-gray-900 transition-colors link-underline"
+              className="text-gray-700 hover:text-gray-900 transition-colors link-underline smooth-exit"
             >
               Política de privacidad
             </button>
             <span className="text-gray-400">•</span>
             <button
               onClick={() => onNavigate('home')}
-              className="text-gray-700 hover:text-gray-900 transition-colors link-underline"
+              className="text-gray-700 hover:text-gray-900 transition-colors link-underline smooth-exit"
             >
               Términos de servicio
             </button>
@@ -184,7 +185,7 @@ export default function Footer({ onNavigate, currentPage }: FooterProps) {
       <div className={`fixed bottom-6 left-6 z-50 transition-opacity ${showBackToTop ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="btn-clone text-gray-800"
+          className="btn-clone text-gray-800 smooth-exit"
           aria-label="Volver arriba"
         >
           <div className="text justify-center">

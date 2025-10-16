@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { supabase, BlogPost as BlogPostType } from '../lib/supabase';
+import { getPostBySlug } from '../services/blogService';
+import { BlogPost as BlogPostType } from '../lib/supabase';
 
 interface BlogPostProps {
   slug: string;
@@ -14,13 +15,7 @@ export default function BlogPost({ slug, onBack }: BlogPostProps) {
   useEffect(() => {
     async function fetchPost() {
       try {
-        const { data, error } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .eq('slug', slug)
-          .maybeSingle();
-
-        if (error) throw error;
+        const data = await getPostBySlug(slug);
         setPost(data);
       } catch (error) {
         console.error('Error fetching post:', error);
