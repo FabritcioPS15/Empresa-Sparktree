@@ -9,6 +9,7 @@ interface HeaderProps {
 
 export default function Header({ currentPage, onNavigate, isExiting = false }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   // Removed sliding indicator; keeping minimal state
 
@@ -21,6 +22,21 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.services-dropdown') && !target.closest('[data-nav-item="services"]')) {
+        setIsServicesDropdownOpen(false);
+      }
+    };
+
+    if (isServicesDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isServicesDropdownOpen]);
 
   // Sliding indicator removed for a minimal style
 
@@ -39,13 +55,43 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
   const navItems = [
     { id: 'home', label: 'Nosotros' },
-    { id: 'services', label: 'Servicios' },
+    { id: 'services', label: 'Servicios', hasDropdown: true },
     { id: 'portfolio', label: 'Portafolio' },
     { id: 'blog', label: 'Blog' },
   ];
 
+  const servicesItems = [
+    { id: 'service-web', label: 'Diseño de Páginas Web', description: 'Sitios web que convierten' },
+    { id: 'service-seo', label: 'Posicionamiento SEO', description: 'Aparece en Google' },
+    { id: 'service-branding', label: 'Branding', description: 'Identidad de marca' },
+  ];
+
   const handleNavClick = (pageId: string) => {
     onNavigate(pageId);
+    setIsMobileMenuOpen(false);
+    setIsServicesDropdownOpen(false);
+  };
+
+  const handleServicesClick = () => {
+    // Si el dropdown está abierto, lo cerramos
+    if (isServicesDropdownOpen) {
+      setIsServicesDropdownOpen(false);
+    } else {
+      // Si está cerrado, lo abrimos
+      setIsServicesDropdownOpen(true);
+    }
+  };
+
+  const handleServicesMainClick = () => {
+    // Navegar a la página de servicios y cerrar el dropdown
+    onNavigate('services');
+    setIsServicesDropdownOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleServiceClick = (serviceId: string) => {
+    onNavigate(serviceId);
+    setIsServicesDropdownOpen(false);
     setIsMobileMenuOpen(false);
   };
 
@@ -72,18 +118,70 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1 relative px-4 py-2 bg-gray-100 rounded-full border border-gray-200">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => onNavigate(item.id)}
-                data-nav-item={item.id}
-                className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-full group ${
-                  currentPage === item.id
-                    ? 'text-gray-900 underline decoration-2 underline-offset-8'
-                    : 'text-gray-700 hover:text-gray-900 hover:underline hover:decoration-2 hover:underline-offset-8'
-                }`}
-              >
-                {item.label}
-              </button>
+              <div key={item.id} className="relative">
+                {item.hasDropdown ? (
+                  <div className="flex items-center">
+                    <button
+                      onClick={handleServicesMainClick}
+                      data-nav-item={item.id}
+                      className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-l-full group ${
+                        currentPage === item.id || currentPage.startsWith('service-')
+                          ? 'text-gray-900 underline decoration-2 underline-offset-8'
+                          : 'text-gray-700 hover:text-gray-900 hover:underline hover:decoration-2 hover:underline-offset-8'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                    <button
+                      onClick={handleServicesClick}
+                      className={`text-sm font-medium transition-all duration-200 relative px-2 py-2 rounded-r-full group ${
+                        currentPage === item.id || currentPage.startsWith('service-')
+                          ? 'text-gray-900'
+                          : 'text-gray-700 hover:text-gray-900'
+                      }`}
+                    >
+                      <svg 
+                        className={`w-3 h-3 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => onNavigate(item.id)}
+                    data-nav-item={item.id}
+                    className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-full group ${
+                      currentPage === item.id
+                        ? 'text-gray-900 underline decoration-2 underline-offset-8'
+                        : 'text-gray-700 hover:text-gray-900 hover:underline hover:decoration-2 hover:underline-offset-8'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                )}
+
+                {/* Services Dropdown */}
+                {item.hasDropdown && isServicesDropdownOpen && (
+                  <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                    {servicesItems.map((service) => (
+                      <button
+                        key={service.id}
+                        onClick={() => handleServiceClick(service.id)}
+                        className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors duration-200 ${
+                          currentPage === service.id ? 'bg-gray-50' : ''
+                        }`}
+                      >
+                        <div className="font-medium text-gray-900 text-sm">{service.label}</div>
+                        <div className="text-xs text-gray-600 mt-1">{service.description}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
 
@@ -147,17 +245,72 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               <nav className="flex-1 p-4 bg-white">
                 <div className="space-y-2">
                   {navItems.map((item) => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={`w-full text-left py-3 px-4 rounded-lg transition-all duration-200 text-base font-medium border ${
-                        currentPage === item.id
-                          ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
-                          : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
+                    <div key={item.id}>
+                      {item.hasDropdown ? (
+                        <div>
+                          <div className="flex">
+                            <button
+                              onClick={handleServicesMainClick}
+                              className={`flex-1 text-left py-3 px-4 rounded-l-lg transition-all duration-200 text-base font-medium border border-r-0 ${
+                                currentPage === item.id || currentPage.startsWith('service-')
+                                  ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                                  : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                              }`}
+                            >
+                              {item.label}
+                            </button>
+                            <button
+                              onClick={handleServicesClick}
+                              className={`px-4 py-3 rounded-r-lg transition-all duration-200 text-base font-medium border ${
+                                currentPage === item.id || currentPage.startsWith('service-')
+                                  ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                                  : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                              }`}
+                            >
+                              <svg 
+                                className={`w-4 h-4 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`} 
+                                fill="none" 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              </svg>
+                            </button>
+                          </div>
+                          
+                          {/* Mobile Services Dropdown */}
+                          {isServicesDropdownOpen && (
+                            <div className="mt-2 ml-4 space-y-1">
+                              {servicesItems.map((service) => (
+                                <button
+                                  key={service.id}
+                                  onClick={() => handleServiceClick(service.id)}
+                                  className={`w-full text-left py-2 px-4 rounded-lg transition-all duration-200 text-sm font-medium border ${
+                                    currentPage === service.id
+                                      ? 'bg-gray-100 text-gray-900 border-gray-300'
+                                      : 'text-gray-600 border-gray-100 hover:bg-gray-50 hover:text-gray-900'
+                                  }`}
+                                >
+                                  <div className="font-medium">{service.label}</div>
+                                  <div className="text-xs text-gray-500 mt-1">{service.description}</div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => handleNavClick(item.id)}
+                          className={`w-full text-left py-3 px-4 rounded-lg transition-all duration-200 text-base font-medium border ${
+                            currentPage === item.id
+                              ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                              : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
 

@@ -1,6 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-export default function Services() {
+interface ServicesProps {
+  onNavigate?: (page: string) => void;
+}
+
+export default function Services({ onNavigate }: ServicesProps) {
   const servicesRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -79,7 +83,10 @@ export default function Services() {
                     {service.description}
                   </p>
                   <div className="mt-6">
-                    <button className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg smooth-exit">
+                    <button 
+                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo')}`)}
+                      className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg smooth-exit"
+                    >
                       Conoce más
                     </button>
                   </div>
@@ -103,10 +110,16 @@ export default function Services() {
                 Descubre cómo nuestros servicios pueden transformar tu presencia digital
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg scroll-entrance slide-left scroll-stagger-3 smooth-exit">
+                <button 
+                  onClick={() => window.open('https://wa.me/', '_blank')}
+                  className="px-8 py-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg scroll-entrance slide-left scroll-stagger-3 smooth-exit"
+                >
                   Solicitar consulta
                 </button>
-                <button className="px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900 hover:text-white transition-all duration-300 font-medium hover:scale-105 scroll-entrance slide-right scroll-stagger-4 smooth-exit">
+                <button 
+                  onClick={() => onNavigate?.('portfolio')}
+                  className="px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900 hover:text-white transition-all duration-300 font-medium hover:scale-105 scroll-entrance slide-right scroll-stagger-4 smooth-exit"
+                >
                   Ver portafolio
                 </button>
               </div>

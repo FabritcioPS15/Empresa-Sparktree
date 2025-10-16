@@ -217,7 +217,7 @@ export default function Home({ onNavigate }: HomeProps) {
                     {service.description}
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <button onClick={() => onNavigate?.('service-web')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 hover:shadow-lg transition-colors duration-300 font-medium text-sm">
+                    <button onClick={() => onNavigate?.(index === 0 ? 'service-web' : index === 1 ? 'service-seo' : 'service-branding')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 hover:shadow-lg transition-colors duration-300 font-medium text-sm">
                       Ver servicio
                     </button>
                     <button onClick={() => onNavigate?.('portfolio')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-white text-gray-900 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-300 font-medium text-sm">
@@ -237,6 +237,8 @@ export default function Home({ onNavigate }: HomeProps) {
           </section>
         ))}
       </section>
+
+      {/* Service Modals removed: direct navigation */}
 
       {/* Projects Section */}
       <section ref={projectsRef} className="bg-gray-50 py-10 sm:py-12 md:py-16 lg:py-20">

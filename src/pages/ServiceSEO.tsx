@@ -28,7 +28,7 @@ export default function ServiceSEO({ onNavigate }: ServicePageProps) {
   }, []);
 
   return (
-    <div className="pt-20">
+    <div className="pt-16 sm:pt-20">
       <section ref={rootRef as any} className="py-12 sm:py-16 md:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 reveal">Posicionamiento SEO</h1>

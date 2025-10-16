@@ -8,16 +8,19 @@ import Services from './pages/Services';
 import ServiceWeb from './pages/ServiceWeb';
 import ServiceSEO from './pages/ServiceSEO';
 import ServiceBranding from './pages/ServiceBranding';
+import ProjectDetail from './pages/ProjectDetail';
 import Footer from './components/Footer';
 
-type PageType = 'home' | 'blog' | 'portfolio' | 'services' | 'service-web' | 'service-seo' | 'service-branding';
+type PageType = 'home' | 'blog' | 'portfolio' | 'services' | 'service-web' | 'service-seo' | 'service-branding' | 'project-detail';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [currentBlogSlug, setCurrentBlogSlug] = useState<string | null>(null);
+  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
   const [isExiting, setIsExiting] = useState(false);
   const [nextPage, setNextPage] = useState<PageType | null>(null);
   const [nextBlogSlug, setNextBlogSlug] = useState<string | null>(null);
+  const [nextProjectId, setNextProjectId] = useState<string | null>(null);
 
   const handleViewPost = (slug: string) => {
     if (isExiting) return;
@@ -46,9 +49,42 @@ function App() {
     }, 500);
   };
 
+  const handleViewProject = (projectId: string) => {
+    if (isExiting) return;
+    
+    setIsExiting(true);
+    setNextProjectId(projectId);
+    
+    setTimeout(() => {
+      setCurrentProjectId(projectId);
+      setCurrentPage('project-detail');
+      setNextProjectId(null);
+      setIsExiting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 500);
+  };
+
+  const handleBackToPortfolio = () => {
+    if (isExiting) return;
+    
+    setIsExiting(true);
+    setNextProjectId(null);
+    
+    setTimeout(() => {
+      setCurrentProjectId(null);
+      setCurrentPage('portfolio');
+      setIsExiting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 500);
+  };
+
   const renderPage = () => {
     if (currentPage === 'blog' && currentBlogSlug) {
       return <BlogPost slug={currentBlogSlug} onBack={handleBackToBlog} />;
+    }
+
+    if (currentPage === 'project-detail' && currentProjectId) {
+      return <ProjectDetail projectId={currentProjectId} onNavigate={handleNavigate} />;
     }
 
     switch (currentPage) {
@@ -57,9 +93,9 @@ function App() {
       case 'blog':
         return <Blog onViewPost={handleViewPost} />;
       case 'portfolio':
-        return <Portfolio />;
+        return <Portfolio onViewProject={handleViewProject} />;
       case 'services':
-        return <Services />;
+        return <Services onNavigate={handleNavigate} />;
       case 'service-web':
         return <ServiceWeb onNavigate={handleNavigate} />;
       case 'service-seo':
@@ -67,7 +103,7 @@ function App() {
       case 'service-branding':
         return <ServiceBranding onNavigate={handleNavigate} />;
       default:
-        return <Home />;
+        return <Home onNavigate={handleNavigate} />;
     }
   };
 
@@ -83,6 +119,7 @@ function App() {
     setTimeout(() => {
       setCurrentPage(newPage);
       setCurrentBlogSlug(null);
+      setCurrentProjectId(null);
       setNextPage(null);
       setIsExiting(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
