@@ -5,9 +5,12 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Portfolio from './pages/Portfolio';
 import Services from './pages/Services';
+import ServiceWeb from './pages/ServiceWeb';
+import ServiceSEO from './pages/ServiceSEO';
+import ServiceBranding from './pages/ServiceBranding';
 import Footer from './components/Footer';
 
-type PageType = 'home' | 'blog' | 'portfolio' | 'services';
+type PageType = 'home' | 'blog' | 'portfolio' | 'services' | 'service-web' | 'service-seo' | 'service-branding';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -50,13 +53,19 @@ function App() {
 
     switch (currentPage) {
       case 'home':
-        return <Home />;
+        return <Home onNavigate={handleNavigate} />;
       case 'blog':
         return <Blog onViewPost={handleViewPost} />;
       case 'portfolio':
         return <Portfolio />;
       case 'services':
         return <Services />;
+      case 'service-web':
+        return <ServiceWeb onNavigate={handleNavigate} />;
+      case 'service-seo':
+        return <ServiceSEO onNavigate={handleNavigate} />;
+      case 'service-branding':
+        return <ServiceBranding onNavigate={handleNavigate} />;
       default:
         return <Home />;
     }

@@ -1,4 +1,4 @@
-import { FaWhatsapp, FaBars, FaX } from 'react-icons/fa6';
+import { FaWhatsapp, FaBars, FaX, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
 
 interface HeaderProps {
@@ -10,11 +10,7 @@ interface HeaderProps {
 export default function Header({ currentPage, onNavigate, isExiting = false }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [indicatorStyle, setIndicatorStyle] = useState({
-    width: '0px',
-    left: '0px',
-    opacity: 0
-  });
+  // Removed sliding indicator; keeping minimal state
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,21 +22,20 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Update indicator position when currentPage changes
+  // Sliding indicator removed for a minimal style
+
+  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    const activeItem = document.querySelector(`[data-nav-item="${currentPage}"]`);
-    if (activeItem) {
-      const rect = activeItem.getBoundingClientRect();
-      const navRect = activeItem.parentElement?.getBoundingClientRect();
-      if (navRect) {
-        setIndicatorStyle({
-          width: `${rect.width - 16}px`, // Account for padding
-          left: `${rect.left - navRect.left + 8}px`, // Center within button
-          opacity: 1
-        });
-      }
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
-  }, [currentPage]);
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   const navItems = [
     { id: 'home', label: 'Nosotros' },
@@ -55,32 +50,19 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 component-exit overflow-hidden ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
       isExiting ? 'exiting' : ''
     } ${
       isScrolled 
-        ? 'bg-white/80 backdrop-blur-md shadow-xl py-2 border-b border-white/20' 
-        : 'bg-white/60 backdrop-blur-sm shadow-lg py-3 sm:py-4 border-b border-white/10'
+        ? 'bg-white shadow-lg py-2 border-b border-gray-200' 
+        : 'bg-white py-3 sm:py-4 border-b border-gray-100'
     }`}>
-      {/* Efecto de nieve/gotas cayendo */}
-      <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 20 }, (_, i) => (
-          <div
-            key={i}
-            className="snowflake"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${6 + Math.random() * 10}s`
-            }}
-          />
-        ))}
-      </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 transition-all duration-300">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16 sm:h-16">
+          {/* Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className={`font-bold text-gray-900 hover:text-gray-700 transition-all duration-300 smooth-exit ${
+            className={`font-bold text-gray-900 hover:text-gray-800 transition-colors duration-300 ${
               isScrolled ? 'text-lg' : 'text-xl'
             }`}
           >
@@ -88,28 +70,21 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-4 relative px-6 py-2 bg-gray-50/50 rounded-full backdrop-blur-sm border border-gray-200/50">
+          <nav className="hidden lg:flex items-center gap-1 relative px-4 py-2 bg-gray-100 rounded-full border border-gray-200">
             {navItems.map((item) => (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 data-nav-item={item.id}
-                className={`nav-item-micro text-sm font-medium transition-all duration-300 relative px-4 py-2 rounded-lg group smooth-exit ${
+                className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-full group ${
                   currentPage === item.id
-                    ? 'text-gray-900 scale-125 font-bold nav-item-float bg-white shadow-md'
-                    : 'text-gray-600 hover:text-gray-900 hover:scale-105 hover:bg-white/50'
+                    ? 'text-gray-900 underline decoration-2 underline-offset-8'
+                    : 'text-gray-700 hover:text-gray-900 hover:underline hover:decoration-2 hover:underline-offset-8'
                 }`}
               >
                 {item.label}
-                {/* Individual item hover indicator */}
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-300 rounded-full scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-center" />
               </button>
             ))}
-            {/* Adaptive sliding indicator */}
-            <div 
-              className="absolute bottom-0 h-0.5 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 rounded-full transition-all duration-500 ease-out shadow-lg nav-indicator-pulse"
-              style={indicatorStyle}
-            />
           </nav>
 
           <div className="flex items-center gap-3">
@@ -118,65 +93,197 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               href="https://wa.me/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex btn-fill items-center gap-2 px-4 py-2 text-sm font-medium smooth-exit"
+              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm font-semibold shadow-md hover:shadow-lg"
             >
-              <span className="btn-fill-content flex items-center gap-2">
-                <FaWhatsapp size={18} />
-                <span>Agenda tu consulta</span>
-              </span>
+              <FaWhatsapp size={18} />
+              <span>Agenda tu consulta</span>
             </a>
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-600 hover:text-gray-900 transition-colors smooth-exit"
+              className="lg:hidden p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300"
               aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <FaX size={20} /> : <FaBars size={20} />}
+              {isMobileMenuOpen ? <FaX size={22} /> : <FaBars size={22} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`lg:hidden transition-all duration-500 ease-in-out ${
+        <div className={`lg:hidden fixed inset-0 z-[100] transition-all duration-150 ${
           isMobileMenuOpen 
-            ? 'max-h-96 opacity-100 mt-4 transform translate-y-0' 
-            : 'max-h-0 opacity-0 overflow-hidden transform -translate-y-2'
+            ? 'opacity-100 pointer-events-auto' 
+            : 'opacity-0 pointer-events-none'
         }`}>
-          <nav className="flex flex-col gap-4 py-4 border-t border-gray-100">
-            {navItems.map((item, index) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className={`mobile-nav-item text-left py-3 px-4 rounded-lg transition-all duration-300 smooth-exit ${
-                  currentPage === item.id
-                    ? 'mobile-nav-item-active text-gray-900 font-semibold'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                }`}
-                style={{
-                  animationDelay: isMobileMenuOpen ? `${index * 100}ms` : '0ms',
-                  animation: isMobileMenuOpen ? 'slideInFromLeft 0.3s ease-out forwards' : 'none'
-                }}
-              >
-                {item.label}
-              </button>
-            ))}
-            
-            {/* Mobile CTA */}
-            <a
-              href="https://wa.me/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-fill flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium mt-2 smooth-exit"
-            >
-              <span className="btn-fill-content flex items-center gap-2">
-                <FaWhatsapp size={18} />
-                <span>Agenda tu consulta</span>
-              </span>
-            </a>
-          </nav>
+          {/* Overlay */}
+          <div 
+            className={`absolute inset-0 bg-black transition-opacity duration-150 ${
+              isMobileMenuOpen 
+                ? 'opacity-40 backdrop-blur-sm' 
+                : 'opacity-0 backdrop-blur-0'
+            }`}
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          
+          {/* Sidebar */}
+          <div className={`absolute top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-2xl transition-transform duration-200 z-[101] ${
+            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}>
+            <div className="flex flex-col h-full overflow-y-auto">
+              {/* Header */}
+              <div className="flex items-center justify-between h-20 px-6 border-b border-gray-200 bg-white mobile-glow">
+                <span className="font-semibold text-gray-900 text-lg">Menú</span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                  aria-label="Close menu"
+                >
+                  <FaX size={20} />
+                </button>
+              </div>
+
+              {/* Navigation Items */}
+              <nav className="flex-1 p-4 bg-white">
+                <div className="space-y-2">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleNavClick(item.id)}
+                      className={`w-full text-left py-3 px-4 rounded-lg transition-all duration-200 text-base font-medium border ${
+                        currentPage === item.id
+                          ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                          : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Quick Actions removed per request (leave only main CTA below) */}
+
+                {/* Social Links */}
+                <div className="mt-8 pt-4 border-t border-gray-200">
+                  <p className="text-gray-600 font-medium mb-3 text-center text-sm">Síguenos</p>
+                  <div className="flex justify-center gap-3">
+                    <a 
+                      href="https://instagram.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
+                    >
+                      <FaInstagram size={18} />
+                    </a>
+                    <a 
+                      href="https://linkedin.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
+                    >
+                      <FaLinkedin size={18} />
+                    </a>
+                    <a 
+                      href="https://tiktok.com" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
+                    >
+                      <FaTiktok size={18} />
+                    </a>
+                  </div>
+                </div>
+
+              </nav>
+
+              {/* CTA Button */}
+              <div className="p-4 border-t border-gray-200 bg-white">
+                <a
+                  href="https://wa.me/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative overflow-hidden flex items-center justify-center gap-2.5 w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 font-medium text-base shadow-md hover:shadow-lg mobile-shine mobile-glow"
+                >
+                  <FaWhatsapp size={18} />
+                  <span>Agenda tu consulta</span>
+                </a>
+                <div className="mt-3 text-center text-xs text-gray-500">
+                  <span>Horario: Lun - Vie 9:00 - 18:00</span>
+                </div>
+              </div>
+
+              {/* Información útil */}
+              <div className="px-4 py-4 border-t border-gray-200 bg-white">
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-3 text-gray-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V21a1 1 0 01-1 1C10.3 22 2 13.7 2 3a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" fill="currentColor"/></svg>
+                    <a href="tel:+51999999999" className="hover:text-gray-900 transition-colors">+51 999 999 999</a>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2v.01L12 13 4 6.01V6h16zM4 18V8l8 5 8-5v10H4z" fill="currentColor"/></svg>
+                    <a href="mailto:contacto@tuempresa.com" className="hover:text-gray-900 transition-colors">contacto@tuempresa.com</a>
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6zm0 8.5A2.5 2.5 0 1112 5a2.5 2.5 0 010 5.5z" fill="currentColor"/></svg>
+                    <span>Surco, Lima</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer info from site (placed last) */}
+              <div className="px-4 pb-5 pt-3 border-t border-gray-200 bg-white">
+                <div className="flex justify-center items-center gap-3 text-xs text-gray-600">
+                  <a href="#" className="hover:text-gray-900 transition-colors">Política de privacidad</a>
+                  <span className="text-gray-300">•</span>
+                  <a href="#" className="hover:text-gray-900 transition-colors">Términos de servicio</a>
+                </div>
+                <p className="mt-2 text-center text-[11px] text-gray-500">© 2025 Sparktree. Todos los derechos reservados.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <style>{`
+        /* Estilos para asegurar que no haya transparencias no deseadas */
+        .bg-white {
+          background-color: #ffffff !important;
+        }
+        .bg-gray-100 {
+          background-color: #f3f4f6 !important;
+        }
+        .bg-gray-50 {
+          background-color: #f9fafb !important;
+        }
+        .bg-blue-50 {
+          background-color: #eff6ff !important;
+        }
+        /* Animaciones sutiles constantes para menú móvil */
+        @keyframes glowPulse {
+          0%, 100% { box-shadow: 0 0 0 rgba(0,0,0,0); }
+          50% { box-shadow: 0 0 22px rgba(17,24,39,0.12); }
+        }
+        .mobile-glow {
+          animation: glowPulse 2.6s ease-in-out infinite;
+        }
+        @keyframes shineSweep {
+          0% { transform: translateX(-160%) skewX(-15deg); opacity: 0; }
+          35% { opacity: 0.55; }
+          65% { opacity: 0.18; }
+          100% { transform: translateX(220%) skewX(-15deg); opacity: 0; }
+        }
+        .mobile-shine::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 40%;
+          height: 100%;
+          background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.38) 50%, rgba(255,255,255,0) 100%);
+          filter: blur(0.5px);
+          animation: shineSweep 2.2s linear infinite;
+        }
+      `}</style>
     </header>
   );
 }

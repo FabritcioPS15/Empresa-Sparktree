@@ -12,8 +12,8 @@ export const TextRevealButton = React.forwardRef<HTMLButtonElement, TextRevealBu
   (
     {
       text = 'shadcn.io',
-      revealColor = '#37FF8B',
-      strokeColor = 'rgba(100, 100, 100, 0.7)',
+      revealColor = '#000000',
+      strokeColor = 'rgb(8, 6, 6)',
       className,
       style,
       ...props
@@ -28,7 +28,7 @@ export const TextRevealButton = React.forwardRef<HTMLButtonElement, TextRevealBu
           className,
         )}
         style={{
-          color: 'transparent',
+          fontFamily: 'inherit',
           WebkitTextStroke: `1px ${strokeColor}`,
           ...style,
         }}
@@ -41,7 +41,7 @@ export const TextRevealButton = React.forwardRef<HTMLButtonElement, TextRevealBu
           style={{
             color: revealColor,
             WebkitTextStroke: `1px ${revealColor}`,
-            filter: 'drop-shadow(0 0 0 rgba(0,0,0,0)) drop-shadow(0 0 23px currentColor)',
+            filter: 'drop-shadow(0 0 0 rgb(30, 71, 124), 0)) drop-shadow(0 0 23px currentColor)',
           }}
         >
           <span className="block whitespace-nowrap relative">

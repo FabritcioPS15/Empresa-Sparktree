@@ -99,9 +99,9 @@ export default function Blog({ onViewPost }: BlogProps) {
             <div className="scroll-entrance initial-visible">
               <div className="group cursor-pointer hover:scale-105 transition-all duration-500 smooth-exit">
                 <div className="bg-gray-100 p-2 hover:bg-gray-200 hover:shadow-xl transition-all duration-500 relative overflow-visible">
-                  <div className="grid grid-cols-6 gap-10 items-center">
-                    {/* Contenido de texto - 70% */}
-                    <div className="col-span-4">
+                  <div className="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-10 items-center">
+                    {/* Contenido de texto - 70% (solo desktop) */}
+                    <div className="col-span-4 hidden md:block">
                       <h3 className="text-gray-900 font-bold text-lg mb-3 group-hover:text-gray-700 transition-colors duration-500">
                         {posts[2].title}
                       </h3>
@@ -111,14 +111,22 @@ export default function Blog({ onViewPost }: BlogProps) {
                     </div>
                     
                     {/* Imagen - 30% - Más grande y que sobresalga */}
-                    <div className="col-span-2 relative">
-                      <div className="bg-gray-200 aspect-[3/2] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 relative overflow-hidden transform scale-125 -translate-y-6 -translate-x-24">
+                    <div className="col-span-1 md:col-span-2 relative">
+                      <div className="bg-gray-200 aspect-[16/9] md:aspect-[3/2] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 relative overflow-hidden md:transform md:scale-125 md:-translate-y-6 md:-translate-x-24">
                         <span className="text-gray-500 group-hover:text-gray-700 transition-colors duration-500 text-sm">
                           imagen
                         </span>
+                        {/* Overlay de degradado para legibilidad en mobile */}
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent md:hidden" />
+                        {/* Título y fecha superpuestos en mobile */}
+                        <div className="absolute inset-0 flex flex-col justify-end p-4 md:hidden">
+                          <h3 className="text-white font-bold text-base mb-1">{posts[2].title}</h3>
+                          <p className="text-gray-200 text-xs">{formatDate(posts[2].published_date)}</p>
+                        </div>
+                        {/* Botón: visible en mobile, reveal en desktop */}
                         <button
                           onClick={() => onViewPost(posts[2].slug)}
-                          className="absolute bottom-2 right-2 px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium smooth-exit"
+                          className="absolute bottom-3 right-0 px-5 py-3 bg-gray-900 text-white text-xs rounded-none opacity-100 translate-y-0 transition-all duration-300 ease-out hover:bg-black hover:shadow-lg md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0"
                         >
                           Descubre más
                         </button>
@@ -130,33 +138,30 @@ export default function Blog({ onViewPost }: BlogProps) {
             </div>
 
             {/* Segunda fila - 2 posts pequeños */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 md:mt-20 lg:mt-24">
               {posts.slice(0, 2).map((post) => (
                 <div key={post.id} className="group cursor-pointer scroll-entrance initial-visible hover:scale-105 transition-all duration-500 smooth-exit">
-                  <div className="bg-gray-100 overflow-hidden hover:bg-gray-200 hover:shadow-xl transition-all duration-500 relative">
-                    {/* Imagen más chata */}
-                    <div className="bg-gray-200 aspect-[16/6] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 relative">
-                      <span className="text-gray-500 group-hover:text-gray-700 transition-colors duration-500">
-                        imagen
-                      </span>
-                      
-                      {/* Título y fecha superpuestos en la imagen */}
-                      <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col justify-center items-center p-4">
-                        <h3 className="text-white font-bold text-base mb-2 group-hover:text-gray-200 transition-colors duration-500 text-center">
-                          {post.title}
-                        </h3>
-                        <p className="text-gray-200 text-xs group-hover:text-gray-300 transition-colors duration-500 mb-4">
-                          {formatDate(post.published_date)}
-                        </p>
-                        
-                        {/* Botón superpuesto en la parte inferior de la imagen */}
-                        <button
-                          onClick={() => onViewPost(post.slug)}
-                          className="px-3 py-1 bg-gray-400 text-gray-900 text-xs hover:bg-gray-500 transition-colors font-medium smooth-exit"
-                        >
-                          Descubre más
-                        </button>
+                  <div className="bg-gray-100 hover:bg-gray-200 hover:shadow-xl transition-all duration-500">
+                    {/* Imagen con overlay de título/fecha y botón revelado al hover */}
+                    <div className="relative bg-gray-200 aspect-[16/9] md:aspect-[16/6] flex items-center justify-center group-hover:bg-gray-300 transition-colors duration-500 overflow-hidden">
+                      <span className="text-gray-500 group-hover:text-gray-700 transition-colors duration-500">imagen</span>
+
+                      {/* Capa de degradado para legibilidad del texto */}
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+                      {/* Título y fecha sobre la imagen (siempre visibles) */}
+                      <div className="absolute inset-0 flex flex-col justify-end p-4">
+                        <h3 className="text-white font-bold text-base mb-1">{post.title}</h3>
+                        <p className="text-gray-200 text-xs">{formatDate(post.published_date)}</p>
                       </div>
+
+                      {/* Botón inferior derecho: visible en mobile; reveal con hover solo en desktop */}
+                      <button
+                        onClick={() => onViewPost(post.slug)}
+                        className="absolute bottom-3 right-0 px-5 py-3 bg-gray-800 text-white text-xs rounded-none opacity-100 translate-y-0 transition-all duration-300 ease-out hover:bg-black hover:shadow-lg md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0"
+                      >
+                        Descubre más
+                      </button>
                     </div>
                   </div>
                 </div>
