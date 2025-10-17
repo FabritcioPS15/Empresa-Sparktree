@@ -15,6 +15,7 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
     { id: 'services', label: 'Servicios' },
     { id: 'portfolio', label: 'Portafolio' },
     { id: 'blog', label: 'Blog' },
+    { id: 'contact', label: 'Contáctanos' },
   ];
 
   const socialLinks = [

@@ -11,6 +11,32 @@
     overflow-x: hidden;
     width: 100%;
   }
+  /* Hide native cursor globally on hover-capable devices so only custom cursor is visible */
+  @media (hover: hover) and (pointer: fine) {
+    html, body, * {
+      cursor: none !important;
+    }
+    /* Extra specificity for popovers/menus */
+    #root, #root * {
+      cursor: none !important;
+    }
+    .services-dropdown, .services-dropdown * {
+      cursor: none !important;
+    }
+    /* Ensure native cursor hidden in form controls and editables */
+    input, textarea, select, button,
+    input *, textarea *, select *, button *,
+    [contenteditable], [contenteditable=""], [contenteditable="true"],
+    [contenteditable] * {
+      cursor: none !important;
+    }
+
+    /* Allow temporarily showing native cursor by toggling this class on <html> */
+    html.show-native-cursor, html.show-native-cursor *,
+    .show-native-cursor, .show-native-cursor * {
+      cursor: auto !important;
+    }
+  }
   #root {
     max-width: 100vw;
     overflow-x: hidden;
@@ -30,6 +56,16 @@
 
 /* Custom animations and utilities */
 @layer utilities {
+  /* Pulse for cursor on click */
+  @keyframes cursorPulse {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.2); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
+
+  .cursor-pulse {
+    animation: cursorPulse 0.28s ease-out 1;
+  }
   /* Fade-up animation */
   @keyframes fade-up {
     from {

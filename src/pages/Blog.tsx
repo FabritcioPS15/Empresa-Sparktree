@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+// SmoothCursor now added globally in App; not needed here
 
 interface BlogProps {
   onViewPost: (slug: string) => void;
@@ -6,6 +7,7 @@ interface BlogProps {
 
 export default function Blog({ onViewPost }: BlogProps) {
   const blogRef = useRef<HTMLElement>(null);
+  
 
   useEffect(() => {
     const observerOptions = {
@@ -38,6 +40,8 @@ export default function Blog({ onViewPost }: BlogProps) {
       observer.disconnect();
     };
   }, []);
+
+  // No page-specific cursor logic; handled by SmoothCursor component
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -74,7 +78,7 @@ export default function Blog({ onViewPost }: BlogProps) {
 
   return (
     <div className="pt-20">
-      <section ref={blogRef} className="py-20">
+      <section ref={blogRef} data-blog-cursor className="py-20 cursor-none md:cursor-none">
         <div className="max-w-7xl mx-auto px-6">
           {/* Header */}
           <div className="text-center mb-16">

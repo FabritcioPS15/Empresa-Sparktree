@@ -1,5 +1,5 @@
 import { FaWhatsapp, FaBars, FaX, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa6';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AnimatedButton from './ui/AnimatedButton';
 
 interface HeaderProps {
@@ -13,6 +13,10 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   // Removed sliding indicator; keeping minimal state
+  const desktopNavRef = useRef<HTMLDivElement | null>(null);
+  const [indicatorLeft, setIndicatorLeft] = useState(0);
+  const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const [indicatorVisible, setIndicatorVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,6 +44,36 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   }, [isServicesDropdownOpen]);
 
   // Sliding indicator removed for a minimal style
+  // Animated sliding indicator for active desktop nav link
+  useEffect(() => {
+    const navRoot = desktopNavRef.current;
+    if (!navRoot) return;
+
+    const compute = () => {
+      const activeId = currentPage.startsWith('service-') ? 'services' : currentPage;
+      const activeEl = navRoot.querySelector(`[data-nav-item="${activeId}"]`) as HTMLElement | null;
+      if (!activeEl) {
+        setIndicatorVisible(false);
+        return;
+      }
+      const navRect = navRoot.getBoundingClientRect();
+      const elRect = activeEl.getBoundingClientRect();
+      const left = elRect.left - navRect.left + 8; // slight inset from button padding
+      const width = Math.max(0, elRect.width - 16); // inset on both sides
+      setIndicatorLeft(left);
+      setIndicatorWidth(width);
+      setIndicatorVisible(true);
+    };
+
+    compute();
+    const onResize = () => compute();
+    window.addEventListener('resize', onResize);
+    const rId = window.requestAnimationFrame(compute);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.cancelAnimationFrame(rId);
+    };
+  }, [currentPage, isServicesDropdownOpen]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -119,7 +153,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-1 relative px-4 py-2 bg-gray-100 rounded-full border border-gray-200">
+          <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-1 relative px-4 py-2 bg-gray-100 rounded-full border border-gray-200">
+            {/* Animated active indicator */}
+            <span
+              className={`absolute bottom-1 h-0.5 bg-gray-900 rounded-full transition-all duration-300 ease-out ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
+              style={{ left: indicatorLeft, width: indicatorWidth }}
+              aria-hidden
+            />
             {navItems.map((item) => (
               <div key={item.id} className="relative">
                 {item.hasDropdown ? (
@@ -129,14 +169,15 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       data-nav-item={item.id}
                       className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-l-full group ${
                         currentPage === item.id || currentPage.startsWith('service-')
-                          ? 'text-gray-900 underline decoration-2 underline-offset-8'
-                          : 'text-gray-700 hover:text-gray-900 hover:underline hover:decoration-2 hover:underline-offset-8'
+                          ? 'text-gray-900'
+                          : 'text-gray-700 hover:text-gray-900'
                       }`}
                     >
                       {item.label}
                     </button>
                     <button
                       onClick={handleServicesClick}
+                      data-nav-item="services"
                       className={`text-sm font-medium transition-all duration-200 relative px-2 py-2 rounded-r-full group ${
                         currentPage === item.id || currentPage.startsWith('service-')
                           ? 'text-gray-900'
@@ -159,8 +200,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     data-nav-item={item.id}
                     className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-full group ${
                       currentPage === item.id
-                        ? 'text-gray-900 underline decoration-2 underline-offset-8'
-                        : 'text-gray-700 hover:text-gray-900 hover:underline hover:decoration-2 hover:underline-offset-8'
+                        ? 'text-gray-900'
+                        : 'text-gray-700 hover:text-gray-900'
                     }`}
                   >
                     {item.label}
@@ -219,10 +260,10 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
         }`}>
           {/* Overlay */}
           <div 
-            className={`absolute inset-0 bg-black transition-opacity duration-150 ${
+            className={`absolute inset-0 transition-all duration-200 ${
               isMobileMenuOpen 
-                ? 'opacity-40 backdrop-blur-sm' 
-                : 'opacity-0 backdrop-blur-0'
+                ? 'bg-black/40 backdrop-blur-md backdrop-saturate-150' 
+                : 'bg-transparent backdrop-blur-0'
             }`}
             onClick={() => setIsMobileMenuOpen(false)}
           />
@@ -233,7 +274,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           }`}>
             <div className="flex flex-col h-full overflow-y-auto">
               {/* Header */}
-              <div className="flex items-center justify-between h-20 px-6 border-b border-gray-200 bg-white mobile-glow">
+              <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 bg-white mobile-glow">
                 <span className="font-semibold text-gray-900 text-lg">Menú</span>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -254,6 +295,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                           <div className="flex">
                             <button
                               onClick={handleServicesMainClick}
+                              data-nav-item="services"
                               className={`flex-1 text-left py-3 px-4 rounded-l-lg transition-all duration-200 text-base font-medium border border-r-0 ${
                                 currentPage === item.id || currentPage.startsWith('service-')
                                   ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
@@ -264,6 +306,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                             </button>
                             <button
                               onClick={handleServicesClick}
+                              data-nav-item="services"
                               className={`px-4 py-3 rounded-r-lg transition-all duration-200 text-base font-medium border ${
                                 currentPage === item.id || currentPage.startsWith('service-')
                                   ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
@@ -283,7 +326,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                           
                           {/* Mobile Services Dropdown */}
                           {isServicesDropdownOpen && (
-                            <div className="mt-2 ml-4 space-y-1">
+                            <div className="services-dropdown mt-2 ml-4 space-y-1">
                               {servicesItems.map((service) => (
                                 <button
                                   key={service.id}

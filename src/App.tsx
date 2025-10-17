@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Header from './components/Header';
+import SmoothCursor from './components/ui/SmoothCursor';
 import Home from './pages/Home';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
@@ -150,6 +151,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Global custom cursor across the whole site */}
+      <SmoothCursor visibilityRootSelector="body" primaryColor="#111827" ringColor="rgba(107,114,128,0.18)" enableTap />
       <Header 
         currentPage={currentPage} 
         onNavigate={handleNavigate} 
