@@ -9,9 +9,10 @@ import ServiceWeb from './pages/ServiceWeb';
 import ServiceSEO from './pages/ServiceSEO';
 import ServiceBranding from './pages/ServiceBranding';
 import ProjectDetail from './pages/ProjectDetail';
+import Contact from './pages/Contact';
 import Footer from './components/Footer';
 
-type PageType = 'home' | 'blog' | 'portfolio' | 'services' | 'service-web' | 'service-seo' | 'service-branding' | 'project-detail';
+type PageType = 'home' | 'blog' | 'portfolio' | 'services' | 'service-web' | 'service-seo' | 'service-branding' | 'project-detail' | 'contact';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
@@ -102,17 +103,38 @@ function App() {
         return <ServiceSEO onNavigate={handleNavigate} />;
       case 'service-branding':
         return <ServiceBranding onNavigate={handleNavigate} />;
+      case 'contact':
+        return <Contact onNavigate={handleNavigate} />;
       default:
         return <Home onNavigate={handleNavigate} />;
     }
   };
 
   const handleNavigate = (page: string) => {
-    if (isExiting) return;
+    console.log('handleNavigate called with:', page, 'isExiting:', isExiting); // Debug log
     
     const newPage = page as PageType;
-    if (newPage === currentPage) return;
+    if (newPage === currentPage) {
+      console.log('Navigation blocked: same page');
+      return;
+    }
     
+    // Para la página de contacto, navegación inmediata sin animación
+    if (newPage === 'contact') {
+      console.log('Direct navigation to contact page');
+      setCurrentPage(newPage);
+      setCurrentBlogSlug(null);
+      setCurrentProjectId(null);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    
+    if (isExiting) {
+      console.log('Navigation blocked: isExiting is true');
+      return;
+    }
+    
+    console.log('Navigating to:', newPage); // Debug log
     setIsExiting(true);
     setNextPage(newPage);
     

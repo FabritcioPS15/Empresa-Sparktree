@@ -1,5 +1,6 @@
 import { FaWhatsapp, FaBars, FaX, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa6';
 import { useState, useEffect } from 'react';
+import AnimatedButton from './ui/AnimatedButton';
 
 interface HeaderProps {
   currentPage: string;
@@ -58,6 +59,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { id: 'services', label: 'Servicios', hasDropdown: true },
     { id: 'portfolio', label: 'Portafolio' },
     { id: 'blog', label: 'Blog' },
+    { id: 'contact', label: 'Contacto' },
   ];
 
   const servicesItems = [
@@ -67,6 +69,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   ];
 
   const handleNavClick = (pageId: string) => {
+    console.log('Header: Navigating to:', pageId); // Debug log
     onNavigate(pageId);
     setIsMobileMenuOpen(false);
     setIsServicesDropdownOpen(false);
@@ -187,15 +190,15 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
           <div className="flex items-center gap-3">
             {/* Desktop CTA */}
-            <a
+            <AnimatedButton
               href="https://wa.me/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 text-sm font-semibold shadow-md hover:shadow-lg"
+              className="hidden sm:flex items-center gap-2"
             >
               <FaWhatsapp size={18} />
               <span>Agenda tu consulta</span>
-            </a>
+            </AnimatedButton>
 
             {/* Mobile Menu Button */}
             <button
@@ -351,15 +354,15 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
               {/* CTA Button */}
               <div className="p-4 border-t border-gray-200 bg-white">
-                <a
+                <AnimatedButton
                   href="https://wa.me/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative overflow-hidden flex items-center justify-center gap-2.5 w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 font-medium text-base shadow-md hover:shadow-lg mobile-shine mobile-glow"
+                  className="w-full flex items-center justify-center gap-2.5 py-3 text-base font-medium"
                 >
                   <FaWhatsapp size={18} />
                   <span>Agenda tu consulta</span>
-                </a>
+                </AnimatedButton>
                 <div className="mt-3 text-center text-xs text-gray-500">
                   <span>Horario: Lun - Vie 9:00 - 18:00</span>
                 </div>
