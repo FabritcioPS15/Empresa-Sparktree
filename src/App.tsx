@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import SmoothCursor from './components/ui/SmoothCursor';
 import Home from './pages/Home';
@@ -13,26 +14,85 @@ import ProjectDetail from './pages/ProjectDetail';
 import Contact from './pages/Contact';
 import Footer from './components/Footer';
 
-type PageType = 'home' | 'blog' | 'portfolio' | 'services' | 'service-web' | 'service-seo' | 'service-branding' | 'project-detail' | 'contact';
-
 function App() {
-  const [currentPage, setCurrentPage] = useState<PageType>('home');
-  const [currentBlogSlug, setCurrentBlogSlug] = useState<string | null>(null);
-  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isExiting, setIsExiting] = useState(false);
-  const [nextPage, setNextPage] = useState<PageType | null>(null);
-  const [nextBlogSlug, setNextBlogSlug] = useState<string | null>(null);
-  const [nextProjectId, setNextProjectId] = useState<string | null>(null);
+
+  // Función para obtener la página actual basada en la URL
+  const getCurrentPage = () => {
+    const path = location.pathname;
+    if (path === '/') return 'home';
+    if (path === '/blog') return 'blog';
+    if (path === '/portfolio') return 'portfolio';
+    if (path === '/services') return 'services';
+    if (path === '/services/web') return 'service-web';
+    if (path === '/services/seo') return 'service-seo';
+    if (path === '/services/branding') return 'service-branding';
+    if (path === '/contact') return 'contact';
+    if (path.startsWith('/blog/')) return 'blog-post';
+    if (path.startsWith('/portfolio/')) return 'project-detail';
+    return 'home';
+  };
+
+  const currentPage = getCurrentPage();
+
+  const handleNavigate = (page: string) => {
+    if (isExiting) return;
+    
+    let path = '/';
+    switch (page) {
+      case 'home':
+        path = '/';
+        break;
+      case 'blog':
+        path = '/blog';
+        break;
+      case 'portfolio':
+        path = '/portfolio';
+        break;
+      case 'services':
+        path = '/services';
+        break;
+      case 'service-web':
+        path = '/services/web';
+        break;
+      case 'service-seo':
+        path = '/services/seo';
+        break;
+      case 'service-branding':
+        path = '/services/branding';
+        break;
+      case 'contact':
+        path = '/contact';
+        break;
+      default:
+        path = '/';
+    }
+
+    // Para la página de contacto, navegación inmediata sin animación
+    if (page === 'contact') {
+      navigate(path);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    
+    setIsExiting(true);
+    
+    setTimeout(() => {
+      navigate(path);
+      setIsExiting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 500);
+  };
 
   const handleViewPost = (slug: string) => {
     if (isExiting) return;
     
     setIsExiting(true);
-    setNextBlogSlug(slug);
     
     setTimeout(() => {
-      setCurrentBlogSlug(slug);
-      setNextBlogSlug(null);
+      navigate(`/blog/${slug}`);
       setIsExiting(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 500);
@@ -42,10 +102,9 @@ function App() {
     if (isExiting) return;
     
     setIsExiting(true);
-    setNextBlogSlug(null);
     
     setTimeout(() => {
-      setCurrentBlogSlug(null);
+      navigate('/blog');
       setIsExiting(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 500);
@@ -55,12 +114,9 @@ function App() {
     if (isExiting) return;
     
     setIsExiting(true);
-    setNextProjectId(projectId);
     
     setTimeout(() => {
-      setCurrentProjectId(projectId);
-      setCurrentPage('project-detail');
-      setNextProjectId(null);
+      navigate(`/portfolio/${projectId}`);
       setIsExiting(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 500);
@@ -70,80 +126,9 @@ function App() {
     if (isExiting) return;
     
     setIsExiting(true);
-    setNextProjectId(null);
     
     setTimeout(() => {
-      setCurrentProjectId(null);
-      setCurrentPage('portfolio');
-      setIsExiting(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 500);
-  };
-
-  const renderPage = () => {
-    if (currentPage === 'blog' && currentBlogSlug) {
-      return <BlogPost slug={currentBlogSlug} onBack={handleBackToBlog} />;
-    }
-
-    if (currentPage === 'project-detail' && currentProjectId) {
-      return <ProjectDetail projectId={currentProjectId} onNavigate={handleNavigate} />;
-    }
-
-    switch (currentPage) {
-      case 'home':
-        return <Home onNavigate={handleNavigate} />;
-      case 'blog':
-        return <Blog onViewPost={handleViewPost} />;
-      case 'portfolio':
-        return <Portfolio onViewProject={handleViewProject} />;
-      case 'services':
-        return <Services onNavigate={handleNavigate} />;
-      case 'service-web':
-        return <ServiceWeb onNavigate={handleNavigate} />;
-      case 'service-seo':
-        return <ServiceSEO onNavigate={handleNavigate} />;
-      case 'service-branding':
-        return <ServiceBranding onNavigate={handleNavigate} />;
-      case 'contact':
-        return <Contact onNavigate={handleNavigate} />;
-      default:
-        return <Home onNavigate={handleNavigate} />;
-    }
-  };
-
-  const handleNavigate = (page: string) => {
-    console.log('handleNavigate called with:', page, 'isExiting:', isExiting); // Debug log
-    
-    const newPage = page as PageType;
-    if (newPage === currentPage) {
-      console.log('Navigation blocked: same page');
-      return;
-    }
-    
-    // Para la página de contacto, navegación inmediata sin animación
-    if (newPage === 'contact') {
-      console.log('Direct navigation to contact page');
-      setCurrentPage(newPage);
-      setCurrentBlogSlug(null);
-      setCurrentProjectId(null);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    
-    if (isExiting) {
-      console.log('Navigation blocked: isExiting is true');
-      return;
-    }
-    
-    console.log('Navigating to:', newPage); // Debug log
-    setIsExiting(true);
-    setNextPage(newPage);
-    
-    setTimeout(() => {
-      setCurrentPage(newPage);
-      setCurrentBlogSlug(null);
-      setCurrentProjectId(null);
-      setNextPage(null);
+      navigate('/portfolio');
       setIsExiting(false);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 500);
@@ -159,7 +144,18 @@ function App() {
         isExiting={isExiting}
       />
       <main className={`page-exit ${isExiting ? 'exiting' : ''}`}>
-        {renderPage()}
+        <Routes>
+          <Route path="/" element={<Home onNavigate={handleNavigate} />} />
+          <Route path="/blog" element={<Blog onViewPost={handleViewPost} />} />
+          <Route path="/blog/:slug" element={<BlogPostWrapper onBack={handleBackToBlog} />} />
+          <Route path="/portfolio" element={<Portfolio onViewProject={handleViewProject} />} />
+          <Route path="/portfolio/:projectId" element={<ProjectDetailWrapper onNavigate={handleNavigate} />} />
+          <Route path="/services" element={<Services onNavigate={handleNavigate} />} />
+          <Route path="/services/web" element={<ServiceWeb onNavigate={handleNavigate} />} />
+          <Route path="/services/seo" element={<ServiceSEO onNavigate={handleNavigate} />} />
+          <Route path="/services/branding" element={<ServiceBranding onNavigate={handleNavigate} />} />
+          <Route path="/contact" element={<Contact onNavigate={handleNavigate} />} />
+        </Routes>
       </main>
       <Footer 
         onNavigate={handleNavigate} 
@@ -168,6 +164,19 @@ function App() {
       />
     </div>
   );
+}
+
+// Wrapper components para pasar props a los componentes que las necesitan
+function BlogPostWrapper({ onBack }: { onBack: () => void }) {
+  const location = useLocation();
+  const slug = location.pathname.split('/')[2];
+  return <BlogPost slug={slug} onBack={onBack} />;
+}
+
+function ProjectDetailWrapper({ onNavigate }: { onNavigate: (page: string) => void }) {
+  const location = useLocation();
+  const projectId = location.pathname.split('/')[2];
+  return <ProjectDetail projectId={projectId} onNavigate={onNavigate} />;
 }
 
 export default App;
