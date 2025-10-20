@@ -168,7 +168,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       onClick={handleServicesMainClick}
                       data-nav-item={item.id}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
-                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-3.5 py-2 rounded-md ${
+                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative pl-3.5 pr-2.5 py-2 rounded-md ${
                         currentPage === item.id || currentPage.startsWith('service-')
                           ? 'text-gray-900'
                           : 'text-gray-700 hover:text-gray-900'
@@ -184,7 +184,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       onClick={handleServicesClick}
                       data-nav-item="services"
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
-                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-2.5 py-2 rounded-md ${
+                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative -ml-1 pl-1.5 pr-2 py-2 rounded-md ${
                         currentPage === item.id || currentPage.startsWith('service-')
                           ? 'text-gray-900'
                           : 'text-gray-700 hover:text-gray-900'
