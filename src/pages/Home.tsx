@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
 
 interface HomeProps {
@@ -10,8 +10,16 @@ export default function Home({ onNavigate }: HomeProps) {
   const servicesRef = useRef<HTMLElement>(null);
   const projectsRef = useRef<HTMLElement>(null);
   const teamRef = useRef<HTMLElement>(null);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   useEffect(() => {
+    const onScroll = () => {
+      // Considered "scrolled enough" after 80px
+      setHasScrolled(window.scrollY > 80);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
@@ -54,6 +62,7 @@ export default function Home({ onNavigate }: HomeProps) {
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
+      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 
@@ -84,14 +93,16 @@ export default function Home({ onNavigate }: HomeProps) {
   ];
 
   return (
-    <div className="pt-16 sm:pt-20">
+    <div className="pt-0">
       {/* Hero Section */}
-      <section ref={heroRef} className="relative overflow-hidden bg-gray-50 py-12 sm:py-16 md:py-20 lg:py-24">
-        {/* Decorative background */}
-        <div className="pointer-events-none absolute inset-0 opacity-70">
-          <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-gradient-to-br from-gray-200 to-white blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-gradient-to-tr from-gray-200 to-white blur-3xl" />
-        </div>
+      <section ref={heroRef} className={`relative overflow-hidden ${hasScrolled ? 'bg-gray-50 pt-16 sm:pt-20' : 'bg-transparent pt-0'} transition-colors duration-300 min-h-screen flex items-center`}>
+        {/* Decorative background only after scroll */}
+        {hasScrolled && (
+          <div className="pointer-events-none absolute inset-0 opacity-70">
+            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-gradient-to-br from-gray-200 to-white blur-3xl" />
+            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-gradient-to-tr from-gray-200 to-white blur-3xl" />
+          </div>
+        )}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
@@ -152,6 +163,15 @@ export default function Home({ onNavigate }: HomeProps) {
                   +38% tasa de conversión
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        {/* Scroll-down indicator */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <div className="scrolldown" style={{ ['--color' as any]: '#111827' }}>
+            <div className="chevrons">
+              <div className="chevrondown" />
+              <div className="chevrondown" />
             </div>
           </div>
         </div>

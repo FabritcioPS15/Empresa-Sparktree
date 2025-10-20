@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaTelegram, FaCalendar, FaHeadset, FaRocket, FaChevronLeft, FaChevronRight, FaPlus, FaMinus } from 'react-icons/fa6';
+import { MdOutlineAlternateEmail } from "react-icons/md";
 import { FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
 
 interface ContactProps {
@@ -28,6 +29,50 @@ export default function Contact({ onNavigate }: ContactProps) {
   const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
   const [lineProgress, setLineProgress] = useState(0);
   const [expandedFAQs, setExpandedFAQs] = useState<Set<number>>(new Set());
+  const [hoverChoice, setHoverChoice] = useState<'email' | 'whatsapp' | null>(null);
+
+  const isFormValid = (
+    formData.name.trim() !== '' &&
+    formData.email.trim() !== '' &&
+    formData.phone.trim() !== '' &&
+    formData.service.trim() !== '' &&
+    formData.message.trim() !== ''
+  );
+
+  const buildEmailLink = () => {
+    const subject = `Nuevo proyecto: ${formData.service || 'Consulta'}`;
+    const body = [
+      `Nombre: ${formData.name}`,
+      `Email: ${formData.email}`,
+      `Teléfono: ${formData.phone}`,
+      `Empresa: ${formData.company || '-'}`,
+      `Servicio: ${formData.service}`,
+      `Presupuesto: ${formData.budget || '-'}`,
+      `Plazo: ${formData.timeline || '-'}`,
+      '',
+      'Mensaje:',
+      formData.message
+    ].join('\n');
+    return `mailto:contacto@sparktree.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const buildWhatsAppLink = () => {
+    const lines = [
+      '*Nuevo proyecto*',
+      `Nombre: ${formData.name}`,
+      `Email: ${formData.email}`,
+      `Teléfono: ${formData.phone}`,
+      `Empresa: ${formData.company || '-'}`,
+      `Servicio: ${formData.service}`,
+      `Presupuesto: ${formData.budget || '-'}`,
+      `Plazo: ${formData.timeline || '-'}`,
+      '',
+      'Mensaje:',
+      formData.message
+    ];
+    const text = encodeURIComponent(lines.join('\n'));
+    return `https://wa.me/51999999999?text=${text}`;
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -289,42 +334,6 @@ export default function Contact({ onNavigate }: ContactProps) {
         </div>
       </section>
 
-      {/* Quick Contact Methods */}
-      <section className="py-6 sm:py-8 md:py-10 bg-white">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-8">
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-4 scroll-entrance">
-              Elige tu forma preferida de contacto
-            </h2>
-            <p className="text-gray-600 text-xs sm:text-sm md:text-base scroll-entrance px-2">
-              Selecciona el método que prefieras para comunicarte con nosotros
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-            {contactMethods.map((method, index) => (
-              <a
-                key={method.id}
-                href={method.href}
-                target={method.href.startsWith('http') ? '_blank' : undefined}
-                rel={method.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className={`group p-3 sm:p-4 md:p-6 rounded-xl border-2 border-gray-200 hover:border-gray-900 transition-all duration-300 text-center scroll-entrance slide-up scroll-stagger-${index + 1} hover:shadow-lg hover:scale-105`}
-              >
-                <div className={`w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 ${method.color} rounded-lg flex items-center justify-center mx-auto mb-2 sm:mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <method.icon className="text-white text-base sm:text-lg md:text-xl" />
-                </div>
-                <h3 className="font-semibold text-gray-900 text-xs sm:text-sm md:text-base mb-1">
-                  {method.name}
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm">
-                  {method.description}
-                </p>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Contact Form & Info Section */}
       <section className="py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
@@ -512,23 +521,50 @@ export default function Contact({ onNavigate }: ContactProps) {
                     </div>
                   )}
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-300 font-medium text-xs sm:text-sm flex items-center justify-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <FaRocket className="text-xs sm:text-sm" />
-                        Enviar proyecto
-                      </>
-                    )}
-                  </button>
+                  <div className="relative group">
+                    <button
+                      type="submit"
+                      disabled={!isFormValid || isSubmitting}
+                      className={`w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg disabled:bg-gray-300 disabled:text-white disabled:cursor-not-allowed transition-colors duration-300 font-medium text-xs sm:text-sm flex items-center justify-center gap-2 ${isFormValid ? 'group-hover:opacity-0' : 'hover:bg-gray-800'}`}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Enviando...
+                        </>
+                      ) : (
+                        <>
+                          <FaRocket className="text-xs sm:text-sm" />
+                          Enviar proyecto
+                        </>
+                      )}
+                    </button>
+                    <div className={`pointer-events-none absolute inset-0 flex items-stretch gap-2 opacity-0 transition-opacity duration-300 ease-in-out ${isFormValid ? 'group-hover:opacity-100' : ''}`}>
+                      <a
+                        href={buildEmailLink()}
+                        onMouseEnter={() => setHoverChoice('email')}
+                        onMouseLeave={() => setHoverChoice(null)}
+                        className={`btn-breathe pointer-events-auto ${hoverChoice === 'email' ? 'w-7/12' : hoverChoice === 'whatsapp' ? 'w-5/12' : 'w-1/2'} inline-flex items-center justify-center gap-1 px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-300 ease-in-out text-xs sm:text-sm font-medium text-white ${hoverChoice === 'email' ? 'bg-blue-600' : 'bg-gray-900'}`}
+                        aria-label="Enviar por Email"
+                      >
+                       <MdOutlineAlternateEmail size={14} />
+                        Email
+                      </a>
+                      
+                      <a
+                        href={buildWhatsAppLink()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onMouseEnter={() => setHoverChoice('whatsapp')}
+                        onMouseLeave={() => setHoverChoice(null)}
+                        className={`btn-breathe pointer-events-auto ${hoverChoice === 'whatsapp' ? 'w-7/12' : hoverChoice === 'email' ? 'w-5/12' : 'w-1/2'} inline-flex items-center justify-center gap-1 px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-300 ease-in-out text-xs sm:text-sm font-medium text-white ${hoverChoice === 'whatsapp' ? 'bg-green-600' : 'bg-gray-900'}`}
+                        aria-label="Enviar por WhatsApp"
+                      >
+                        <FaWhatsapp size={16} />
+                        WhatsApp
+                      </a>
+                    </div>
+                  </div>
                 </form>
               </div>
             </div>
@@ -637,46 +673,45 @@ export default function Contact({ onNavigate }: ContactProps) {
                   </a>
                 </div>
 
-                {/* Social Links */}
-                <div className="bg-white rounded-lg p-4 sm:p-6 border border-gray-200">
-                  <h3 className="font-medium text-gray-900 text-xs sm:text-sm md:text-base mb-3 sm:mb-4">
+                {/* Redes Sociales */}
+                <div className="bg-white rounded-lg p-4 sm:p-5 border border-gray-200 shadow-sm text-center scroll-entrance">
+                  <h3 className="text-gray-900 font-medium text-sm sm:text-base md:text-lg mb-2">
                     Síguenos en redes sociales
                   </h3>
-                  <div className="flex gap-2 sm:gap-3 justify-center sm:justify-start">
-                    <a 
-                      href="https://instagram.com/sparktree" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaInstagram size={16} />
-                    </a>
-                    <a 
-                      href="https://linkedin.com/company/sparktree" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaLinkedin size={16} />
-                    </a>
-                    <a 
-                      href="https://tiktok.com/@sparktree" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaTiktok size={16} />
-                    </a>
-                    <a 
-                      href="https://t.me/sparktree" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaTelegram size={16} />
-                    </a>
+                  <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                    {[
+                      {
+                        href: "https://instagram.com/sparktree",
+                        label: "Instagram",
+                        icon: <FaInstagram size={24} />
+                      },
+                      {
+                        href: "https://linkedin.com/company/sparktree",
+                        label: "LinkedIn",
+                        icon: <FaLinkedin size={24} />
+                      },
+                      {
+                        href: "https://tiktok.com/@sparktree",
+                        label: "TikTok",
+                        icon: <FaTiktok size={24} />
+                      }
+                    ].map(({ href, label, icon }, i) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Ir a ${label}`}
+                        title={label}
+                        style={{ transitionDelay: `${i * 50}ms` }}
+                        className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg border border-gray-200 text-gray-700 hover:text-gray-900 bg-white shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-gray-300"
+                      >
+                        {icon}
+                      </a>
+                    ))}
                   </div>
                 </div>
+
               </div>
             </div>
           </div>

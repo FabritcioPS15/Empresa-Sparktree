@@ -56,6 +56,125 @@
 
 /* Custom animations and utilities */
 @layer utilities {
+  /* Subtle scroll-down indicator */
+  .scrolldown {
+    --color: #111827; /* gray-900 (primary) */
+    --sizeX: 28px;
+    --sizeY: 46px;
+    position: relative;
+    width: var(--sizeX);
+    height: var(--sizeY);
+    border: calc(var(--sizeX) / 10) solid var(--color);
+    border-radius: 50px;
+    box-sizing: border-box;
+  }
+
+  .scrolldown::before {
+    content: "";
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    background-color: var(--color);
+    border-radius: 100%;
+    animation: scrolldown-anim 2s infinite;
+    box-sizing: border-box;
+    box-shadow: 0px -5px 3px 1px rgba(17, 24, 39, 0.4);
+  }
+
+  @keyframes scrolldown-anim {
+    0% { opacity: 0; height: 6px; }
+    40% { opacity: 1; height: 10px; }
+    80% { transform: translate(0, 18px); height: 10px; opacity: 0; }
+    100% { height: 3px; opacity: 0; }
+  }
+
+  .chevrons { 
+    padding: 6px 0 0 0; 
+    margin-left: -3px; 
+    margin-top: 44px; 
+    width: 30px; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+  }
+
+  .chevrondown { 
+    margin-top: -6px; 
+    position: relative; 
+    border: solid var(--color); 
+    border-width: 0 3px 3px 0; 
+    display: inline-block; 
+    width: 10px; 
+    height: 10px; 
+    transform: rotate(45deg); 
+  }
+
+  .chevrondown:nth-child(odd) { animation: chevronPulse 600ms ease-in-out infinite alternate; }
+  .chevrondown:nth-child(even) { animation: chevronPulse 600ms ease-in-out infinite alternate 300ms; }
+
+  @keyframes chevronPulse { from { opacity: 0; } to { opacity: 0.6; } }
+  /* Subtle constant breathing animation for buttons */
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    }
+    50% {
+      transform: scale(1.015);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .btn-breathe {
+    animation: breathe 2.4s ease-in-out infinite;
+    will-change: transform, box-shadow;
+  }
+  /* Sweep hover color change (configurable target via --hover-bg) */
+  .btn-sweep {
+    position: relative;
+    overflow: hidden;
+    background: #111827; /* gray-900 */
+    color: #ffffff;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    will-change: background-color;
+  }
+
+  .btn-sweep::before,
+  .btn-sweep::after {
+    --skew: 0.2;
+    --progress: 0%;
+    content: '';
+    position: absolute;
+    left: calc(-50% - 50% * var(--skew));
+    top: -104%;
+    width: 100%;
+    height: 102%;
+    background: #019201;
+    pointer-events: none;
+    transform: skew(calc(150deg * var(--skew))) translateY(var(--progress));
+    transition: transform 0.25s ease;
+  }
+
+  .btn-sweep::after {
+    left: calc(50% + 50% * var(--skew));
+    top: 102%;
+    z-index: -1;
+  }
+
+  .btn-sweep:hover::before {
+    --progress: 100%;
+  }
+
+  .btn-sweep:hover::after {
+    --progress: -102%;
+  }
+
+  .btn-sweep:hover {
+    background: var(--hover-bg, #111827);
+  }
   /* Pulse for cursor on click */
   @keyframes cursorPulse {
     0% { transform: translate(-50%, -50%) scale(1); }

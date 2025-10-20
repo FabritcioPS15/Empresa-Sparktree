@@ -19,12 +19,14 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const [indicatorVisible, setIndicatorVisible] = useState(false);
 
   useEffect(() => {
+    const headerThreshold = () => Math.max(0, window.innerHeight - 80); // after hero (approx), adjust offset if needed
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > 20);
+      setIsScrolled(scrollTop > headerThreshold());
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -133,21 +135,19 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-150 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
       isExiting ? 'exiting' : ''
     } ${
-      isScrolled 
-        ? 'bg-white shadow-lg py-2 border-b border-gray-200' 
-        : 'bg-white py-3 sm:py-4 border-b border-gray-100'
+      currentPage === 'home' && !isScrolled
+        ? 'bg-transparent py-3 sm:py-4 border-b border-transparent'
+        : 'bg-white shadow-lg py-2 border-b border-gray-200'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-16">
           {/* Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className={`font-bold text-gray-900 hover:text-gray-800 transition-colors duration-300 ${
-              isScrolled ? 'text-lg' : 'text-xl'
-            }`}
+            className={`font-bold text-gray-900 hover:text-gray-800 transition-colors duration-300 text-xl`}
           >
             Logo
           </button>
