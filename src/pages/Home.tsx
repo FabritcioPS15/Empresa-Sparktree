@@ -113,8 +113,8 @@ export default function Home({ onNavigate }: HomeProps) {
                 Agencia web en Lima
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
-                Convierte visitas en
-                <span className="text-gradient"> clientes</span>
+                Agencia de marketing digital en Lima que convierte visitas”
+                <span className="text-gradient"> en clientes</span>
               </h1>
               <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0 scroll-entrance initial-visible slide-left">
                 Diseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.

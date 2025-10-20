@@ -56,7 +56,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
               Nuestro Portafolio
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0 reveal scroll-entrance initial-visible slide-left scroll-stagger-2">
-              Proyectos que han transformado negocios y generado resultados excepcionales
+             Portafolio de diseño web y branding: proyectos con resultados reales.
             </p>
           </div>
 

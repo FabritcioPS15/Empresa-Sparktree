@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaTelegram, FaCalendar, FaHeadset, FaRocket, FaChevronLeft, FaChevronRight, FaPlus, FaMinus } from 'react-icons/fa6';
+import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaCalendar, FaRocket, FaChevronLeft, FaChevronRight, FaPlus, FaMinus } from 'react-icons/fa6';
 import { MdOutlineAlternateEmail } from "react-icons/md";
 import { FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
 
@@ -26,8 +26,6 @@ export default function Contact({ onNavigate }: ContactProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
-  const [lineProgress, setLineProgress] = useState(0);
   const [expandedFAQs, setExpandedFAQs] = useState<Set<number>>(new Set());
   const [hoverChoice, setHoverChoice] = useState<'email' | 'whatsapp' | null>(null);
 
@@ -125,31 +123,7 @@ export default function Contact({ onNavigate }: ContactProps) {
     return () => clearInterval(interval);
   }, []);
 
-  // Animación de línea de tiempo
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // Mostrar pasos uno por uno
-      const stepInterval = setInterval(() => {
-        setVisibleSteps(prev => {
-          const nextStep = prev.length;
-          if (nextStep < 4) {
-            return [...prev, nextStep];
-          }
-          clearInterval(stepInterval);
-          return prev;
-        });
-      }, 600); // Cada 600ms aparece un paso
-
-      // Animar la línea después de que aparezcan todos los pasos
-      setTimeout(() => {
-        setLineProgress(100);
-      }, 2400); // 4 pasos * 600ms = 2400ms
-
-      return () => clearInterval(stepInterval);
-    }, 500); // Delay inicial
-
-    return () => clearTimeout(timer);
-  }, []);
+  //
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -241,48 +215,15 @@ export default function Contact({ onNavigate }: ContactProps) {
     'Sin prisa'
   ];
 
-  const contactMethods = [
-    {
-      id: 'whatsapp',
-      name: 'WhatsApp',
-      icon: FaWhatsapp,
-      description: 'Respuesta inmediata',
-      color: 'bg-green-600',
-      href: 'https://wa.me/51999999999'
-    },
-    {
-      id: 'phone',
-      name: 'Llamada',
-      icon: FaPhone,
-      description: 'Lun-Vie 9:00-18:00',
-      color: 'bg-blue-600',
-      href: 'tel:+51999999999'
-    },
-    {
-      id: 'email',
-      name: 'Email',
-      icon: FaEnvelope,
-      description: 'Respuesta en 24h',
-      color: 'bg-gray-600',
-      href: 'mailto:contacto@sparktree.com'
-    },
-    {
-      id: 'telegram',
-      name: 'Telegram',
-      icon: FaTelegram,
-      description: 'Chat rápido',
-      color: 'bg-blue-500',
-      href: 'https://t.me/sparktree'
-    }
-  ];
+  
 
   const contactCards = [
     {
       icon: FaPhone,
       title: 'Teléfono',
-      content: '+51 999 999 999',
+      content: '+51 958 077 827',
       subtitle: 'Lun-Vie 9:00-18:00',
-      href: 'tel:+51999999999'
+      href: 'tel:+51958077827'
     },
     {
       icon: FaEnvelope,
@@ -294,8 +235,8 @@ export default function Contact({ onNavigate }: ContactProps) {
     {
       icon: FaMapMarkerAlt,
       title: 'Ubicación',
-      content: 'Surco, Lima, Perú',
-      subtitle: 'Reuniones presenciales disponibles',
+      content: 'Lima, Lima, Perú',
+      subtitle: 'Reuniones virtuales disponibles',
       href: null
     },
     {
@@ -718,105 +659,7 @@ export default function Contact({ onNavigate }: ContactProps) {
         </div>
       </section>
 
-      {/* Process Section - Timeline */}
-      <section className="py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12">
-            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4 scroll-entrance">
-              Nuestro proceso de trabajo
-            </h2>
-            <p className="text-gray-600 text-xs sm:text-sm md:text-base scroll-entrance px-2">
-              Así es como trabajamos contigo para hacer realidad tu proyecto
-            </p>
-          </div>
-
-          <div className="relative">
-            {/* Línea de tiempo */}
-            <div className="hidden lg:block absolute top-8 left-1/2 transform -translate-x-1/2 w-1 h-full bg-gray-200">
-              <div 
-                className="absolute top-0 left-0 w-full bg-gray-900 transition-all duration-2000 ease-out"
-                style={{ height: `${lineProgress}%` }}
-              />
-            </div>
-
-            {/* Línea de tiempo móvil */}
-            <div className="lg:hidden absolute top-8 left-8 w-1 h-full bg-gray-200">
-              <div 
-                className="absolute top-0 left-0 w-full bg-gray-900 transition-all duration-2000 ease-out"
-                style={{ height: `${lineProgress}%` }}
-              />
-            </div>
-
-            <div className="space-y-8 lg:space-y-12">
-              {[
-                {
-                  step: "01",
-                  title: "Consulta inicial",
-                  description: "Analizamos tus necesidades y objetivos en una reunión gratuita de 30 minutos.",
-                  icon: FaHeadset
-                },
-                {
-                  step: "02", 
-                  title: "Propuesta personalizada",
-                  description: "Creamos una propuesta detallada con cronograma, presupuesto y alcance del proyecto.",
-                  icon: FaRocket
-                },
-                {
-                  step: "03",
-                  title: "Desarrollo",
-                  description: "Trabajamos en tu proyecto con comunicación constante y entregas parciales.",
-                  icon: FaCheckCircle
-                },
-                {
-                  step: "04",
-                  title: "Lanzamiento y soporte",
-                  description: "Lanzamos tu proyecto y te brindamos soporte continuo para su éxito.",
-                  icon: FaCalendar
-                }
-              ].map((process, index) => (
-                <div 
-                  key={index} 
-                  className={`relative flex items-start lg:items-center ${
-                    index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
-                  } transition-all duration-700 ease-out ${
-                    visibleSteps.includes(index) 
-                      ? 'opacity-100 translate-y-0' 
-                      : 'opacity-0 translate-y-8'
-                  }`}
-                >
-                  {/* Punto de la línea de tiempo */}
-                  <div className="relative z-10 flex-shrink-0">
-                    <div className={`w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto transition-all duration-500 ${
-                      visibleSteps.includes(index) 
-                        ? 'scale-100 opacity-100' 
-                        : 'scale-75 opacity-0'
-                    }`}>
-                      <process.icon className="text-white text-xl" />
-                    </div>
-                  </div>
-
-                  {/* Contenido del paso */}
-                  <div className={`ml-6 sm:ml-8 lg:ml-12 lg:w-1/2 ${
-                    index % 2 === 0 ? 'lg:pr-4 lg:pr-8' : 'lg:pl-4 lg:pl-8'
-                  }`}>
-                    <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                      <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                        <div className="text-xl sm:text-2xl font-bold text-gray-900">{process.step}</div>
-                        <h3 className="font-semibold text-gray-900 text-base sm:text-lg">
-                          {process.title}
-                        </h3>
-                      </div>
-                      <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-                        {process.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* FAQ Section */}
       <section className="bg-gray-50 py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20">

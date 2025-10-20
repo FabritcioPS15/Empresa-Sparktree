@@ -32,7 +32,7 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
       <section ref={rootRef as any} className="py-12 sm:py-16 md:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 reveal">Diseño de Páginas Web</h1>
-          <p className="text-gray-600 text-base sm:text-lg mb-8 reveal slide-left">Creamos sitios rápidos, accesibles y pensados para convertir.</p>
+          <p className="text-gray-600 text-base sm:text-lg mb-8 reveal slide-left">Creamos páginas web profesionales y optimizadas para SEO, adaptadas al mercado peruano, con un diseño moderno y rápido.</p>
 
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-10">
             <div className="rounded-2xl bg-white border border-gray-200 p-4 reveal scale-up">

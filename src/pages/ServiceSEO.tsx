@@ -32,7 +32,7 @@ export default function ServiceSEO({ onNavigate }: ServicePageProps) {
       <section ref={rootRef as any} className="py-12 sm:py-16 md:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 reveal">Posicionamiento SEO</h1>
-          <p className="text-gray-600 text-base sm:text-lg mb-8 reveal slide-left">Mejora tu visibilidad en Google y atrae tráfico orgánico.</p>
+          <p className="text-gray-600 text-base sm:text-lg mb-8 reveal slide-left">Nuestro servicio de SEO mejora tu visibilidad en Google y te ayuda a atraer clientes potenciales que realmente buscan tus servicios</p>
 
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-10">
             <div className="rounded-2xl bg-white border border-gray-200 p-4 reveal scale-up">

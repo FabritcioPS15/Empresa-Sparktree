@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { FaHeadset, FaRocket, FaCalendar } from 'react-icons/fa6';
+import { FaCheckCircle } from 'react-icons/fa';
 
 interface ServicesProps {
   onNavigate?: (page: string) => void;
@@ -6,6 +8,10 @@ interface ServicesProps {
 
 export default function Services({ onNavigate }: ServicesProps) {
   const servicesRef = useRef<HTMLElement>(null);
+  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
+  const [lineProgress, setLineProgress] = useState(0);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const observerOptions = {
@@ -38,6 +44,48 @@ export default function Services({ onNavigate }: ServicesProps) {
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
+    };
+  }, []);
+  
+  // Animación del proceso basada en scroll y visibilidad
+  useEffect(() => {
+    // Observa pasos individualmente
+    const stepObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const idxAttr = (entry.target as HTMLElement).getAttribute('data-step-index');
+          const idx = idxAttr ? parseInt(idxAttr, 10) : NaN;
+          if (!Number.isNaN(idx) && entry.isIntersecting) {
+            setVisibleSteps((prev) => (prev.includes(idx) ? prev : [...prev, idx]));
+            stepObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    stepRefs.current.forEach((el) => el && stepObserver.observe(el));
+
+    // Progreso de línea basado en scroll dentro de la sección
+    const updateProgress = () => {
+      if (!timelineRef.current) return;
+      const rect = timelineRef.current.getBoundingClientRect();
+      const viewportH = window.innerHeight || document.documentElement.clientHeight;
+      const total = rect.height;
+      // cuánto del contenedor ha entrado al viewport
+      const entered = Math.min(Math.max(viewportH - rect.top, 0), total);
+      const pct = total > 0 ? Math.min(Math.max((entered / total) * 100, 0), 100) : 0;
+      setLineProgress(pct);
+    };
+
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+
+    return () => {
+      stepObserver.disconnect();
+      window.removeEventListener('scroll', updateProgress as EventListener);
+      window.removeEventListener('resize', updateProgress as EventListener);
     };
   }, []);
   const services = [
@@ -100,6 +148,110 @@ export default function Services({ onNavigate }: ServicesProps) {
               </div>
             ))}
           </div>
+
+          {/* Process Section - Timeline */}
+          <section className="py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+              <div className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12">
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4 scroll-entrance">
+                  Nuestro proceso de trabajo
+                </h2>
+                <p className="text-gray-600 text-xs sm:text-sm md:text-base scroll-entrance px-2">
+                  Así es como trabajamos contigo para hacer realidad tu proyecto
+                </p>
+              </div>
+
+              <div ref={timelineRef} className="relative">
+                {/* Línea de tiempo */}
+                <div className="hidden lg:block absolute top-8 left-1/2 transform -translate-x-1/2 w-1 h-full bg-gray-200">
+                  <div 
+                    className="absolute top-0 left-0 w-full bg-gray-900 transition-all duration-2000 ease-out"
+                    style={{ height: `${lineProgress}%` }}
+                  />
+                </div>
+
+                {/* Línea de tiempo móvil */}
+                <div className="lg:hidden absolute top-8 left-8 w-1 h-full bg-gray-200">
+                  <div 
+                    className="absolute top-0 left-0 w-full bg-gray-900 transition-all duration-2000 ease-out"
+                    style={{ height: `${lineProgress}%` }}
+                  />
+                </div>
+
+                <div className="space-y-8 lg:space-y-12">
+                  {[
+                    {
+                      step: "01",
+                      title: "Consulta inicial",
+                      description: "Posterior al envío del brief, analizamos tus necesidades y objetivos en una reunión gratuita de 30 minutos.",
+                      icon: FaHeadset
+                    },
+                    {
+                      step: "02", 
+                      title: "Propuesta personalizada",
+                      description: "Creamos una propuesta detallada con cronograma, presupuesto y alcance del proyecto.",
+                      icon: FaRocket
+                    },
+                    {
+                      step: "03",
+                      title: "Desarrollo",
+                      description: "Trabajamos en tu proyecto con comunicación constante y entregas parciales.",
+                      icon: FaCheckCircle
+                    },
+                    {
+                      step: "04",
+                      title: "Lanzamiento y soporte",
+                      description: "Lanzamos tu proyecto y te brindamos soporte continuo para su éxito.",
+                      icon: FaCalendar
+                    }
+                  ].map((process, index) => (
+                    <div 
+                      key={index} 
+                      ref={(el) => {
+                        if (el) stepRefs.current[index] = el;
+                      }}
+                      data-step-index={index}
+                      className={`relative flex items-start lg:items-center ${
+                        index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+                      } transition-all duration-700 ease-out ${
+                        visibleSteps.includes(index) 
+                          ? 'opacity-100 translate-y-0' 
+                          : 'opacity-0 translate-y-8'
+                      }`}
+                    >
+                      {/* Punto de la línea de tiempo */}
+                      <div className="relative z-10 flex-shrink-0">
+                        <div className={`w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto transition-all duration-500 ${
+                          visibleSteps.includes(index) 
+                            ? 'scale-100 opacity-100' 
+                            : 'scale-75 opacity-0'
+                        }`}>
+                          <process.icon className="text-white text-xl" />
+                        </div>
+                      </div>
+
+                      {/* Contenido del paso */}
+                      <div className={`ml-6 sm:ml-8 lg:ml-12 lg:w-1/2 ${
+                        index % 2 === 0 ? 'lg:pr-4 lg:pr-8' : 'lg:pl-4 lg:pl-8'
+                      }`}>
+                        <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md focus-within:ring-2 focus-within:ring-gray-300 transition-all duration-300">
+                          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                            <div className="text-xl sm:text-2xl font-bold text-gray-900">{process.step}</div>
+                            <h3 className="font-semibold text-gray-900 text-base sm:text-lg">
+                              {process.title}
+                            </h3>
+                          </div>
+                          <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                            {process.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
 
           <div className="text-center mt-20 reveal scroll-entrance bounce-in scroll-stagger-6">
             <div className="bg-gray-50 rounded-2xl p-12 max-w-4xl mx-auto smooth-exit">
