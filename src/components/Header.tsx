@@ -153,10 +153,10 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           </button>
 
           {/* Desktop Navigation */}
-          <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-1 relative px-4 py-2 bg-gray-100 rounded-full border border-gray-200">
+          <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-2 relative px-1 py-0.5">
             {/* Animated active indicator */}
             <span
-              className={`absolute bottom-1 h-0.5 bg-gray-900 rounded-full transition-all duration-300 ease-out ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute bottom-1 h-[3px] bg-gray-900 rounded-full transition-all duration-300 ease-out ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
               style={{ left: indicatorLeft, width: indicatorWidth }}
               aria-hidden
             />
@@ -167,22 +167,28 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     <button
                       onClick={handleServicesMainClick}
                       data-nav-item={item.id}
-                      className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-l-full group ${
+                      aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
+                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-3.5 py-2 rounded-md ${
                         currentPage === item.id || currentPage.startsWith('service-')
                           ? 'text-gray-900'
                           : 'text-gray-700 hover:text-gray-900'
-                      }`}
+                      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
-                      {item.label}
+                      {currentPage === item.id || currentPage.startsWith('service-') ? (
+                        <span className="active-glow-text">{item.label}</span>
+                      ) : (
+                        item.label
+                      )}
                     </button>
                     <button
                       onClick={handleServicesClick}
                       data-nav-item="services"
-                      className={`text-sm font-medium transition-all duration-200 relative px-2 py-2 rounded-r-full group ${
+                      aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
+                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-2.5 py-2 rounded-md ${
                         currentPage === item.id || currentPage.startsWith('service-')
                           ? 'text-gray-900'
                           : 'text-gray-700 hover:text-gray-900'
-                      }`}
+                      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       <svg 
                         className={`w-3 h-3 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`} 
@@ -198,13 +204,18 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   <button
                     onClick={() => onNavigate(item.id)}
                     data-nav-item={item.id}
-                    className={`text-sm font-medium transition-all duration-200 relative px-4 py-2 rounded-full group ${
+                    aria-current={currentPage === item.id ? 'page' : undefined}
+                    className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-3.5 py-2 rounded-md ${
                       currentPage === item.id
                         ? 'text-gray-900'
                         : 'text-gray-700 hover:text-gray-900'
-                    }`}
+                    } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                   >
-                    {item.label}
+                    {currentPage === item.id ? (
+                      <span className="active-glow-text">{item.label}</span>
+                    ) : (
+                      item.label
+                    )}
                   </button>
                 )}
 
