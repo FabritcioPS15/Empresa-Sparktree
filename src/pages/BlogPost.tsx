@@ -74,7 +74,7 @@ export default function BlogPost({ slug, onBack }: BlogPostProps) {
           </button>
 
           <header className="mb-12">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               {post.title}
             </h1>
             <div className="flex items-center gap-2 text-gray-600">

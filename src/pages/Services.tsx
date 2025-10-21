@@ -110,7 +110,7 @@ export default function Services({ onNavigate }: ServicesProps) {
     <div className="pt-20">
       <section ref={servicesRef} className="py-20">
         <div className="max-w-5xl mx-auto px-6">
-          <h1 className="text-5xl font-bold text-gray-900 mb-20 leading-tight reveal scroll-entrance initial-visible">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-20 leading-tight reveal scroll-entrance initial-visible">
             <span className="inline-block scroll-stagger-1">Nuestros servicios,</span>
             <br />
             <span className="inline-block scroll-stagger-2">impulsan resultados</span>

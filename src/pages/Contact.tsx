@@ -264,7 +264,7 @@ export default function Contact({ onNavigate }: ContactProps) {
               <span className="inline-block h-2 w-2 rounded-full bg-gray-900" />
               Contacto
             </div>
-            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
               Hablemos de tu
               <span className="text-gradient"> proyecto</span>
             </h1>

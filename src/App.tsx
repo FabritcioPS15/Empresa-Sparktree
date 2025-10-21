@@ -14,6 +14,14 @@ import ProjectDetail from './pages/ProjectDetail';
 import Contact from './pages/Contact';
 import Footer from './components/Footer';
 
+// Blog article pages
+import TendenciasMarketingDigital2025 from './pages/blog/tendencias-marketing-digital-2025';
+import RedesSocialesEcommerce from './pages/blog/redes-sociales-ecommerce';
+import PosicionamientoSeoCrecimiento from './pages/blog/posicionamiento-seo-crecimiento';
+import EstrategiasContenidoRedesSociales from './pages/blog/estrategias-contenido-redes-sociales';
+import IaMarketingDigital from './pages/blog/ia-marketing-digital';
+import AumentarTasaConversion from './pages/blog/aumentar-tasa-conversion';
+
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -41,33 +49,37 @@ function App() {
     if (isExiting) return;
     
     let path = '/';
-    switch (page) {
-      case 'home':
-        path = '/';
-        break;
-      case 'blog':
-        path = '/blog';
-        break;
-      case 'portfolio':
-        path = '/portfolio';
-        break;
-      case 'services':
-        path = '/services';
-        break;
-      case 'service-web':
-        path = '/services/web';
-        break;
-      case 'service-seo':
-        path = '/services/seo';
-        break;
-      case 'service-branding':
-        path = '/services/branding';
-        break;
-      case 'contact':
-        path = '/contact';
-        break;
-      default:
-        path = '/';
+    if (page.startsWith('/')) {
+      path = page;
+    } else {
+      switch (page) {
+        case 'home':
+          path = '/';
+          break;
+        case 'blog':
+          path = '/blog';
+          break;
+        case 'portfolio':
+          path = '/portfolio';
+          break;
+        case 'services':
+          path = '/services';
+          break;
+        case 'service-web':
+          path = '/services/web';
+          break;
+        case 'service-seo':
+          path = '/services/seo';
+          break;
+        case 'service-branding':
+          path = '/services/branding';
+          break;
+        case 'contact':
+          path = '/contact';
+          break;
+        default:
+          path = '/';
+      }
     }
 
     // Para la página de contacto, navegación inmediata sin animación
@@ -147,6 +159,13 @@ function App() {
         <Routes>
           <Route path="/" element={<Home onNavigate={handleNavigate} />} />
           <Route path="/blog" element={<Blog onViewPost={handleViewPost} />} />
+          {/* Explicit blog article routes */}
+          <Route path="/blog/tendencias-marketing-digital-2025" element={<TendenciasMarketingDigital2025 />} />
+          <Route path="/blog/redes-sociales-ecommerce" element={<RedesSocialesEcommerce />} />
+          <Route path="/blog/posicionamiento-seo-crecimiento" element={<PosicionamientoSeoCrecimiento />} />
+          <Route path="/blog/estrategias-contenido-redes-sociales" element={<EstrategiasContenidoRedesSociales />} />
+          <Route path="/blog/ia-marketing-digital" element={<IaMarketingDigital />} />
+          <Route path="/blog/aumentar-tasa-conversion" element={<AumentarTasaConversion />} />
           <Route path="/blog/:slug" element={<BlogPostWrapper onBack={handleBackToBlog} />} />
           <Route path="/portfolio" element={<Portfolio onViewProject={handleViewProject} />} />
           <Route path="/portfolio/:projectId" element={<ProjectDetailWrapper onNavigate={handleNavigate} />} />

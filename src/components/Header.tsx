@@ -1,4 +1,4 @@
-import { FaWhatsapp, FaBars, FaX, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa6';
+import { FaWhatsapp, FaBars, FaX, FaInstagram, FaLinkedin, FaTiktok, FaMagnifyingGlass } from 'react-icons/fa6';
 import { useState, useEffect, useRef } from 'react';
 import AnimatedButton from './ui/AnimatedButton';
 
@@ -17,6 +17,80 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const [indicatorVisible, setIndicatorVisible] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const searchRef = useRef<HTMLDivElement | null>(null);
+  const desktopInputRef = useRef<HTMLInputElement | null>(null);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const mobileSearchRef = useRef<HTMLDivElement | null>(null);
+
+  // Simple site-wide index (pages, services, categories, posts)
+  const searchIndex = [
+    // Pages
+    { label: 'Nosotros', type: 'Página', href: 'home', keywords: 'nosotros agencia sobre nosotros' },
+    { label: 'Servicios', type: 'Página', href: 'services', keywords: 'servicios' },
+    { label: 'Portafolio', type: 'Página', href: 'portfolio', keywords: 'portafolio proyectos trabajos' },
+    { label: 'Blog', type: 'Página', href: 'blog', keywords: 'blog artículos' },
+    { label: 'Contacto', type: 'Página', href: 'contact', keywords: 'contacto consulta whatsapp email' },
+    // Services
+    { label: 'Diseño de Páginas Web', type: 'Servicio', href: 'service-web', keywords: 'web diseño paginas sitio' },
+    { label: 'Posicionamiento SEO', type: 'Servicio', href: 'service-seo', keywords: 'seo posicionamiento google' },
+    { label: 'Branding', type: 'Servicio', href: 'service-branding', keywords: 'branding identidad marca' },
+    // Blog categories (navigate to blog)
+    { label: 'Marketing', type: 'Categoría', href: 'blog', keywords: 'marketing' },
+    { label: 'SEO', type: 'Categoría', href: 'blog', keywords: 'seo' },
+    { label: 'E-commerce', type: 'Categoría', href: 'blog', keywords: 'ecommerce e-commerce' },
+    { label: 'Redes Sociales', type: 'Categoría', href: 'blog', keywords: 'redes sociales social' },
+    { label: 'Tecnología', type: 'Categoría', href: 'blog', keywords: 'tecnologia tecnología' },
+    { label: 'Conversión', type: 'Categoría', href: 'blog', keywords: 'conversion conversión optimizacion optimización' },
+    // Blog posts (recientes del listado) -> rutas directas
+    { label: 'Tendencias de Marketing Digital 2025', type: 'Artículo', href: '/blog/tendencias-marketing-digital-2025', keywords: 'marketing digital tendencias 2025' },
+    { label: '¿Cuales son las redes que más utilizan los E-commerce?', type: 'Artículo', href: '/blog/redes-sociales-ecommerce', keywords: 'ecommerce redes sociales' },
+    { label: 'Cómo aumentar la tasa de conversión de tu sitio web', type: 'Artículo', href: '/blog/aumentar-tasa-conversion', keywords: 'conversion optimizacion' },
+    { label: 'Posicionamiento SEO: El motor del crecimiento online', type: 'Artículo', href: '/blog/posicionamiento-seo-crecimiento', keywords: 'seo crecimiento' },
+    { label: 'Estrategias de contenido para redes sociales', type: 'Artículo', href: '/blog/estrategias-contenido-redes-sociales', keywords: 'contenido redes sociales' },
+    { label: 'Inteligencia Artificial en el Marketing Digital', type: 'Artículo', href: '/blog/ia-marketing-digital', keywords: 'ia inteligencia artificial' },
+  ];
+
+  const queryTokens = searchQuery
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  const filteredResults = queryTokens.length === 0
+    ? []
+    : searchIndex
+        .map((item) => {
+          const haystack = `${item.label} ${item.type} ${item.keywords}`.toLowerCase();
+          const matchesAll = queryTokens.every((t) => haystack.includes(t));
+          let score = 0;
+          if (matchesAll) {
+            queryTokens.forEach((t) => {
+              if (item.label.toLowerCase().startsWith(t)) score += 3;
+              if (item.label.toLowerCase().includes(t)) score += 2;
+              if (item.keywords.toLowerCase().includes(t)) score += 1;
+            });
+          }
+          return { item, matchesAll, score };
+        })
+        .filter((r) => r.matchesAll)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 7)
+        .map((r) => r.item);
+
+  const highlight = (text: string) => {
+    if (queryTokens.length === 0) return text;
+    const escaped = queryTokens.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    const re = new RegExp(`(${escaped.join('|')})`, 'ig');
+    const parts = text.split(re);
+    return parts.map((part, i) =>
+      re.test(part) ? (
+        <mark key={i} className="bg-yellow-100 text-gray-900 px-0.5 rounded-sm">{part}</mark>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
 
   useEffect(() => {
     const headerThreshold = () => Math.max(0, window.innerHeight - 80); // after hero (approx), adjust offset if needed
@@ -44,6 +118,39 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isServicesDropdownOpen]);
+
+  // Close search when clicking outside
+  useEffect(() => {
+    if (!isSearchOpen) return;
+    const handleOutside = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (searchRef.current && !searchRef.current.contains(target)) {
+        setIsSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [isSearchOpen]);
+
+  // Close mobile search panel when clicking outside
+  useEffect(() => {
+    if (!isMobileSearchOpen) return;
+    const handleOutside = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (mobileSearchRef.current && !mobileSearchRef.current.contains(target)) {
+        setIsMobileSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [isMobileSearchOpen]);
+
+  // Autofocus desktop input when opening search
+  useEffect(() => {
+    if (isSearchOpen) {
+      desktopInputRef.current?.focus();
+    }
+  }, [isSearchOpen]);
 
   // Sliding indicator removed for a minimal style
   // Animated sliding indicator for active desktop nav link
@@ -240,7 +347,82 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative">
+            {/* Search (desktop) */}
+            <div
+              ref={searchRef}
+              className={`hidden sm:flex items-center overflow-visible bg-white border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 border-gray-200 rounded-full transition-all duration-300 ease-out shadow-[0_2px_20px_rgba(0,0,0,0.08)] relative`}
+            >
+              <button
+                type="button"
+                aria-label="Buscar"
+                onClick={() => setIsSearchOpen((v) => !v)}
+                className="flex items-center justify-center text-gray-900 w-6 h-6"
+              >
+                <FaMagnifyingGlass size={16} />
+              </button>
+              <input
+                ref={desktopInputRef}
+                type="text"
+                placeholder="Buscar..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape') setIsSearchOpen(false);
+                  if (e.key === 'Enter' && filteredResults.length > 0) {
+                    const first = filteredResults[0];
+                    if (first.href === 'blog' && searchQuery.trim()) {
+                      const qp = new URLSearchParams(window.location.search);
+                      qp.set('q', searchQuery.trim());
+                      window.history.replaceState(null, '', `?${qp.toString()}`);
+                    } else {
+                      const qp = new URLSearchParams(window.location.search);
+                      qp.delete('q');
+                      window.history.replaceState(null, '', qp.toString() ? `?${qp.toString()}` : window.location.pathname);
+                    }
+                    onNavigate(first.href);
+                    setIsSearchOpen(false);
+                    setSearchQuery('');
+                  }
+                }}
+                className={`outline-none bg-transparent text-sm text-gray-900 font-normal transition-all duration-300 ${isSearchOpen ? 'w-full pl-3' : 'w-0 pl-0'} placeholder:text-gray-400`}
+              />
+              {/* Suggestions dropdown (desktop) */}
+              {isSearchOpen && filteredResults.length > 0 && (
+                <div className="absolute top-[110%] left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50">
+                  <ul className="max-h-80 overflow-auto">
+                    {filteredResults.map((item, idx) => (
+                      <li key={idx}>
+                        <button
+                          className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center justify-between"
+                          onClick={() => {
+                            if (item.href === 'blog' && searchQuery.trim()) {
+                              const qp = new URLSearchParams(window.location.search);
+                              qp.set('q', searchQuery.trim());
+                              window.history.replaceState(null, '', `?${qp.toString()}`);
+                            } else {
+                              const qp = new URLSearchParams(window.location.search);
+                              qp.delete('q');
+                              window.history.replaceState(null, '', qp.toString() ? `?${qp.toString()}` : window.location.pathname);
+                            }
+                            onNavigate(item.href);
+                            setIsSearchOpen(false);
+                            setSearchQuery('');
+                          }}
+                        >
+                          <span className="text-sm text-gray-900">{highlight(item.label)}</span>
+                          <span className="text-[11px] text-gray-500 ml-3">{item.type}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            {/* Mobile search trigger hidden here (moved next to menu) */}
+            <button type="button" className="hidden" aria-hidden="true">
+              <FaMagnifyingGlass size={18} />
+            </button>
             {/* Desktop CTA */}
             <AnimatedButton
               href="https://wa.me/"
@@ -251,15 +433,107 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               <FaWhatsapp size={18} />
               <span>Agenda tu consulta</span>
             </AnimatedButton>
+          </div>
+
+          {/* Mobile Actions: search + menu */}
+          <div className="lg:hidden flex items-center gap-2 relative">
+            {/* Mobile search trigger next to menu */}
+            <button
+              type="button"
+              className="p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300"
+              aria-label="Abrir búsqueda"
+              onClick={() => setIsMobileSearchOpen(true)}
+            >
+              <FaMagnifyingGlass size={18} />
+            </button>
+            {/* Mobile search dropdown anchored below icon */}
+            {isMobileSearchOpen && (
+              <div
+                ref={mobileSearchRef}
+                className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-white border border-gray-200 rounded-xl shadow-2xl p-3 z-[120]"
+              >
+                <div className="flex items-center bg-white border border-gray-200 rounded-full px-3 h-10">
+                  <FaMagnifyingGlass className="text-gray-700" size={16} />
+                  <input
+                    autoFocus
+                    type="text"
+                    placeholder="Buscar..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Escape') setIsMobileSearchOpen(false);
+                      if (e.key === 'Enter' && filteredResults.length > 0) {
+                        const first = filteredResults[0];
+                        if (first.href === 'blog' && searchQuery.trim()) {
+                          const qp = new URLSearchParams(window.location.search);
+                          qp.set('q', searchQuery.trim());
+                          window.history.replaceState(null, '', `?${qp.toString()}`);
+                        } else {
+                          const qp = new URLSearchParams(window.location.search);
+                          qp.delete('q');
+                          window.history.replaceState(null, '', qp.toString() ? `?${qp.toString()}` : window.location.pathname);
+                        }
+                        onNavigate(first.href);
+                        setIsMobileSearchOpen(false);
+                        setSearchQuery('');
+                      }
+                    }}
+                    className="flex-1 ml-2 outline-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400"
+                  />
+                  <button
+                    aria-label="Cerrar"
+                    className="ml-2 p-1.5 rounded-md hover:bg-gray-100 text-gray-600"
+                    onClick={() => setIsMobileSearchOpen(false)}
+                  >
+                    <FaX size={14} />
+                  </button>
+                </div>
+                <div className="mt-2 max-h-72 overflow-auto">
+                  {searchQuery.trim().length === 0 ? (
+                    <div className="px-2 py-3 text-sm text-gray-500">Empieza a escribir para ver resultados</div>
+                  ) : filteredResults.length === 0 ? (
+                    <div className="px-2 py-3 text-sm text-gray-500">No se encontraron resultados</div>
+                  ) : (
+                    <ul className="divide-y divide-gray-100">
+                      {filteredResults.map((item, idx) => (
+                        <li key={idx}>
+                          <button
+                            className="w-full text-left px-3 py-2.5 hover:bg-gray-50"
+                            onClick={() => {
+                              if (item.href === 'blog' && searchQuery.trim()) {
+                                const qp = new URLSearchParams(window.location.search);
+                                qp.set('q', searchQuery.trim());
+                                window.history.replaceState(null, '', `?${qp.toString()}`);
+                              } else {
+                                const qp = new URLSearchParams(window.location.search);
+                                qp.delete('q');
+                                window.history.replaceState(null, '', qp.toString() ? `?${qp.toString()}` : window.location.pathname);
+                              }
+                              onNavigate(item.href);
+                              setIsMobileSearchOpen(false);
+                              setSearchQuery('');
+                            }}
+                          >
+                            <div className="text-sm font-medium text-gray-900">{highlight(item.label)}</div>
+                            <div className="text-xs text-gray-500">{item.type}</div>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300"
+              className="p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <FaX size={22} /> : <FaBars size={22} />}
             </button>
+          </div>
           </div>
         </div>
 
@@ -452,7 +726,6 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             </div>
           </div>
         </div>
-      </div>
 
       <style>{`
         /* Estilos para asegurar que no haya transparencias no deseadas */
