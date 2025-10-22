@@ -104,6 +104,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Determinar si los navItems deben ser blancos o negros
+  const shouldNavItemsBeWhite = currentPage === 'home' && !isScrolled;
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -254,7 +257,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           {/* Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className={`font-bold text-gray-900 hover:text-gray-800 transition-colors duration-300 text-xl`}
+            className={`font-bold transition-colors duration-300 text-xl ${
+              shouldNavItemsBeWhite 
+                ? 'text-white hover:text-white' 
+                : 'text-gray-900 hover:text-gray-700'
+            }`}
           >
             Logo
           </button>
@@ -263,7 +270,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-2 relative px-1 py-0.5">
             {/* Animated active indicator */}
             <span
-              className={`absolute bottom-1 h-[3px] bg-gray-900 rounded-full transition-all duration-300 ease-out ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute bottom-1 h-[3px] rounded-full transition-all duration-300 ease-out ${
+                shouldNavItemsBeWhite ? 'bg-white' : 'bg-gray-900'
+              } ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
               style={{ left: indicatorLeft, width: indicatorWidth }}
               aria-hidden
             />
@@ -276,13 +285,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       data-nav-item={item.id}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
                       className={`text-base font-medium tracking-tight transition-colors duration-200 relative pl-3.5 pr-2.5 py-2 rounded-md ${
-                        currentPage === item.id || currentPage.startsWith('service-')
-                          ? 'text-gray-900'
-                          : 'text-gray-700 hover:text-gray-900'
+                        shouldNavItemsBeWhite
+                          ? 'text-white hover:text-white'
+                          : 'text-gray-900 hover:text-gray-700'
                       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       {currentPage === item.id || currentPage.startsWith('service-') ? (
-                        <span className="active-glow-text">{item.label}</span>
+                        <span className={shouldNavItemsBeWhite ? 'active-glow-text-white' : 'active-glow-text'}>{item.label}</span>
                       ) : (
                         item.label
                       )}
@@ -292,9 +301,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       data-nav-item="services"
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
                       className={`text-base font-medium tracking-tight transition-colors duration-200 relative -ml-1 pl-1.5 pr-2 py-2 rounded-md ${
-                        currentPage === item.id || currentPage.startsWith('service-')
-                          ? 'text-gray-900'
-                          : 'text-gray-700 hover:text-gray-900'
+                        shouldNavItemsBeWhite
+                          ? 'text-white hover:text-white'
+                          : 'text-gray-900 hover:text-gray-700'
                       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       <svg 
@@ -313,13 +322,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     data-nav-item={item.id}
                     aria-current={currentPage === item.id ? 'page' : undefined}
                     className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-3.5 py-2 rounded-md ${
-                      currentPage === item.id
-                        ? 'text-gray-900'
-                        : 'text-gray-700 hover:text-gray-900'
+                      shouldNavItemsBeWhite
+                        ? 'text-white hover:text-white'
+                        : 'text-gray-900 hover:text-gray-700'
                     } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                   >
                     {currentPage === item.id ? (
-                      <span className="active-glow-text">{item.label}</span>
+                      <span className={shouldNavItemsBeWhite ? 'active-glow-text-white' : 'active-glow-text'}>{item.label}</span>
                     ) : (
                       item.label
                     )}
@@ -351,13 +360,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {/* Search (desktop) */}
             <div
               ref={searchRef}
-              className={`hidden sm:flex items-center overflow-visible bg-white border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 border-gray-200 rounded-full transition-all duration-300 ease-out shadow-[0_2px_20px_rgba(0,0,0,0.08)] relative`}
+              className={`hidden sm:flex items-center overflow-visible  border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 border-gray-200 rounded-full transition-all duration-300 ease-out shadow-[0_2px_20px_rgba(0,0,0,0.08)] relative`}
             >
               <button
                 type="button"
                 aria-label="Buscar"
                 onClick={() => setIsSearchOpen((v) => !v)}
-                className="flex items-center justify-center text-gray-900 w-6 h-6"
+                className="flex items-center justify-center text-white w-6 h-6"
               >
                 <FaMagnifyingGlass size={16} />
               </button>
@@ -440,7 +449,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {/* Mobile search trigger next to menu */}
             <button
               type="button"
-              className="p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300"
+              className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${
+                shouldNavItemsBeWhite 
+                  ? 'text-white hover:text-white' 
+                  : 'text-gray-700 hover:text-gray-900'
+              }`}
               aria-label="Abrir búsqueda"
               onClick={() => setIsMobileSearchOpen(true)}
             >
@@ -528,7 +541,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors duration-300"
+              className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${
+                shouldNavItemsBeWhite 
+                  ? 'text-white hover:text-white' 
+                  : 'text-gray-700 hover:text-gray-900'
+              }`}
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <FaX size={22} /> : <FaBars size={22} />}

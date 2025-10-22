@@ -96,6 +96,21 @@ export default function Home({ onNavigate }: HomeProps) {
     <div className="pt-0">
       {/* Hero Section */}
       <section ref={heroRef} className={`relative overflow-hidden ${hasScrolled ? 'bg-gray-50 pt-16 sm:pt-20' : 'bg-transparent pt-0'} transition-colors duration-300 min-h-screen flex items-center`}>
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="/src/components/Assets/Final - fondo.mp4" type="video/mp4" />
+          </video>
+          {/* Overlay para mejorar legibilidad del texto */}
+          <div className="absolute inset-0 bg-black/30"></div>
+        </div>
+        
         {/* Decorative background only after scroll */}
         {hasScrolled && (
           <div className="pointer-events-none absolute inset-0 opacity-70">
@@ -104,23 +119,21 @@ export default function Home({ onNavigate }: HomeProps) {
           </div>
         )}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="flex justify-center items-center">
             {/* Copy side */}
-            <div className="lg:col-span-7 text-center lg:text-left">
+            <div className="text-center max-w-4xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 text-xs sm:text-sm mb-4 scroll-entrance initial-visible">
-                <span className="inline-block h-2 w-2 rounded-full bg-gray-900" />
-                Agencia web en Lima
+                <span className="inline-block h-2 w-2 rounded-full bg-white" />
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
-                Agencia de marketing digital en Lima que convierte visitas”
-                <span className="text-gradient"> en clientes</span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
+              Tu página web. Más ventas en Lima
+                <span className="text-gradient"></span>
               </h1>
-              <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0 scroll-entrance initial-visible slide-left">
-                Diseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.
-              </p>
+              <p className="text-sm sm:text-base md:text-lg text-white mb-6 sm:mb-8 max-w-2xl mx-auto scroll-entrance initial-visible slide-left">
+              Agencia de marketing digital en Lima que convierte visitas en clientes Diseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
 
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start scroll-entrance initial-visible bounce-in">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center scroll-entrance initial-visible bounce-in">
                 <button
                   onClick={() => onNavigate?.('services')}
                   className="px-5 sm:px-6 md:px-7 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-medium text-sm sm:text-base"
@@ -136,39 +149,23 @@ export default function Home({ onNavigate }: HomeProps) {
               </div>
 
               {/* Trust row */}
-              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-gray-600 scroll-entrance initial-visible">
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-500">★★★★★</span>
-                  <span className="text-xs sm:text-sm">4.9/5 por 120+ clientes</span>
-                </div>
-                <div className="hidden sm:block h-4 w-px bg-gray-300" />
-                <div className="flex items-center gap-3 opacity-80">
-                  <div className="h-6 w-16 bg-gray-200 rounded" />
-                  <div className="h-6 w-16 bg-gray-200 rounded" />
-                  <div className="h-6 w-16 bg-gray-200 rounded" />
-                </div>
-              </div>
-            </div>
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-white scroll-entrance initial-visible text-center">
+  <div className="flex items-center gap-2">
+    <span className="text-yellow-500">★★★★★</span>
+    <span className="text-xs sm:text-sm">4.9/5 por 120+ clientes</span>
+  </div>
+  <div className="hidden sm:block h-4 w-px bg-gray-300" />
+  <div className="flex items-center gap-3 opacity-80">
+    <div className="h-6 w-16 bg-gray-200 rounded" />
+  </div>
+</div>
 
-            {/* Visual side */}
-            <div className="lg:col-span-5">
-              <div className="relative mx-auto max-w-md lg:max-w-none scroll-entrance scale-up">
-                <div className="rounded-2xl bg-white border border-gray-200 shadow-sm p-3 sm:p-4">
-                  <div className="rounded-xl bg-gray-200 aspect-video flex items-center justify-center">
-                    <span className="text-gray-500">mockup</span>
-                  </div>
-                </div>
-                {/* Floating badge */}
-                <div className="absolute -bottom-4 -right-2 sm:-right-4 bg-gray-900 text-white text-xs sm:text-sm px-3 py-2 rounded-lg shadow-lg float-slow">
-                  +38% tasa de conversión
-                </div>
-              </div>
             </div>
           </div>
         </div>
         {/* Scroll-down indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <div className="scrolldown" style={{ ['--color' as any]: '#111827' }}>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center z-10">
+          <div className="scrolldown" style={{ ['--color' as any]: '#ffffff' }}>
             <div className="chevrons">
               <div className="chevrondown" />
               <div className="chevrondown" />

@@ -152,12 +152,22 @@
 
   @media (prefers-reduced-motion: reduce) {
     .active-glow::after { animation: none; opacity: 0; }
-    .active-glow-text { animation: none; background: none; color: inherit; }
+    .active-glow-text, .active-glow-text-white { animation: none; background: none; color: inherit; }
   }
 
   /* Text-only shimmer for active nav label */
   .active-glow-text {
     background: linear-gradient(90deg, rgba(17,24,39,0.9) 20%, rgba(17,24,39,0.4) 40%, rgba(17,24,39,0.9) 60%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: textShimmer 2.2s linear infinite;
+  }
+  
+  /* White variant for hero section */
+  .active-glow-text-white {
+    background: linear-gradient(90deg, rgba(255,255,255,0.9) 20%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0.9) 60%);
     background-size: 200% 100%;
     -webkit-background-clip: text;
     background-clip: text;
