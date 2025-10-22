@@ -1,5 +1,8 @@
-import { FaWhatsapp, FaBars, FaX, FaInstagram, FaLinkedin, FaTiktok, FaMagnifyingGlass } from 'react-icons/fa6';
+import { FaWhatsapp, FaX, FaInstagram, FaLinkedin, FaTiktok, FaMagnifyingGlass } from 'react-icons/fa6';
+import { CgMenuRight } from 'react-icons/cg';
+import { Home as HomeIcon, Wrench, Folder, FileText, Briefcase, Newspaper } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { projects as portfolioProjects } from '@/data/projects';
 import AnimatedButton from './ui/AnimatedButton';
 
 interface HeaderProps {
@@ -23,6 +26,34 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const desktopInputRef = useRef<HTMLInputElement | null>(null);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const mobileSearchRef = useRef<HTMLDivElement | null>(null);
+
+  const projectEntries = portfolioProjects.map((p) => ({
+    label: p.title,
+    type: 'Proyecto',
+    href: `/portfolio/${p.id}`,
+    keywords: `${p.client} ${p.category} ${(p.services ?? []).join(' ')} ${p.title}`
+  }));
+
+  const TypeIcon = ({ type }: { type: string }) => {
+    const common = { size: 18, strokeWidth: 2.25 } as const;
+    const icon = (() => {
+      switch (type) {
+        case 'Página':
+          return <HomeIcon {...common} className="text-white" />;
+        case 'Servicio':
+          return <Wrench {...common} className="text-white" />;
+        case 'Categoría':
+          return <Folder {...common} className="text-white" />;
+        case 'Artículo':
+          return <Newspaper {...common} className="text-white" />;
+        case 'Proyecto':
+          return <Briefcase {...common} className="text-white" />;
+        default:
+          return <FileText {...common} className="text-white" />;
+      }
+    })();
+    return <span className="inline-flex items-center justify-center w-5 h-5">{icon}</span>;
+  };
 
   // Simple site-wide index (pages, services, categories, posts)
   const searchIndex = [
@@ -50,7 +81,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { label: 'Posicionamiento SEO: El motor del crecimiento online', type: 'Artículo', href: '/blog/posicionamiento-seo-crecimiento', keywords: 'seo crecimiento' },
     { label: 'Estrategias de contenido para redes sociales', type: 'Artículo', href: '/blog/estrategias-contenido-redes-sociales', keywords: 'contenido redes sociales' },
     { label: 'Inteligencia Artificial en el Marketing Digital', type: 'Artículo', href: '/blog/ia-marketing-digital', keywords: 'ia inteligencia artificial' },
-  ];
+  ].concat(projectEntries);
 
   const queryTokens = searchQuery
     .toLowerCase()
@@ -200,6 +231,28 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     };
   }, [isMobileMenuOpen]);
 
+  // Set --app-vh to handle mobile viewport height reliably (responsive to URL bar)
+  useEffect(() => {
+    const setVh = () => {
+      const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--app-vh', `${vh}px`);
+    };
+    setVh();
+    const onResize = () => setVh();
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onResize);
+    }
+    return () => {
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', onResize);
+      }
+    };
+  }, []);
+
   const navItems = [
     { id: 'home', label: 'Nosotros' },
     { id: 'services', label: 'Servicios', hasDropdown: true },
@@ -337,12 +390,12 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
                  {/* Services Dropdown */}
                  {item.hasDropdown && isServicesDropdownOpen && (
-                   <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-black/20 backdrop-blur-md rounded-xl shadow-lg border border-white/20 py-2 z-50">
+                  <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-black/70 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/30 py-2 z-50">
                     {servicesItems.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceClick(service.id)}
-                        className={`w-full text-left px-4 py-3 hover:bg-white/10 transition-colors duration-200 ${
+                        className={`w-full text-left px-4 py-3 hover:bg-white/15 transition-colors duration-200 ${
                           currentPage === service.id ? 'bg-white/10' : ''
                         }`}
                       >
@@ -404,14 +457,30 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                 }}
                 className={`outline-none bg-transparent text-sm text-gray-900 font-normal transition-all duration-300 ${isSearchOpen ? 'w-full pl-3' : 'w-0 pl-0'} placeholder:text-gray-300`}
               />
+              {isSearchOpen && searchQuery.length > 0 && (
+                <button
+                  type="button"
+                  aria-label="Limpiar búsqueda"
+                  onClick={() => {
+                    setSearchQuery('');
+                    // mantener el foco en el input
+                    setTimeout(() => desktopInputRef.current?.focus(), 0);
+                  }}
+                  className={`ml-1 p-1 rounded-full transition-colors ${
+                    shouldNavItemsBeWhite ? 'text-white/80 hover:text-white' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <FaX size={14} />
+                </button>
+              )}
                {/* Suggestions dropdown (desktop) */}
                {isSearchOpen && filteredResults.length > 0 && (
-                 <div className="absolute top-[110%] left-0 right-0 bg-black/20 backdrop-blur-md border border-white/20 rounded-xl shadow-xl overflow-hidden z-50">
+                 <div className="absolute top-[110%] left-0 right-0 bg-black/70 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl overflow-hidden z-50">
                   <ul className="max-h-80 overflow-auto">
                     {filteredResults.map((item, idx) => (
                       <li key={idx}>
                         <button
-                          className="w-full text-left px-4 py-2.5 hover:bg-white/10 flex items-center justify-between"
+                          className="w-full text-left px-4 py-2.5 hover:bg-white/15 flex items-center justify-between gap-3"
                           onClick={() => {
                             if (item.href === 'blog' && searchQuery.trim()) {
                               const qp = new URLSearchParams(window.location.search);
@@ -427,8 +496,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                             setSearchQuery('');
                           }}
                         >
-                           <span className="text-sm text-white">{highlight(item.label)}</span>
-                           <span className="text-[11px] text-gray-300 ml-3">{item.type}</span>
+                           <span className="flex items-center gap-2 min-w-0">
+                             <TypeIcon type={item.type} />
+                             <span className="text-sm text-white truncate">{highlight(item.label)}</span>
+                           </span>
+                           <span className="text-[11px] text-gray-300 ml-3 shrink-0">{item.type}</span>
                         </button>
                       </li>
                     ))}
@@ -472,7 +544,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {isMobileSearchOpen && (
                <div
                  ref={mobileSearchRef}
-                 className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-black/20 backdrop-blur-md border border-white/20 rounded-xl shadow-2xl p-3 z-[120]"
+                 className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-black/70 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl p-3 z-[120]"
                >
                 <div className="flex items-center bg-white/10 border border-white/20 rounded-full px-3 h-10">
                   <FaMagnifyingGlass className="text-white" size={16} />
@@ -516,11 +588,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   ) : filteredResults.length === 0 ? (
                     <div className="px-2 py-3 text-sm text-gray-500">No se encontraron resultados</div>
                   ) : (
-                    <ul className="divide-y divide-gray-100">
+                    <ul className="divide-y divide-white/10">
                       {filteredResults.map((item, idx) => (
                         <li key={idx}>
                           <button
-                            className="w-full text-left px-3 py-2.5 hover:bg-gray-50"
+                            className="w-full text-left px-3 py-2.5 hover:bg-white/10"
                             onClick={() => {
                               if (item.href === 'blog' && searchQuery.trim()) {
                                 const qp = new URLSearchParams(window.location.search);
@@ -536,8 +608,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                               setSearchQuery('');
                             }}
                           >
-                            <div className="text-sm font-medium text-gray-900">{highlight(item.label)}</div>
-                            <div className="text-xs text-gray-500">{item.type}</div>
+                            <div className="flex items-center gap-2">
+                              <TypeIcon type={item.type} />
+                              <div>
+                                <div className="text-sm font-medium text-white">{highlight(item.label)}</div>
+                                <div className="text-xs text-gray-300">{item.type}</div>
+                              </div>
+                            </div>
                           </button>
                         </li>
                       ))}
@@ -557,7 +634,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               }`}
               aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? <FaX size={22} /> : <FaBars size={22} />}
+              {isMobileMenuOpen ? <FaX size={22} /> : <CgMenuRight size={22} />}
             </button>
           </div>
           </div>
@@ -568,7 +645,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           isMobileMenuOpen 
             ? 'opacity-100 pointer-events-auto' 
             : 'opacity-0 pointer-events-none'
-        }`}>
+        }`} style={{ height: '100svh', maxHeight: '100svh' }}>
           {/* Overlay */}
           <div 
             className={`absolute inset-0 transition-all duration-200 ${
@@ -580,10 +657,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           />
           
            {/* Sidebar */}
-           <div className={`absolute top-0 right-0 h-full w-80 max-w-[90vw] bg-black/20 backdrop-blur-md shadow-2xl transition-transform duration-200 z-[101] ${
-             isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-           }`}>
-            <div className="flex flex-col h-full overflow-y-auto">
+           <div
+            className={`absolute top-0 bottom-0 right-0 w-80 max-w-[90vw] bg-white shadow-2xl overflow-hidden transition-transform duration-200 z-[101] ${
+              isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}>
+            <div className="flex flex-col h-full overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]" style={{ WebkitOverflowScrolling: 'touch' }}>
               {/* Header */}
               <div className="flex items-center justify-between h-16 px-6 border-b border-white/20 bg-transparent mobile-glow">
                 <span className="font-semibold text-white text-lg">Menú</span>
@@ -620,7 +698,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                               data-nav-item="services"
                               className={`px-4 py-3 rounded-r-lg transition-all duration-200 text-base font-medium border ${
                                 currentPage === item.id || currentPage.startsWith('service-')
-                                  ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                                  ? 'bg-gray-200 text-white border-gray-900 shadow-sm mobile-glow'
                                   : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
                               }`}
                             >

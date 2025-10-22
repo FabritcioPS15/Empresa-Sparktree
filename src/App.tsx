@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
 import SmoothCursor from './components/ui/SmoothCursor';
-import Home from './pages/Home';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import Portfolio from './pages/Portfolio';
-import Services from './pages/Services';
-import ServiceWeb from './pages/ServiceWeb';
-import ServiceSEO from './pages/ServiceSEO';
-import ServiceBranding from './pages/ServiceBranding';
-import ProjectDetail from './pages/ProjectDetail';
-import Contact from './pages/Contact';
+import Home from './pages/home';
+import Blog from './pages/blog';
+import BlogPost from './pages/blog/Post';
+import Portfolio from './pages/portfolio';
+import Services from './pages/services';
+import ServiceWeb from './pages/services/Web';
+import ServiceSEO from './pages/services/SEO';
+import ServiceBranding from './pages/services/Branding';
+import ProjectDetail from './pages/portfolio/ProjectDetail';
+import Contact from './pages/contact';
 import Footer from './components/Footer';
 
 // Blog article pages
@@ -134,17 +134,7 @@ function App() {
     }, 500);
   };
 
-  const handleBackToPortfolio = () => {
-    if (isExiting) return;
-    
-    setIsExiting(true);
-    
-    setTimeout(() => {
-      navigate('/portfolio');
-      setIsExiting(false);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 500);
-  };
+  
 
   return (
     <div className="min-h-screen bg-white">

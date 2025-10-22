@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { getPostBySlug } from '../services/blogService';
-import { BlogPost as BlogPostType } from '../lib/supabase';
+import { getPostBySlug } from '../../services/blogService';
+import { BlogPost as BlogPostType } from '../../lib/supabase';
 
 interface BlogPostProps {
   slug: string;

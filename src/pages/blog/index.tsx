@@ -25,7 +25,7 @@ export default function Blog({ onViewPost }: BlogProps) {
     }, observerOptions);
 
     const timeoutId = setTimeout(() => {
-      if (blogRef.current) {
+      if  (blogRef.current) {
         const elements = blogRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
       }

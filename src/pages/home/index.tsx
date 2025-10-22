@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { projects as allProjects } from '@/data/projects';
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
 
 interface HomeProps {
@@ -66,11 +67,7 @@ export default function Home({ onNavigate }: HomeProps) {
     };
   }, []);
 
-  const projects = [
-    { id: 1, title: 'McDonals - Diseño de Página web' },
-    { id: 2, title: 'Coca Cola - Diseño de Página web' },
-    { id: 3, title: 'SparkTree - Branding' },
-  ];
+  const projects = allProjects.slice(0, 3);
 
   const services = [
     {
@@ -109,6 +106,20 @@ export default function Home({ onNavigate }: HomeProps) {
           </video>
           {/* Overlay para mejorar legibilidad del texto */}
           <div className="absolute inset-0 bg-black/30"></div>
+          <style>{`
+        @keyframes glowPulseMint {
+          0%, 100% { text-shadow: 0 0 0 rgba(16,185,129,0); }
+          60% { text-shadow: 0 0 14px rgba(110,231,183,0.9), 0 0 18px rgba(16,185,129,0.6); }
+        }
+        .glow-text {
+          text-shadow: none;
+          transition: text-shadow 200ms ease;
+        }
+        .glow-hover:hover .glow-text {
+          animation: glowPulseMint 2.2s ease-in-out infinite;
+          text-shadow: 0 0 14px rgba(110,231,183,0.75), 0 0 14px rgba(16,185,129,0.45);
+        }
+      `}</style>
         </div>
         
         {/* Decorative background only after scroll */}
@@ -131,7 +142,7 @@ export default function Home({ onNavigate }: HomeProps) {
                 <span className="text-gradient"></span>
               </h1>
               <p className="text-sm sm:text-base md:text-lg text-white mb-6 sm:mb-8 max-w-2xl mx-auto scroll-entrance initial-visible slide-left">
-              Agencia de marketing digital en Lima que convierte visitas en clientes Diseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
+              Agencia de marketing digital en Lima que convierte visitas en clientesDiseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center scroll-entrance initial-visible bounce-in">
                 <button
@@ -221,23 +232,34 @@ export default function Home({ onNavigate }: HomeProps) {
               <div
                 className={`grid lg:grid-cols-12 gap-6 sm:gap-8 md:gap-10 items-center scroll-entrance scale-up scroll-stagger-${index + 2}`}
               >
-                <div className={`${index % 2 === 0 ? 'lg:col-span-6' : 'lg:col-span-6 lg:order-2'}`}>
+                <div
+                  className={`${index % 2 === 0 ? 'lg:col-span-6' : 'lg:col-span-6 lg:order-2'}`}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget.querySelector('button');
+                    el?.setAttribute('data-force-reveal', 'true');
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget.querySelector('button');
+                    el?.removeAttribute('data-force-reveal');
+                  }}
+                >
                   <div className="mb-3 sm:mb-4">
                     <TextRevealButton
                       text={service.title}
-                      revealColor="#000000"
-                      strokeColor="#111827"
-                      className="text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-normal"
+                      revealColor="#41f0a5"
+                      strokeColor="#41f0a5"
+                      className="text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-normal font-bold"
+                      style={{ WebkitTextStroke: '0px transparent' }}
                     />
                   </div>
                   <p className="text-gray-600 leading-relaxed text-sm sm:text-base md:text-lg mb-5 sm:mb-6">
                     {service.description}
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <button onClick={() => onNavigate?.(index === 0 ? 'service-web' : index === 1 ? 'service-seo' : 'service-branding')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 hover:shadow-lg transition-colors duration-300 font-medium text-sm">
+                    <button onClick={() => onNavigate?.(index === 0 ? 'service-web' : index === 1 ? 'service-seo' : 'service-branding')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 font-medium text-sm hover-shadow-mint">
                       Ver servicio
                     </button>
-                    <button onClick={() => onNavigate?.('portfolio')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-white text-gray-900 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-300 font-medium text-sm">
+                    <button onClick={() => onNavigate?.('portfolio')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-white text-gray-900 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-300 font-medium text-sm hover-shadow-blue">
                       Ver casos →
                     </button>
                   </div>
@@ -274,14 +296,25 @@ export default function Home({ onNavigate }: HomeProps) {
             {projects.map((project, index) => (
               <div 
                 key={project.id} 
+                onClick={() => onNavigate?.(`/portfolio/${project.id}`)}
                 className={`group cursor-pointer scroll-entrance scale-up scroll-stagger-${index + 3} hover:scale-105 transition-all duration-500 smooth-exit`}
               >
-                <div className="bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] flex items-center justify-center mb-2 sm:mb-3 md:mb-4 group-hover:bg-gray-300 group-hover:shadow-lg transition-all duration-500 p-4">
-                  <span className="text-gray-500 group-hover:text-gray-700 transition-colors duration-500 text-xs sm:text-sm">
-                    imagen
-                  </span>
+                <div className="relative bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] mb-2 sm:mb-3 md:mb-4 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
+                  </div>
+                  <div
+                    className="absolute inset-x-0 bottom-0 h-2/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: `linear-gradient(to top, ${(project as any).overlayColor ?? '#A8B4FF'}, transparent)` }}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <div className="text-white drop-shadow-sm">
+                      <p className="text-base sm:text-xl md:text-2xl font-semibold leading-tight">{project.title}</p>
+                      <p className="text-xs sm:text-sm md:text-base mt-1 text-white/90">{(project as any).services?.join(' · ') ?? 'branding · diseño web'}</p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-center text-gray-900 font-medium text-xs sm:text-sm md:text-base group-hover:text-gray-700 transition-colors duration-500 px-2">
+                <h3 className="text-center text-gray-900 font-medium text-xs sm:text-sm md:text-base group-hover:text-gray-700 transition-colors duration-500">
                   {project.title}
                 </h3>
               </div>
@@ -291,9 +324,11 @@ export default function Home({ onNavigate }: HomeProps) {
           <div className="text-center">
             <button
               onClick={() => onNavigate?.('portfolio')}
-              className="text-gray-900 font-medium hover:text-gray-600 hover:scale-105 hover:shadow-lg transition-all duration-500 scroll-entrance bounce-in scroll-stagger-6 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-lg hover:bg-gray-100 smooth-exit text-xs sm:text-sm md:text-base"
+              className="glow-hover text-gray-900 font-medium transition-transform duration-300 scroll-entrance bounce-in scroll-stagger-6 px-1 py-1 smooth-exit text-xs sm:text-sm md:text-base hover:scale-105"
+              style={{ background: 'transparent' }}
             >
-              Ver más ↓
+              <span className="glow-text">Ver más</span>
+              <span className="ml-1 align-middle">↓</span>
             </button>
           </div>
         </div>

@@ -56,6 +56,11 @@
 
 /* Custom animations and utilities */
 @layer utilities {
+  /* Colored box-shadows on hover */
+  .hover-shadow-mint { transition: box-shadow 300ms ease; }
+  .hover-shadow-mint:hover { box-shadow: 0 8px 24px rgba(65, 240, 165, 0.45); }
+  .hover-shadow-blue { transition: box-shadow 300ms ease; }
+  .hover-shadow-blue:hover { box-shadow: 0 8px 24px rgba(55, 80, 240, 0.45); }
   /* Subtle scroll-down indicator */
   .scrolldown {
     --color: #111827; /* gray-900 (primary) */
