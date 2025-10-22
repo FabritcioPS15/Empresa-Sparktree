@@ -250,7 +250,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     } ${
       currentPage === 'home' && !isScrolled
         ? 'bg-transparent py-3 sm:py-4 border-b border-transparent'
-        : 'bg-white shadow-lg py-2 border-b border-gray-200'
+        : 'bg-black/20 backdrop-blur-md shadow-lg py-2 border-b border-white/20'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-16">
@@ -266,8 +266,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             Logo
           </button>
 
-          {/* Desktop Navigation */}
-          <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-2 relative px-1 py-0.5">
+          {/* Desktop Navigation LA BARRA DEL MENÚ :V PARA MOVER LA POSICION CON ML PS*/}
+          <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-2 relative px-1 py-0.5 ml-32">
             {/* Animated active indicator */}
             <span
               className={`absolute bottom-1 h-[3px] rounded-full transition-all duration-300 ease-out ${
@@ -335,19 +335,19 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   </button>
                 )}
 
-                {/* Services Dropdown */}
-                {item.hasDropdown && isServicesDropdownOpen && (
-                  <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                 {/* Services Dropdown */}
+                 {item.hasDropdown && isServicesDropdownOpen && (
+                   <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-black/20 backdrop-blur-md rounded-xl shadow-lg border border-white/20 py-2 z-50">
                     {servicesItems.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceClick(service.id)}
-                        className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors duration-200 ${
-                          currentPage === service.id ? 'bg-gray-50' : ''
+                        className={`w-full text-left px-4 py-3 hover:bg-white/10 transition-colors duration-200 ${
+                          currentPage === service.id ? 'bg-white/10' : ''
                         }`}
                       >
-                        <div className="font-medium text-gray-900 text-sm">{service.label}</div>
-                        <div className="text-xs text-gray-600 mt-1">{service.description}</div>
+                        <div className="font-medium text-white text-sm">{service.label}</div>
+                        <div className="text-xs text-gray-300 mt-1">{service.description}</div>
                       </button>
                     ))}
                   </div>
@@ -358,15 +358,23 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
           <div className="flex items-center gap-3 relative">
             {/* Search (desktop) */}
-            <div
-              ref={searchRef}
-              className={`hidden sm:flex items-center overflow-visible  border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 border-gray-200 rounded-full transition-all duration-300 ease-out shadow-[0_2px_20px_rgba(0,0,0,0.08)] relative`}
-            >
+             <div
+               ref={searchRef}
+               className={`hidden sm:flex items-center overflow-visible border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 rounded-full transition-all duration-300 ease-out shadow-[0_2px_20px_rgba(0,0,0,0.08)] relative ${
+                 shouldNavItemsBeWhite 
+                   ? 'bg-transparent border-white backdrop-blur-0' 
+                   : 'bg-black/10 border-white/60 backdrop-blur-md'
+               }`}
+             >
               <button
                 type="button"
                 aria-label="Buscar"
                 onClick={() => setIsSearchOpen((v) => !v)}
-                className="flex items-center justify-center text-white w-6 h-6"
+                className={`flex items-center justify-center w-6 h-6 ${
+                  shouldNavItemsBeWhite 
+                    ? 'text-white hover:text-white' 
+                    : 'text-gray-900 hover:text-gray-200'
+                }`}
               >
                 <FaMagnifyingGlass size={16} />
               </button>
@@ -394,16 +402,16 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     setSearchQuery('');
                   }
                 }}
-                className={`outline-none bg-transparent text-sm text-gray-900 font-normal transition-all duration-300 ${isSearchOpen ? 'w-full pl-3' : 'w-0 pl-0'} placeholder:text-gray-400`}
+                className={`outline-none bg-transparent text-sm text-gray-900 font-normal transition-all duration-300 ${isSearchOpen ? 'w-full pl-3' : 'w-0 pl-0'} placeholder:text-gray-300`}
               />
-              {/* Suggestions dropdown (desktop) */}
-              {isSearchOpen && filteredResults.length > 0 && (
-                <div className="absolute top-[110%] left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50">
+               {/* Suggestions dropdown (desktop) */}
+               {isSearchOpen && filteredResults.length > 0 && (
+                 <div className="absolute top-[110%] left-0 right-0 bg-black/20 backdrop-blur-md border border-white/20 rounded-xl shadow-xl overflow-hidden z-50">
                   <ul className="max-h-80 overflow-auto">
                     {filteredResults.map((item, idx) => (
                       <li key={idx}>
                         <button
-                          className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center justify-between"
+                          className="w-full text-left px-4 py-2.5 hover:bg-white/10 flex items-center justify-between"
                           onClick={() => {
                             if (item.href === 'blog' && searchQuery.trim()) {
                               const qp = new URLSearchParams(window.location.search);
@@ -419,8 +427,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                             setSearchQuery('');
                           }}
                         >
-                          <span className="text-sm text-gray-900">{highlight(item.label)}</span>
-                          <span className="text-[11px] text-gray-500 ml-3">{item.type}</span>
+                           <span className="text-sm text-white">{highlight(item.label)}</span>
+                           <span className="text-[11px] text-gray-300 ml-3">{item.type}</span>
                         </button>
                       </li>
                     ))}
@@ -438,6 +446,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2"
+              variant={shouldNavItemsBeWhite ? 'transparent-white' : 'default'}
             >
               <FaWhatsapp size={18} />
               <span>Agenda tu consulta</span>
@@ -461,12 +470,12 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             </button>
             {/* Mobile search dropdown anchored below icon */}
             {isMobileSearchOpen && (
-              <div
-                ref={mobileSearchRef}
-                className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-white border border-gray-200 rounded-xl shadow-2xl p-3 z-[120]"
-              >
-                <div className="flex items-center bg-white border border-gray-200 rounded-full px-3 h-10">
-                  <FaMagnifyingGlass className="text-gray-700" size={16} />
+               <div
+                 ref={mobileSearchRef}
+                 className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-black/20 backdrop-blur-md border border-white/20 rounded-xl shadow-2xl p-3 z-[120]"
+               >
+                <div className="flex items-center bg-white/10 border border-white/20 rounded-full px-3 h-10">
+                  <FaMagnifyingGlass className="text-white" size={16} />
                   <input
                     autoFocus
                     type="text"
@@ -491,11 +500,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                         setSearchQuery('');
                       }
                     }}
-                    className="flex-1 ml-2 outline-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400"
+                    className="flex-1 ml-2 outline-none bg-transparent text-sm text-white placeholder:text-gray-300"
                   />
                   <button
                     aria-label="Cerrar"
-                    className="ml-2 p-1.5 rounded-md hover:bg-gray-100 text-gray-600"
+                    className="ml-2 p-1.5 rounded-md hover:bg-white/10 text-gray-300"
                     onClick={() => setIsMobileSearchOpen(false)}
                   >
                     <FaX size={14} />
@@ -570,17 +579,17 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             onClick={() => setIsMobileMenuOpen(false)}
           />
           
-          {/* Sidebar */}
-          <div className={`absolute top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-2xl transition-transform duration-200 z-[101] ${
-            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}>
+           {/* Sidebar */}
+           <div className={`absolute top-0 right-0 h-full w-80 max-w-[90vw] bg-black/20 backdrop-blur-md shadow-2xl transition-transform duration-200 z-[101] ${
+             isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+           }`}>
             <div className="flex flex-col h-full overflow-y-auto">
               {/* Header */}
-              <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 bg-white mobile-glow">
-                <span className="font-semibold text-gray-900 text-lg">Menú</span>
+              <div className="flex items-center justify-between h-16 px-6 border-b border-white/20 bg-transparent mobile-glow">
+                <span className="font-semibold text-white text-lg">Menú</span>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                  className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
                   aria-label="Close menu"
                 >
                   <FaX size={20} />
@@ -704,6 +713,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2.5 py-3 text-base font-medium"
+                  variant="default"
                 >
                   <FaWhatsapp size={18} />
                   <span>Agenda tu consulta</span>
