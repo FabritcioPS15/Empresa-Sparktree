@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaCalendar, FaRocket, FaChevronLeft, FaChevronRight, FaPlus, FaMinus } from 'react-icons/fa6';
+import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaCalendar, FaRocket, FaChevronLeft, FaChevronRight, FaPlus, FaMinus, FaXmark } from 'react-icons/fa6';
 import { MdOutlineAlternateEmail } from "react-icons/md";
 import { FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
 
@@ -11,7 +11,7 @@ export default function Contact({ onNavigate }: ContactProps) {
   const heroRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -22,12 +22,13 @@ export default function Contact({ onNavigate }: ContactProps) {
     timeline: '',
     message: ''
   });
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [expandedFAQs, setExpandedFAQs] = useState<Set<number>>(new Set());
   const [hoverChoice, setHoverChoice] = useState<'email' | 'whatsapp' | null>(null);
+  const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
 
   const isFormValid = (
     formData.name.trim() !== '' &&
@@ -102,7 +103,7 @@ export default function Contact({ onNavigate }: ContactProps) {
         const elements = infoRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
       }
-      
+
       // Observe scroll-entrance elements
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
@@ -118,7 +119,7 @@ export default function Contact({ onNavigate }: ContactProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentCardIndex((prevIndex) => (prevIndex + 1) % 4);
-    }, 3000); // Cambia cada 3 segundos
+    }, 8000); // Cambia cada 3 segundos
 
     return () => clearInterval(interval);
   }, []);
@@ -164,10 +165,10 @@ export default function Contact({ onNavigate }: ContactProps) {
     try {
       // Simulate form submission
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Here you would typically send the data to your backend
       console.log('Form submitted:', formData);
-      
+
       setSubmitStatus('success');
       setFormData({
         name: '',
@@ -215,8 +216,6 @@ export default function Contact({ onNavigate }: ContactProps) {
     'Sin prisa'
   ];
 
-  
-
   const contactCards = [
     {
       icon: FaPhone,
@@ -244,7 +243,8 @@ export default function Contact({ onNavigate }: ContactProps) {
       title: 'Consulta gratuita',
       content: '30 minutos de asesoría sin costo',
       subtitle: 'Agenda tu cita',
-      href: null
+      href: null,
+      action: () => setIsConsultationModalOpen(true)
     }
   ];
 
@@ -295,7 +295,7 @@ export default function Contact({ onNavigate }: ContactProps) {
                     </p>
                   </div>
                 </div>
-                
+
                 <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
@@ -488,10 +488,10 @@ export default function Contact({ onNavigate }: ContactProps) {
                         className={`btn-breathe pointer-events-auto ${hoverChoice === 'email' ? 'w-7/12' : hoverChoice === 'whatsapp' ? 'w-5/12' : 'w-1/2'} inline-flex items-center justify-center gap-1 px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-300 ease-in-out text-xs sm:text-sm font-medium text-white ${hoverChoice === 'email' ? 'bg-blue-600' : 'bg-gray-900'}`}
                         aria-label="Enviar por Email"
                       >
-                       <MdOutlineAlternateEmail size={14} />
+                        <MdOutlineAlternateEmail size={14} />
                         Email
                       </a>
-                      
+
                       <a
                         href={buildWhatsAppLink()}
                         target="_blank"
@@ -525,27 +525,34 @@ export default function Contact({ onNavigate }: ContactProps) {
                 {/* Contact Cards Carrusel */}
                 <div className="relative">
                   <div className="overflow-hidden rounded-lg">
-                    <div 
+                    <div
                       className="flex transition-transform duration-500 ease-in-out"
                       style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}
                     >
                       {contactCards.map((card, index) => (
                         <div key={index} className="w-full flex-shrink-0">
-                          <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 min-h-[100px] sm:min-h-[120px]">
+                          <div className="flex flex-col items-center text-center justify-center py-8 gap-3 sm:gap-4 p-4 sm:p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 min-h-[100px] sm:min-h-[120px]">
                             <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gray-900 rounded-lg flex items-center justify-center">
                               <card.icon className="text-white text-base sm:text-lg" />
                             </div>
-                            <div className="flex-1">
+                            <div className="flex-1 w-full">
                               <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1 sm:mb-2">
                                 {card.title}
                               </h3>
                               {card.href ? (
-                                <a 
+                                <a
                                   href={card.href}
-                                  className="text-gray-600 hover:text-gray-900 transition-colors text-xs sm:text-sm md:text-base block mb-1"
+                                  className="text-gray-600 hover:text-gray-900 transition-colors text-xs sm:text-sm md:text-base block mb-1 text-center w-full"
                                 >
                                   {card.content}
                                 </a>
+                              ) : (card as any).action ? (
+                                <button
+                                  onClick={(card as any).action}
+                                  className="text-blue-600 hover:text-blue-800 transition-colors text-xs sm:text-sm md:text-base block mb-1 font-medium w-full text-center"
+                                >
+                                  {card.content}
+                                </button>
                               ) : (
                                 <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-1">
                                   {card.content}
@@ -569,16 +576,15 @@ export default function Contact({ onNavigate }: ContactProps) {
                     >
                       <FaChevronLeft className="text-gray-600 text-xs sm:text-sm" />
                     </button>
-                    
+
                     {/* Indicadores */}
                     <div className="flex gap-1.5 sm:gap-2">
                       {contactCards.map((_, index) => (
                         <button
                           key={index}
                           onClick={() => setCurrentCardIndex(index)}
-                          className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors duration-200 ${
-                            index === currentCardIndex ? 'bg-gray-900' : 'bg-gray-300'
-                          }`}
+                          className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors duration-200 ${index === currentCardIndex ? 'bg-gray-900' : 'bg-gray-300'
+                            }`}
                         />
                       ))}
                     </div>
@@ -659,8 +665,6 @@ export default function Contact({ onNavigate }: ContactProps) {
         </div>
       </section>
 
-      
-
       {/* FAQ Section */}
       <section className="bg-gray-50 py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
@@ -717,7 +721,7 @@ export default function Contact({ onNavigate }: ContactProps) {
               }
             ].map((faq, index) => {
               const isExpanded = expandedFAQs.has(index);
-              
+
               return (
                 <div key={index} className="bg-white border-b border-gray-200 last:border-b-0 scroll-entrance hover:shadow-sm transition-shadow duration-200">
                   <button
@@ -728,9 +732,8 @@ export default function Contact({ onNavigate }: ContactProps) {
                       {faq.question}
                     </h3>
                     <div className="flex-shrink-0">
-                      <div className={`transform transition-transform duration-300 ease-in-out ${
-                        isExpanded ? 'rotate-180' : 'rotate-0'
-                      }`}>
+                      <div className={`transform transition-transform duration-300 ease-in-out ${isExpanded ? 'rotate-180' : 'rotate-0'
+                        }`}>
                         {isExpanded ? (
                           <FaMinus className="text-gray-600 text-sm sm:text-base" />
                         ) : (
@@ -739,11 +742,10 @@ export default function Contact({ onNavigate }: ContactProps) {
                       </div>
                     </div>
                   </button>
-                  
-                  <div 
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                      isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-                    }`}
+
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                      }`}
                   >
                     <div className="px-4 sm:px-6 pb-4 sm:pb-5">
                       <div className="border-l-2 border-gray-200 pl-4">
@@ -779,16 +781,192 @@ export default function Contact({ onNavigate }: ContactProps) {
               <FaWhatsapp size={16} />
               Chatear por WhatsApp
             </a>
-            <a
-              href="tel:+51999999999"
-              className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-gray-900 rounded-lg hover:bg-gray-100 transition-colors duration-300 font-medium text-xs sm:text-sm md:text-base"
-            >
-              <FaPhone size={16} />
-              Llamar ahora
-            </a>
           </div>
         </div>
       </section>
+
+      {/* Consultation Modal - Fijo y centrado */}
+      {isConsultationModalOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm"
+            onClick={() => setIsConsultationModalOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Modal FIJADO en el centro de la pantalla */}
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
+            <div
+              className="relative bg-white rounded-xl shadow-2xl w-full max-w-md pointer-events-auto transform transition-all duration-300 animate-scale-in"
+              role="dialog"
+              aria-modal="true"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="border-b border-gray-100 px-6 py-4 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                    <FaCalendar size={18} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-lg">Consulta Gratuita</h3>
+                    <p className="text-gray-500 text-xs">30 minutos sin costo</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsConsultationModalOpen(false)}
+                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
+                  aria-label="Cerrar modal"
+                >
+                  <FaXmark size={20} />
+                </button>
+              </div>
+
+              {/* Contenido */}
+              <div className="p-6 max-h-[70vh] overflow-y-auto">
+                <div className="mb-4">
+                  <p className="text-gray-600 text-sm">
+                    Déjanos tus datos y te contactaremos para coordinar tu sesión de asesoría.
+                  </p>
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  setIsConsultationModalOpen(false);
+                  alert('¡Solicitud recibida! Te contactaremos para confirmar.');
+                }} className="space-y-4">
+                  {/* Nombre */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nombre completo *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                      placeholder="Tu nombre"
+                    />
+                  </div>
+
+                  {/* Email y Teléfono */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Email *
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        placeholder="tu@email.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        WhatsApp *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        placeholder="+51 999 999 999"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Fecha y Hora */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Día preferido *
+                      </label>
+                      <input
+                        type="date"
+                        required
+                        min={new Date().toISOString().split('T')[0]}
+                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Hora preferida *
+                      </label>
+                      <select
+                        required
+                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Selecciona hora</option>
+                        <option value="09:00">09:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="14:00">02:00 PM</option>
+                        <option value="15:00">03:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Servicio */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Servicio de interés *
+                    </label>
+                    <select
+                      required
+                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                      defaultValue=""
+                    >
+                      <option value="" disabled>Selecciona un servicio</option>
+                      <option value="web">Diseño Web</option>
+                      <option value="ecommerce">E-commerce</option>
+                      <option value="seo">SEO</option>
+                      <option value="branding">Branding</option>
+                      <option value="marketing">Marketing Digital</option>
+                      <option value="mobile">App Móvil</option>
+                      <option value="otro">Otro</option>
+                    </select>
+                  </div>
+
+                  {/* Mensaje */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      ¿Algo más que debamos saber? (opcional)
+                    </label>
+                    <textarea
+                      rows={3}
+                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
+                      placeholder="Breve descripción de tu proyecto..."
+                    />
+                  </div>
+
+                  {/* Botón */}
+                  <button
+                    type="submit"
+                    className="w-full bg-gray-900 text-white rounded-lg hover:bg-gray-800 active:scale-[0.98] transition-all duration-200 py-3 font-medium text-sm flex items-center justify-center gap-2 mt-2"
+                  >
+                    <FaRocket size={14} />
+                    <span>Solicitar consulta</span>
+                  </button>
+
+                  {/* Nota */}
+                  <div className="pt-4 border-t border-gray-100">
+                    <div className="flex items-start gap-2">
+                      <FaCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" size={14} />
+                      <p className="text-xs text-gray-500">
+                        <strong className="text-gray-700">Sin compromiso.</strong> Tu información es confidencial.
+                      </p>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

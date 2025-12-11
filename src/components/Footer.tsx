@@ -24,6 +24,12 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
     { label: 'TikTok', href: 'https://tiktok.com', Icon: FaTiktok },
   ];
 
+  const servicesLinks = [
+    { id: 'service-web', label: 'Diseño de Páginas Web' },
+    { id: 'service-seo', label: 'Posicionamiento SEO' },
+    { id: 'service-branding', label: 'Branding' },
+  ];
+
   function handleNewsletterSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -54,11 +60,11 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
     );
 
     elementsToReveal.forEach((el) => observer.observe(el));
-    
+
     // Observe scroll-entrance elements
     const scrollElements = document.querySelectorAll('.scroll-entrance');
     scrollElements.forEach(el => observer.observe(el));
-    
+
     const onScroll = () => {
       const y = window.scrollY || document.documentElement.scrollTop;
       setShowBackToTop(y > 240);
@@ -72,9 +78,8 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
   }, []);
 
   return (
-    <footer ref={footerRef} className={`bg-white border-t border-gray-200 relative overflow-hidden component-exit ${
-      isExiting ? 'exiting' : ''
-    }`}>
+    <footer ref={footerRef} className={`bg-white border-t border-gray-200 relative overflow-hidden component-exit ${isExiting ? 'exiting' : ''
+      }`}>
       {/* Decorative background gradient */}
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-white via-gray-50 to-white" />
       {/* Soft top wave (under shimmer) */}
@@ -88,18 +93,26 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
       </svg>
       {/* Shimmer gradient bar */}
       <div className="pointer-events-none absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gray-300 to-transparent animate-shimmer" />
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-          <div className="reveal scroll-entrance fast slide-left fast-stagger-1">
+      <div className="max-w-7xl mx-auto px-6 py-8 md:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-8 md:mb-12">
+          {/* Logo Section - Grande (Full width on mobile) */}
+          <div className="col-span-2 md:col-span-1 reveal scroll-entrance fast slide-left fast-stagger-1 flex flex-col items-center md:items-start">
+            <div className="w-24 h-24 md:w-40 md:h-40 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-50 rounded-2xl border border-gray-200 shadow-sm">
+              <span className="text-2xl md:text-4xl font-bold text-gray-900 select-none">Logo</span>
+            </div>
+          </div>
+
+          {/* Menu Section */}
+          <div className="reveal scroll-entrance fast slide-up fast-stagger-2">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 uppercase tracking-wide">Menú</h3>
             {mainLinks.map((link, index) => (
               <button
                 key={link.id}
                 onClick={() => onNavigate(link.id)}
-                className={`block mb-3 text-left transition-all duration-300 link-underline smooth-exit ${
-                  currentPage === link.id
+                className={`block mb-2 md:mb-3 text-left transition-all duration-300 link-underline smooth-exit text-sm md:text-base ${currentPage === link.id
                     ? 'text-gray-900 font-semibold scale-105'
                     : 'text-gray-700 hover:text-gray-900'
-                }`}
+                  }`}
                 style={{ transitionDelay: `${index * 60}ms` }}
               >
                 {link.label}
@@ -110,14 +123,16 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
             ))}
           </div>
 
-          <div className="reveal scroll-entrance fast slide-up fast-stagger-2">
+          {/* Social Links Section */}
+          <div className="reveal scroll-entrance fast slide-up fast-stagger-3">
+            <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 uppercase tracking-wide">Redes</h3>
             {socialLinks.map((link, index) => (
               <a
                 key={link.label}
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-3 transition-colors smooth-exit"
+                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 mb-2 md:mb-3 transition-colors smooth-exit text-sm md:text-base"
                 style={{ transitionDelay: `${index * 60}ms` }}
                 aria-label={link.label}
                 title={link.label}
@@ -128,25 +143,47 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
             ))}
           </div>
 
-          <div className="flex flex-col items-start md:items-end reveal scroll-entrance fast slide-right fast-stagger-3">
-            {/* Newsletter */}
-            <form onSubmit={handleNewsletterSubmit} className="w-full md:w-auto">
-              <div className="flex items-center gap-2">
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="Tu email"
-                  className="w-full md:w-64 px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm font-medium smooth-exit"
-                >
-                  Suscribirme
-                </button>
+          {/* Services & Newsletter (Full width on mobile) */}
+          <div className="col-span-2 md:col-span-1 reveal scroll-entrance fast slide-right fast-stagger-4">
+            <div className="mb-6 md:mb-8 grid grid-cols-2 md:grid-cols-1 gap-4 md:gap-0">
+              <div className="col-span-2 md:col-span-1">
+                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3 md:mb-4 uppercase tracking-wide">Servicios</h3>
               </div>
-            </form>
+              {servicesLinks.map((link, index) => (
+                <button
+                  key={link.id}
+                  onClick={() => onNavigate(link.id)}
+                  className={`block mb-2 md:mb-3 text-left transition-all duration-300 link-underline smooth-exit text-sm md:text-base ${currentPage === link.id
+                      ? 'text-gray-900 font-semibold scale-105'
+                      : 'text-gray-700 hover:text-gray-900'
+                    }`}
+                  style={{ transitionDelay: `${index * 60}ms` }}
+                >
+                  {link.label}
+                </button>
+              ))}
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-2 md:mb-3 uppercase tracking-wide">Suscríbete</h3>
+              <form onSubmit={handleNewsletterSubmit} className="w-full">
+                <div className="flex flex-col gap-3">
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="Tu email"
+                    className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent transition bg-gray-50 text-sm"
+                  />
+                  <button
+                    type="submit"
+                    className="w-full px-4 py-2 rounded-md bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm font-medium smooth-exit"
+                  >
+                    Suscribirme
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
 
@@ -173,7 +210,7 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
           </div>
         </div>
       </div>
-      
+
       {/* Second Footer - Copyright Section */}
       <div className="bg-gray-50 border-t border-gray-200 scroll-entrance fast slide-up fast-stagger-1">
         <div className="max-w-7xl mx-auto px-6 py-4">

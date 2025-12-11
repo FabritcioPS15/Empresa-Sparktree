@@ -29,7 +29,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
         const elements = portfolioRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
       }
-      
+
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
     }, 100);
@@ -53,7 +53,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
               Nuestro Portafolio
             </h1>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0 reveal scroll-entrance initial-visible slide-left scroll-stagger-2">
-             Portafolio de diseño web y branding: proyectos con resultados reales.
+              Portafolio de diseño web y branding: proyectos con resultados reales.
             </p>
             <style>{`
         @keyframes glowPulseMint {
@@ -69,16 +69,16 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
           </div>
 
           {/* First Grid - Special Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10 md:mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-4 md:gap-6 mb-16 sm:mb-10 md:mb-12">
             {/* First two items */}
             {portfolioProjects.slice(0, 2).map((project, index) => (
               <div
                 key={`first-${index}`}
                 onClick={() => onViewProject?.(project.id)}
-                className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-${index + 3} smooth-exit`}
+                className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-${index + 3} smooth-exit relative z-1 hover:z-10`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="relative bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] md:aspect-[4/5] mb-2 sm:mb-3 md:mb-4 overflow-hidden">
+                <div className="relative bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] md:aspect-[4/5] mb-2 sm:mb-3 md:mb-4 overflow-hidden shadow-sm">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
                   </div>
@@ -98,14 +98,14 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                 </h3>
               </div>
             ))}
-            
+
             {/* Third item - spans 2 rows on desktop */}
-            <div 
+            <div
               onClick={() => onViewProject?.(portfolioProjects[2].id)}
-              className="sm:col-span-2 lg:col-span-1 lg:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-5 smooth-exit" 
+              className="sm:col-span-2 lg:col-span-1 lg:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance scale-up scroll-stagger-5 smooth-exit relative z-1 hover:z-10"
               style={{ animationDelay: '0.2s' }}
             >
-              <div className="relative bg-gray-200 rounded-xl h-full flex items-center justify-center mb-2 sm:mb-3 md:mb-4 group-hover:bg-gray-300 transition-all duration-300 min-h-[200px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px] group-hover:shadow-lg overflow-hidden">
+              <div className="relative bg-gray-200 rounded-xl h-full flex items-center justify-center mb-2 sm:mb-3 md:mb-4 group-hover:bg-gray-300 transition-all duration-300 min-h-[300px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px] group-hover:shadow-lg overflow-hidden shadow-sm">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
                 </div>
@@ -127,14 +127,14 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
           </div>
 
           {/* Second Grid - Reversed Layout */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-8 sm:mb-10 md:mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-4 md:gap-6 mb-16 sm:mb-10 md:mb-12">
             {/* First item - spans 2 rows on desktop */}
-            <div 
+            <div
               onClick={() => onViewProject?.(portfolioProjects[3].id)}
-              className="sm:col-span-2 lg:col-span-1 lg:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-left scroll-stagger-6 smooth-exit" 
+              className="sm:col-span-2 lg:col-span-1 lg:row-span-2 group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-left scroll-stagger-6 smooth-exit relative z-1 hover:z-10"
               style={{ animationDelay: '0.3s' }}
             >
-              <div className="relative bg-gray-200 rounded-xl h-full flex items-center justify-center mb-2 sm:mb-3 md:mb-4 group-hover:bg-gray-300 transition-all duration-300 min-h-[200px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px] group-hover:shadow-lg overflow-hidden">
+              <div className="relative bg-gray-200 rounded-xl h-full flex items-center justify-center mb-2 sm:mb-3 md:mb-4 group-hover:bg-gray-300 transition-all duration-300 min-h-[300px] sm:min-h-[300px] md:min-h-[400px] lg:min-h-[500px] group-hover:shadow-lg overflow-hidden shadow-sm">
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
                 </div>
@@ -153,16 +153,16 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                 {portfolioProjects[3].title}
               </h3>
             </div>
-            
+
             {/* Last two items */}
             {portfolioProjects.slice(4, 6).map((project, index) => (
-              <div 
+              <div
                 key={`second-${index}`}
                 onClick={() => onViewProject?.(project.id)}
-                className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-right scroll-stagger-${index + 7} smooth-exit`} 
+                className={`group cursor-pointer reveal hover:scale-105 transition-all duration-300 scroll-entrance slide-right scroll-stagger-${index + 7} smooth-exit relative z-1 hover:z-10`}
                 style={{ animationDelay: `${0.4 + index * 0.1}s` }}
               >
-                <div className="relative bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] md:aspect-[4/5] mb-2 sm:mb-3 md:mb-4 overflow-hidden">
+                <div className="relative bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] md:aspect-[4/5] mb-2 sm:mb-3 md:mb-4 overflow-hidden shadow-sm">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
                   </div>
