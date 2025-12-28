@@ -73,14 +73,20 @@ export default function Home({ onNavigate }: HomeProps) {
     {
       title: 'Diseño de Páginas Web',
       description: 'Tu sitio será hermoso, rápido y, lo más importante, intuitivo. Nos enfocamos en la Experiencia del Usuario (UX) para que tus visitantes encuentren lo que necesitan sin fricción y realicen la acción que deseas',
+      image: '/Assets/sectionsimages/web_design.webp',
+      gradient: 'from-teal-300 to-sky-500',
     },
     {
       title: 'Posicionamiento SEO',
       description: 'Dejamos de depender solo de la publicidad pagada. Optimizamos tu web para que aparezca en los primeros resultados de Google cuando tus clientes busquen tus servicios o productos.',
+      image: '/Assets/sectionsimages/seo_positioning.webp',
+      gradient: 'from-green-300 to-blue-500',
     },
     {
       title: 'Branding',
       description: 'Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia.',
+      image: '/Assets/sectionsimages/branding.webp',
+      gradient: 'from-green-300 to-blue-500',
     },
   ];
 
@@ -102,7 +108,7 @@ export default function Home({ onNavigate }: HomeProps) {
             playsInline
             className="w-full h-full object-cover"
           >
-            <source src="/src/components/Assets/Final - fondo.mp4" type="video/mp4" />
+            <source src="/Final - fondo.mp4" type="video/mp4" />
           </video>
           {/* Overlay para mejorar legibilidad del texto */}
           <div className="absolute inset-0 bg-black/30"></div>
@@ -141,7 +147,7 @@ export default function Home({ onNavigate }: HomeProps) {
               Tu página web. Más ventas en Lima
                 <span className="text-gradient"></span>
               </h1>
-              <p className="text-sm sm:text-base md:text-lg text-white mb-6 sm:mb-8 max-w-2xl mx-auto scroll-entrance initial-visible slide-left">
+              <p className="text-sm sm:text-base md:text-lg text-white mb-6 sm:mb-8 max-w-2xl mx-auto scroll-entrance slide-left">
               Agencia de marketing digital en Lima que convierte visitas en clientesDiseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center scroll-entrance initial-visible bounce-in">
@@ -216,7 +222,12 @@ export default function Home({ onNavigate }: HomeProps) {
 
       {/* Services Sections (one per service) */}
       <section ref={servicesRef} className="bg-white">
-        {services.map((service, index) => (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <h2 className="text-2xl sm:text-3xl md:text-7xl font-bold text-gray-900    mb-6 text-center scroll-entrance scroll-stagger-1">
+            Nuestros servicios: Estrategia, diseño y crecimiento
+          </h2>
+      </div>        
+      {services.map((service, index) => (
           <section
             key={index}
             id={
@@ -230,23 +241,15 @@ export default function Home({ onNavigate }: HomeProps) {
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div
-                className={`grid lg:grid-cols-12 gap-6 sm:gap-8 md:gap-10 items-center scroll-entrance scale-up scroll-stagger-${index + 2}`}
+                className={`grid lg:grid-cols-12 gap-y-8 gap-x-4 md:gap-x-8 items-center scroll-entrance scale-up scroll-stagger-${index + 2}`}
               >
                 <div
-                  className={`${index % 2 === 0 ? 'lg:col-span-6' : 'lg:col-span-6 lg:order-2'}`}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget.querySelector('button');
-                    el?.setAttribute('data-force-reveal', 'true');
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget.querySelector('button');
-                    el?.removeAttribute('data-force-reveal');
-                  }}
+                  className={`${index % 2 === 0 ? 'lg:col-span-7' : 'lg:col-span-7 lg:order-2'} max-w-xl`}
                 >
                   <div className="mb-3 sm:mb-4">
                     <TextRevealButton
                       text={service.title}
-                      revealColor="#41f0a5"
+                      revealColor="#41bef0ff"
                       strokeColor="#41f0a5"
                       className="text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-normal font-bold"
                       style={{ WebkitTextStroke: '0px transparent' }}
@@ -264,11 +267,15 @@ export default function Home({ onNavigate }: HomeProps) {
                     </button>
                   </div>
                 </div>
-                <div className={`${index % 2 === 0 ? 'lg:col-span-6' : 'lg:col-span-6 lg:order-1'}`}>
-                  <div className="rounded-2xl bg-white border border-gray-200 p-3 sm:p-4 shadow-sm">
-                    <div className="rounded-xl bg-gray-200 aspect-video flex items-center justify-center">
-                      <span className="text-gray-500">imagen</span>
-                    </div>
+                <div className={`${index % 2 === 0 ? 'lg:col-span-5' : 'lg:col-span-5 lg:order-1'} flex items-center justify-center`}>
+                  <div
+                    className={`relative w-full max-w-2xl h-[300px] mx-auto p-6 bg-gradient-to-br ${service.gradient} rounded-3xl`}
+                  >
+                    <img 
+                      src={service.image} 
+                      alt={service.title} 
+                      className="w-full h-auto transform -translate-y-24 scale-132 drop-shadow-2xl" 
+                    />
                   </div>
                 </div>
               </div>
