@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { projects as allProjects } from '@/data/projects';
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
+import web_design from '@/components/Assets/sectionsimages/web_design.webp';
 
 interface HomeProps {
   onNavigate?: (page: string) => void;
@@ -73,19 +74,19 @@ export default function Home({ onNavigate }: HomeProps) {
     {
       title: 'Diseño de Páginas Web',
       description: 'Tu sitio será hermoso, rápido y, lo más importante, intuitivo. Nos enfocamos en la Experiencia del Usuario (UX) para que tus visitantes encuentren lo que necesitan sin fricción y realicen la acción que deseas',
-      image: 'src/components/Assets/sectionsimages/web_design.webp',
+      image: '/Assets/sectionsimages/web_design.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
       title: 'Posicionamiento SEO',
       description: 'Dejamos de depender solo de la publicidad pagada. Optimizamos tu web para que aparezca en los primeros resultados de Google cuando tus clientes busquen tus servicios o productos.',
-      image: 'src/components/Assets/sectionsimages/seo_positioning.webp',
+      image: '/Assets/sectionsimages/seo_positioning.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
       title: 'Branding',
       description: 'Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia.',
-      image: 'src/components/Assets/sectionsimages/branding.webp',
+      image: '/Assets/sectionsimages/branding.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
   ];
