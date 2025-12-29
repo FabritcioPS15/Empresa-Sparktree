@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { projects as allProjects } from '@/data/projects';
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
-import web_design from '@/components/Assets/sectionsimages/web_design.webp';
 
 interface HomeProps {
   onNavigate?: (page: string) => void;
@@ -109,7 +108,7 @@ export default function Home({ onNavigate }: HomeProps) {
             playsInline
             className="w-full h-full object-cover"
           >
-            <source src="/Final - fondo.mp4" type="video/mp4" />
+            <source src="/assets/fondospark.mp4" type="video/mp4" />
           </video>
           {/* Overlay para mejorar legibilidad del texto */}
           <div className="absolute inset-0 bg-black/30"></div>
