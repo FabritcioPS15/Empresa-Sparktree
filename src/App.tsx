@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { ReactLenis } from 'lenis/react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
-import SmoothCursor from './components/ui/SmoothCursor';
+
 import Home from './pages/home';
 import Blog from './pages/blog';
 import BlogPost from './pages/blog/Post';
@@ -40,7 +41,7 @@ function App() {
     if (path === '/contact') return 'contact';
     if (path.startsWith('/blog/')) return 'blog-post';
     if (path.startsWith('/portfolio/')) return 'project-detail';
-    return 'home';
+    return ''; // No page active if not matched
   };
 
   const currentPage = getCurrentPage();
@@ -137,41 +138,42 @@ function App() {
   
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Global custom cursor across the whole site */}
-      <SmoothCursor visibilityRootSelector="body" primaryColor="#111827" ringColor="rgba(107,114,128,0.18)" enableTap />
-      <Header 
-        currentPage={currentPage} 
-        onNavigate={handleNavigate} 
-        isExiting={isExiting}
-      />
-      <main className={`page-exit ${isExiting ? 'exiting' : ''}`}>
-        <Routes>
-          <Route path="/" element={<Home onNavigate={handleNavigate} />} />
-          <Route path="/blog" element={<Blog onViewPost={handleViewPost} />} />
-          {/* Explicit blog article routes */}
-          <Route path="/blog/tendencias-marketing-digital-2025" element={<TendenciasMarketingDigital2025 />} />
-          <Route path="/blog/redes-sociales-ecommerce" element={<RedesSocialesEcommerce />} />
-          <Route path="/blog/posicionamiento-seo-crecimiento" element={<PosicionamientoSeoCrecimiento />} />
-          <Route path="/blog/estrategias-contenido-redes-sociales" element={<EstrategiasContenidoRedesSociales />} />
-          <Route path="/blog/ia-marketing-digital" element={<IaMarketingDigital />} />
-          <Route path="/blog/aumentar-tasa-conversion" element={<AumentarTasaConversion />} />
-          <Route path="/blog/:slug" element={<BlogPostWrapper onBack={handleBackToBlog} />} />
-          <Route path="/portfolio" element={<Portfolio onViewProject={handleViewProject} />} />
-          <Route path="/portfolio/:projectId" element={<ProjectDetailWrapper onNavigate={handleNavigate} />} />
-          <Route path="/services" element={<Services onNavigate={handleNavigate} />} />
-          <Route path="/services/web" element={<ServiceWeb onNavigate={handleNavigate} />} />
-          <Route path="/services/seo" element={<ServiceSEO onNavigate={handleNavigate} />} />
-          <Route path="/services/branding" element={<ServiceBranding onNavigate={handleNavigate} />} />
-          <Route path="/contact" element={<Contact onNavigate={handleNavigate} />} />
-        </Routes>
-      </main>
-      <Footer 
-        onNavigate={handleNavigate} 
-        currentPage={currentPage} 
-        isExiting={isExiting}
-      />
-    </div>
+    <ReactLenis root>
+      <div className="min-h-screen bg-white">
+
+        <Header 
+          currentPage={currentPage} 
+          onNavigate={handleNavigate} 
+          isExiting={isExiting}
+        />
+        <main className={`page-exit ${isExiting ? 'exiting' : ''}`}>
+          <Routes>
+            <Route path="/" element={<Home onNavigate={handleNavigate} />} />
+            <Route path="/blog" element={<Blog onViewPost={handleViewPost} />} />
+            {/* Explicit blog article routes */}
+            <Route path="/blog/tendencias-marketing-digital-2025" element={<TendenciasMarketingDigital2025 />} />
+            <Route path="/blog/redes-sociales-ecommerce" element={<RedesSocialesEcommerce />} />
+            <Route path="/blog/posicionamiento-seo-crecimiento" element={<PosicionamientoSeoCrecimiento />} />
+            <Route path="/blog/estrategias-contenido-redes-sociales" element={<EstrategiasContenidoRedesSociales />} />
+            <Route path="/blog/ia-marketing-digital" element={<IaMarketingDigital />} />
+            <Route path="/blog/aumentar-tasa-conversion" element={<AumentarTasaConversion />} />
+            <Route path="/blog/:slug" element={<BlogPostWrapper onBack={handleBackToBlog} />} />
+            <Route path="/portfolio" element={<Portfolio onViewProject={handleViewProject} />} />
+            <Route path="/portfolio/:projectId" element={<ProjectDetailWrapper onNavigate={handleNavigate} />} />
+            <Route path="/services" element={<Services onNavigate={handleNavigate} />} />
+            <Route path="/services/web" element={<ServiceWeb onNavigate={handleNavigate} />} />
+            <Route path="/services/seo" element={<ServiceSEO onNavigate={handleNavigate} />} />
+            <Route path="/services/branding" element={<ServiceBranding onNavigate={handleNavigate} />} />
+            <Route path="/contact" element={<Contact />} />
+          </Routes>
+        </main>
+        <Footer 
+          onNavigate={handleNavigate} 
+          currentPage={currentPage} 
+          isExiting={isExiting}
+        />
+      </div>
+    </ReactLenis>
   );
 }
 

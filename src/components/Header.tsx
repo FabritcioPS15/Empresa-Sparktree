@@ -91,23 +91,23 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const filteredResults = queryTokens.length === 0
     ? []
     : searchIndex
-        .map((item) => {
-          const haystack = `${item.label} ${item.type} ${item.keywords}`.toLowerCase();
-          const matchesAll = queryTokens.every((t) => haystack.includes(t));
-          let score = 0;
-          if (matchesAll) {
-            queryTokens.forEach((t) => {
-              if (item.label.toLowerCase().startsWith(t)) score += 3;
-              if (item.label.toLowerCase().includes(t)) score += 2;
-              if (item.keywords.toLowerCase().includes(t)) score += 1;
-            });
-          }
-          return { item, matchesAll, score };
-        })
-        .filter((r) => r.matchesAll)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 7)
-        .map((r) => r.item);
+      .map((item) => {
+        const haystack = `${item.label} ${item.type} ${item.keywords}`.toLowerCase();
+        const matchesAll = queryTokens.every((t) => haystack.includes(t));
+        let score = 0;
+        if (matchesAll) {
+          queryTokens.forEach((t) => {
+            if (item.label.toLowerCase().startsWith(t)) score += 3;
+            if (item.label.toLowerCase().includes(t)) score += 2;
+            if (item.keywords.toLowerCase().includes(t)) score += 1;
+          });
+        }
+        return { item, matchesAll, score };
+      })
+      .filter((r) => r.matchesAll)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 7)
+      .map((r) => r.item);
 
   const highlight = (text: string) => {
     if (queryTokens.length === 0) return text;
@@ -124,19 +124,21 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   };
 
   useEffect(() => {
-    const headerThreshold = () => Math.max(0, window.innerHeight - 80); // after hero (approx), adjust offset if needed
     const handleScroll = () => {
       const scrollTop = window.scrollY;
-      setIsScrolled(scrollTop > headerThreshold());
+      const threshold = currentPage === 'home' ? Math.max(0, window.innerHeight - 80) : 20;
+      setIsScrolled(scrollTop > threshold);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [currentPage]);
 
   // Determinar si los navItems deben ser blancos o negros
-  const shouldNavItemsBeWhite = currentPage === 'home' && !isScrolled;
+  const isHomeTop = currentPage === 'home' && !isScrolled;
+  const isOtherTop = currentPage !== 'home' && !isScrolled;
+  const shouldNavItemsBeWhite = isHomeTop || isScrolled;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -201,8 +203,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
       }
       const navRect = navRoot.getBoundingClientRect();
       const elRect = activeEl.getBoundingClientRect();
-      const left = elRect.left - navRect.left + 8; // slight inset from button padding
-      const width = Math.max(0, elRect.width - 16); // inset on both sides
+      const left = elRect.left - navRect.left + 4; // slight inset from container
+      const width = Math.max(0, elRect.width - 8); // inset on both sides
       setIndicatorLeft(left);
       setIndicatorWidth(width);
       setIndicatorVisible(true);
@@ -225,7 +227,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -298,106 +300,103 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-      isExiting ? 'exiting' : ''
-    } ${
-      currentPage === 'home' && !isScrolled
-        ? 'bg-transparent py-3 sm:py-4 border-b border-transparent'
-        : 'bg-black/20 backdrop-blur-md shadow-lg py-2 border-b border-white/20'
-    }`}>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isExiting ? 'exiting' : ''
+      } ${isHomeTop
+        ? 'bg-transparent py-2 sm:py-3 border-b border-transparent'
+        : isOtherTop
+          ? 'bg-white py-1.5 sm:py-2 border-b border-gray-100 shadow-sm'
+          : 'bg-black/70 backdrop-blur-xl shadow-2xl py-1 border-b border-white/10'
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-16">
+        <div className="flex items-center justify-between h-14 sm:h-14">
           {/* Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className={`font-bold transition-colors duration-300 text-xl ${
-              shouldNavItemsBeWhite 
-                ? 'text-white hover:text-white' 
-                : 'text-gray-900 hover:text-gray-700'
-            }`}
+            className="transition-transform duration-300 hover:scale-105"
           >
-            Logo
+            <img 
+              src="/assets/sparktree-horizontal.png" 
+              alt="SparkTree Logo" 
+              className={`h-10 w-auto object-contain transition-all duration-300 ${
+                shouldNavItemsBeWhite ? 'brightness-0 invert' : 'brightness-0'
+              }`}
+            />
           </button>
 
           {/* Desktop Navigation LA BARRA DEL MENÚ :V PARA MOVER LA POSICION CON ML PS*/}
           <nav ref={desktopNavRef} className="hidden lg:flex items-center gap-2 relative px-1 py-0.5 ml-32">
             {/* Animated active indicator */}
             <span
-              className={`absolute bottom-1 h-[3px] rounded-full transition-all duration-300 ease-out ${
-                shouldNavItemsBeWhite ? 'bg-white' : 'bg-gray-900'
-              } ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
+              className={`absolute bottom-1 h-[3px] rounded-full transition-all duration-300 ease-out bg-[#41f0a5] shadow-[0_0_10px_rgba(65,240,165,0.8)] ${indicatorVisible ? 'opacity-100' : 'opacity-0'}`}
               style={{ left: indicatorLeft, width: indicatorWidth }}
               aria-hidden
             />
             {navItems.map((item) => (
-              <div key={item.id} className="relative">
+              <div key={item.id} className="relative" data-nav-item={item.id}>
                 {item.hasDropdown ? (
                   <div className="flex items-center">
                     <button
                       onClick={handleServicesMainClick}
-                      data-nav-item={item.id}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
-                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative pl-3.5 pr-2.5 py-2 rounded-md ${
-                        shouldNavItemsBeWhite
+                      className={`text-base font-medium tracking-tight transition-all duration-200 relative pl-3.5 pr-2 py-2 rounded-l-md ${shouldNavItemsBeWhite
                           ? 'text-white hover:text-white'
                           : 'text-gray-900 hover:text-gray-700'
-                      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
+                        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
-                      {currentPage === item.id || currentPage.startsWith('service-') ? (
-                        <span className={shouldNavItemsBeWhite ? 'active-glow-text-white' : 'active-glow-text'}>{item.label}</span>
+                      {(currentPage === item.id || currentPage.startsWith('service-')) ? (
+                        <span className={`${shouldNavItemsBeWhite ? 'text-[#41f0a5] drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]' : 'text-[#0ea161]'}`}>{item.label}</span>
                       ) : (
                         item.label
                       )}
                     </button>
                     <button
                       onClick={handleServicesClick}
-                      data-nav-item="services"
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
-                      className={`text-base font-medium tracking-tight transition-colors duration-200 relative -ml-1 pl-1.5 pr-2 py-2 rounded-md ${
-                        shouldNavItemsBeWhite
+                      className={`text-base font-medium tracking-tight transition-all duration-200 relative -ml-1 pl-1 pr-2.5 py-2 rounded-r-md ${shouldNavItemsBeWhite
                           ? 'text-white hover:text-white'
                           : 'text-gray-900 hover:text-gray-700'
-                      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
+                        } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
-                      <svg 
-                        className={`w-3 h-3 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`} 
-                        fill="none" 
-                        stroke="currentColor" 
+                      <svg
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''} ${
+                          (currentPage === item.id || currentPage.startsWith('service-')) 
+                            ? (shouldNavItemsBeWhite ? 'text-[#41f0a5] drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]' : 'text-[#0ea161]') 
+                            : ''
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                       </svg>
                     </button>
                   </div>
                 ) : (
                   <button
                     onClick={() => onNavigate(item.id)}
-                    data-nav-item={item.id}
                     aria-current={currentPage === item.id ? 'page' : undefined}
-                    className={`text-base font-medium tracking-tight transition-colors duration-200 relative px-3.5 py-2 rounded-md ${
-                      shouldNavItemsBeWhite
+                    className={`text-base font-medium tracking-tight transition-all duration-200 relative px-3.5 py-2 rounded-md ${shouldNavItemsBeWhite
                         ? 'text-white hover:text-white'
                         : 'text-gray-900 hover:text-gray-700'
-                    } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
+                      } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                   >
                     {currentPage === item.id ? (
-                      <span className={shouldNavItemsBeWhite ? 'active-glow-text-white' : 'active-glow-text'}>{item.label}</span>
+                      <span className={`${shouldNavItemsBeWhite ? 'text-[#41f0a5] drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]' : 'text-[#0ea161]'}`}>{item.label}</span>
                     ) : (
                       item.label
                     )}
                   </button>
                 )}
 
-                 {/* Services Dropdown */}
-                 {item.hasDropdown && isServicesDropdownOpen && (
+                {/* Services Dropdown */}
+                {item.hasDropdown && isServicesDropdownOpen && (
                   <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-black/70 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/30 py-2 z-50">
                     {servicesItems.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceClick(service.id)}
-                        className={`w-full text-left px-4 py-3 hover:bg-white/15 transition-colors duration-200 ${
-                          currentPage === service.id ? 'bg-white/10' : ''
-                        }`}
+                        className={`w-full text-left px-4 py-3 hover:bg-white/15 transition-colors duration-200 ${currentPage === service.id ? 'bg-white/10' : ''
+                          }`}
                       >
                         <div className="font-medium text-white text-sm">{service.label}</div>
                         <div className="text-xs text-gray-300 mt-1">{service.description}</div>
@@ -411,23 +410,15 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
           <div className="flex items-center gap-3 relative">
             {/* Search (desktop) */}
-             <div
-               ref={searchRef}
-               className={`hidden sm:flex items-center overflow-visible border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 rounded-full transition-all duration-300 ease-out shadow-[0_2px_20px_rgba(0,0,0,0.08)] relative ${
-                 shouldNavItemsBeWhite 
-                   ? 'bg-transparent border-white backdrop-blur-0' 
-                   : 'bg-black/10 border-white/60 backdrop-blur-md'
-               }`}
-             >
+            <div
+              ref={searchRef}
+              className={`hidden sm:flex items-center overflow-visible border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 rounded-full transition-all duration-300 ease-out shadow-sm relative bg-white border-gray-200`}
+            >
               <button
                 type="button"
                 aria-label="Buscar"
                 onClick={() => setIsSearchOpen((v) => !v)}
-                className={`flex items-center justify-center w-6 h-6 ${
-                  shouldNavItemsBeWhite 
-                    ? 'text-white hover:text-white' 
-                    : 'text-gray-900 hover:text-gray-200'
-                }`}
+                className="flex items-center justify-center w-6 h-6 text-gray-900 hover:text-black"
               >
                 <FaMagnifyingGlass size={16} />
               </button>
@@ -455,7 +446,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     setSearchQuery('');
                   }
                 }}
-                className={`outline-none bg-transparent text-sm text-gray-900 font-normal transition-all duration-300 ${isSearchOpen ? 'w-full pl-3' : 'w-0 pl-0'} placeholder:text-gray-300`}
+                className={`outline-none bg-transparent text-sm text-gray-900 font-normal transition-all duration-300 ${isSearchOpen ? 'w-full pl-3' : 'w-0 pl-0'} placeholder:text-gray-400`}
               />
               {isSearchOpen && searchQuery.length > 0 && (
                 <button
@@ -466,21 +457,19 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     // mantener el foco en el input
                     setTimeout(() => desktopInputRef.current?.focus(), 0);
                   }}
-                  className={`ml-1 p-1 rounded-full transition-colors ${
-                    shouldNavItemsBeWhite ? 'text-white/80 hover:text-white' : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                  className="ml-1 p-1 rounded-full transition-colors text-gray-400 hover:text-gray-600"
                 >
                   <FaX size={14} />
                 </button>
               )}
-               {/* Suggestions dropdown (desktop) */}
-               {isSearchOpen && filteredResults.length > 0 && (
-                 <div className="absolute top-[110%] left-0 right-0 bg-black/70 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl overflow-hidden z-50">
+              {/* Suggestions dropdown (desktop) */}
+              {isSearchOpen && filteredResults.length > 0 && (
+                <div className="absolute top-[110%] left-0 right-0 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden z-50">
                   <ul className="max-h-80 overflow-auto">
                     {filteredResults.map((item, idx) => (
                       <li key={idx}>
                         <button
-                          className="w-full text-left px-4 py-2.5 hover:bg-white/15 flex items-center justify-between gap-3"
+                          className="w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center justify-between gap-3"
                           onClick={() => {
                             if (item.href === 'blog' && searchQuery.trim()) {
                               const qp = new URLSearchParams(window.location.search);
@@ -496,11 +485,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                             setSearchQuery('');
                           }}
                         >
-                           <span className="flex items-center gap-2 min-w-0">
-                             <TypeIcon type={item.type} />
-                             <span className="text-sm text-white truncate">{highlight(item.label)}</span>
-                           </span>
-                           <span className="text-[11px] text-gray-300 ml-3 shrink-0">{item.type}</span>
+                          <span className="flex items-center gap-2 min-w-0">
+                            <div className="text-gray-500"><TypeIcon type={item.type} /></div>
+                            <span className="text-sm text-gray-900 truncate">{highlight(item.label)}</span>
+                          </span>
+                          <span className="text-[11px] text-gray-400 ml-3 shrink-0">{item.type}</span>
                         </button>
                       </li>
                     ))}
@@ -530,11 +519,10 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {/* Mobile search trigger next to menu */}
             <button
               type="button"
-              className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${
-                shouldNavItemsBeWhite 
-                  ? 'text-white hover:text-white' 
+              className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${shouldNavItemsBeWhite
+                  ? 'text-white hover:text-white'
                   : 'text-gray-700 hover:text-gray-900'
-              }`}
+                }`}
               aria-label="Abrir búsqueda"
               onClick={() => setIsMobileSearchOpen(true)}
             >
@@ -542,12 +530,12 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             </button>
             {/* Mobile search dropdown anchored below icon */}
             {isMobileSearchOpen && (
-               <div
-                 ref={mobileSearchRef}
-                 className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-black/70 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl p-3 z-[120]"
-               >
-                <div className="flex items-center bg-white/10 border border-white/20 rounded-full px-3 h-10">
-                  <FaMagnifyingGlass className="text-white" size={16} />
+              <div
+                ref={mobileSearchRef}
+                className="absolute right-0 top-full mt-2 w-[92vw] max-w-sm bg-white border border-gray-100 rounded-2xl shadow-xl p-3 z-[120]"
+              >
+                <div className="flex items-center bg-gray-50 border border-gray-200 rounded-full px-3 h-10">
+                  <FaMagnifyingGlass className="text-gray-500" size={16} />
                   <input
                     autoFocus
                     type="text"
@@ -572,11 +560,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                         setSearchQuery('');
                       }
                     }}
-                    className="flex-1 ml-2 outline-none bg-transparent text-sm text-white placeholder:text-gray-300"
+                    className="flex-1 ml-2 outline-none bg-transparent text-sm text-gray-900 placeholder:text-gray-400"
                   />
                   <button
                     aria-label="Cerrar"
-                    className="ml-2 p-1.5 rounded-md hover:bg-white/10 text-gray-300"
+                    className="ml-2 p-1.5 rounded-md hover:bg-gray-200 text-gray-400"
                     onClick={() => setIsMobileSearchOpen(false)}
                   >
                     <FaX size={14} />
@@ -588,11 +576,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   ) : filteredResults.length === 0 ? (
                     <div className="px-2 py-3 text-sm text-gray-500">No se encontraron resultados</div>
                   ) : (
-                    <ul className="divide-y divide-white/10">
+                    <ul className="divide-y divide-gray-100">
                       {filteredResults.map((item, idx) => (
                         <li key={idx}>
                           <button
-                            className="w-full text-left px-3 py-2.5 hover:bg-white/10"
+                            className="w-full text-left px-3 py-2.5 hover:bg-gray-50"
                             onClick={() => {
                               if (item.href === 'blog' && searchQuery.trim()) {
                                 const qp = new URLSearchParams(window.location.search);
@@ -609,10 +597,10 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                             }}
                           >
                             <div className="flex items-center gap-2">
-                              <TypeIcon type={item.type} />
+                              <div className="text-gray-500"><TypeIcon type={item.type} /></div>
                               <div>
-                                <div className="text-sm font-medium text-white">{highlight(item.label)}</div>
-                                <div className="text-xs text-gray-300">{item.type}</div>
+                                <div className="text-sm font-medium text-gray-900">{highlight(item.label)}</div>
+                                <div className="text-xs text-gray-500">{item.type}</div>
                               </div>
                             </div>
                           </button>
@@ -627,210 +615,202 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${
-                shouldNavItemsBeWhite 
-                  ? 'text-white hover:text-white' 
+              className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${shouldNavItemsBeWhite
+                  ? 'text-white hover:text-white'
                   : 'text-gray-700 hover:text-gray-900'
-              }`}
+                }`}
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <FaX size={22} /> : <CgMenuRight size={22} />}
             </button>
           </div>
-          </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        <div className={`lg:hidden fixed inset-0 z-[100] transition-all duration-150 ${
-          isMobileMenuOpen 
-            ? 'opacity-100 pointer-events-auto' 
-            : 'opacity-0 pointer-events-none'
+      {/* Mobile Navigation */}
+      <div className={`lg:hidden fixed inset-0 z-[100] transition-all duration-150 ${isMobileMenuOpen
+          ? 'opacity-100 pointer-events-auto'
+          : 'opacity-0 pointer-events-none'
         }`} style={{ height: '100svh', maxHeight: '100svh' }}>
-          {/* Overlay */}
-          <div 
-            className={`absolute inset-0 transition-all duration-200 ${
-              isMobileMenuOpen 
-                ? 'bg-black/40 backdrop-blur-md backdrop-saturate-150' 
-                : 'bg-transparent backdrop-blur-0'
+        {/* Overlay */}
+        <div
+          className={`absolute inset-0 transition-all duration-200 ${isMobileMenuOpen
+              ? 'bg-black/40 backdrop-blur-md backdrop-saturate-150'
+              : 'bg-transparent backdrop-blur-0'
             }`}
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          
-           {/* Sidebar */}
-           <div
-            className={`absolute top-0 bottom-0 right-0 w-80 max-w-[90vw] bg-white shadow-2xl overflow-hidden transition-transform duration-200 z-[101] ${
-              isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+
+        {/* Sidebar */}
+        <div
+          className={`absolute top-0 bottom-0 right-0 w-80 max-w-[90vw] bg-white shadow-2xl overflow-hidden transition-transform duration-200 z-[101] ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
             }`}>
-            <div className="flex flex-col h-full overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]" style={{ WebkitOverflowScrolling: 'touch' }}>
-              {/* Header */}
-              <div className="flex items-center justify-between h-16 px-6 border-b border-white/20 bg-transparent mobile-glow">
-                <span className="font-semibold text-white text-lg">Menú</span>
-                <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-                  aria-label="Close menu"
-                >
-                  <FaX size={20} />
-                </button>
-              </div>
+          <div className="flex flex-col h-full overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]" style={{ WebkitOverflowScrolling: 'touch' }}>
+            {/* Header */}
+            <div className="flex items-center justify-between h-16 px-6 border-b border-white/20 bg-transparent mobile-glow">
+              <span className="font-semibold text-white text-lg">Menú</span>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                aria-label="Close menu"
+              >
+                <FaX size={20} />
+              </button>
+            </div>
 
-              {/* Navigation Items */}
-              <nav className="flex-1 p-4 bg-white">
-                <div className="space-y-2">
-                  {navItems.map((item) => (
-                    <div key={item.id}>
-                      {item.hasDropdown ? (
-                        <div>
-                          <div className="flex">
-                            <button
-                              onClick={handleServicesMainClick}
-                              data-nav-item="services"
-                              className={`flex-1 text-left py-3 px-4 rounded-l-lg transition-all duration-200 text-base font-medium border border-r-0 ${
-                                currentPage === item.id || currentPage.startsWith('service-')
-                                  ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
-                                  : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+            {/* Navigation Items */}
+            <nav className="flex-1 p-4 bg-white">
+              <div className="space-y-2">
+                {navItems.map((item) => (
+                  <div key={item.id}>
+                    {item.hasDropdown ? (
+                      <div>
+                        <div className="flex">
+                          <button
+                            onClick={handleServicesMainClick}
+                            data-nav-item="services"
+                            className={`flex-1 text-left py-3 px-4 rounded-l-lg transition-all duration-200 text-base font-medium border border-r-0 ${currentPage === item.id || currentPage.startsWith('service-')
+                                ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                                : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
                               }`}
-                            >
-                              {item.label}
-                            </button>
-                            <button
-                              onClick={handleServicesClick}
-                              data-nav-item="services"
-                              className={`px-4 py-3 rounded-r-lg transition-all duration-200 text-base font-medium border ${
-                                currentPage === item.id || currentPage.startsWith('service-')
-                                  ? 'bg-gray-200 text-white border-gray-900 shadow-sm mobile-glow'
-                                  : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+                          >
+                            {item.label}
+                          </button>
+                          <button
+                            onClick={handleServicesClick}
+                            data-nav-item="services"
+                            className={`px-4 py-3 rounded-r-lg transition-all duration-200 text-base font-medium border ${currentPage === item.id || currentPage.startsWith('service-')
+                                ? 'bg-gray-200 text-white border-gray-900 shadow-sm mobile-glow'
+                                : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
                               }`}
+                          >
+                            <svg
+                              className={`w-4 h-4 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
                             >
-                              <svg 
-                                className={`w-4 h-4 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''}`} 
-                                fill="none" 
-                                stroke="currentColor" 
-                                viewBox="0 0 24 24"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                            </button>
-                          </div>
-                          
-                          {/* Mobile Services Dropdown */}
-                          {isServicesDropdownOpen && (
-                            <div className="services-dropdown mt-2 ml-4 space-y-1">
-                              {servicesItems.map((service) => (
-                                <button
-                                  key={service.id}
-                                  onClick={() => handleServiceClick(service.id)}
-                                  className={`w-full text-left py-2 px-4 rounded-lg transition-all duration-200 text-sm font-medium border ${
-                                    currentPage === service.id
-                                      ? 'bg-gray-100 text-gray-900 border-gray-300'
-                                      : 'text-gray-600 border-gray-100 hover:bg-gray-50 hover:text-gray-900'
-                                  }`}
-                                >
-                                  <div className="font-medium">{service.label}</div>
-                                  <div className="text-xs text-gray-500 mt-1">{service.description}</div>
-                                </button>
-                              ))}
-                            </div>
-                          )}
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </button>
                         </div>
-                      ) : (
-                        <button
-                          onClick={() => handleNavClick(item.id)}
-                          className={`w-full text-left py-3 px-4 rounded-lg transition-all duration-200 text-base font-medium border ${
-                            currentPage === item.id
-                              ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
-                              : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
+
+                        {/* Mobile Services Dropdown */}
+                        {isServicesDropdownOpen && (
+                          <div className="services-dropdown mt-2 ml-4 space-y-1">
+                            {servicesItems.map((service) => (
+                              <button
+                                key={service.id}
+                                onClick={() => handleServiceClick(service.id)}
+                                className={`w-full text-left py-2 px-4 rounded-lg transition-all duration-200 text-sm font-medium border ${currentPage === service.id
+                                    ? 'bg-gray-100 text-gray-900 border-gray-300'
+                                    : 'text-gray-600 border-gray-100 hover:bg-gray-50 hover:text-gray-900'
+                                  }`}
+                              >
+                                <div className="font-medium">{service.label}</div>
+                                <div className="text-xs text-gray-500 mt-1">{service.description}</div>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => handleNavClick(item.id)}
+                        className={`w-full text-left py-3 px-4 rounded-lg transition-all duration-200 text-base font-medium border ${currentPage === item.id
+                            ? 'bg-gray-900 text-white border-gray-900 shadow-sm mobile-glow'
+                            : 'text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900'
                           }`}
-                        >
-                          {item.label}
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Quick Actions removed per request (leave only main CTA below) */}
-
-                {/* Social Links */}
-                <div className="mt-8 pt-4 border-t border-gray-200">
-                  <p className="text-gray-600 font-medium mb-3 text-center text-sm">Síguenos</p>
-                  <div className="flex justify-center gap-3">
-                    <a 
-                      href="https://instagram.com" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaInstagram size={18} />
-                    </a>
-                    <a 
-                      href="https://linkedin.com" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaLinkedin size={18} />
-                    </a>
-                    <a 
-                      href="https://tiktok.com" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
-                    >
-                      <FaTiktok size={18} />
-                    </a>
+                      >
+                        {item.label}
+                      </button>
+                    )}
                   </div>
-                </div>
+                ))}
+              </div>
 
-              </nav>
+              {/* Quick Actions removed per request (leave only main CTA below) */}
 
-              {/* CTA Button */}
-              <div className="p-4 border-t border-gray-200 bg-white">
-                <AnimatedButton
-                  href="https://wa.me/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2.5 py-3 text-base font-medium"
-                  variant="default"
-                >
-                  <FaWhatsapp size={18} />
-                  <span>Agenda tu consulta</span>
-                </AnimatedButton>
-                <div className="mt-3 text-center text-xs text-gray-500">
-                  <span>Horario: Lun - Vie 9:00 - 18:00</span>
+              {/* Social Links */}
+              <div className="mt-8 pt-4 border-t border-gray-200">
+                <p className="text-gray-600 font-medium mb-3 text-center text-sm">Síguenos</p>
+                <div className="flex justify-center gap-3">
+                  <a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
+                  >
+                    <FaInstagram size={18} />
+                  </a>
+                  <a
+                    href="https://linkedin.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
+                  >
+                    <FaLinkedin size={18} />
+                  </a>
+                  <a
+                    href="https://tiktok.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 text-gray-900 hover:bg-gray-100 transition-colors duration-300 shadow-sm"
+                  >
+                    <FaTiktok size={18} />
+                  </a>
                 </div>
               </div>
 
-              {/* Información útil */}
-              <div className="px-4 py-4 border-t border-gray-200 bg-white">
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V21a1 1 0 01-1 1C10.3 22 2 13.7 2 3a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" fill="currentColor"/></svg>
-                    <a href="tel:+51999999999" className="hover:text-gray-900 transition-colors">+51 999 999 999</a>
-                  </div>
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2v.01L12 13 4 6.01V6h16zM4 18V8l8 5 8-5v10H4z" fill="currentColor"/></svg>
-                    <a href="mailto:contacto@tuempresa.com" className="hover:text-gray-900 transition-colors">contacto@tuempresa.com</a>
-                  </div>
-                  <div className="flex items-center gap-3 text-gray-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6zm0 8.5A2.5 2.5 0 1112 5a2.5 2.5 0 010 5.5z" fill="currentColor"/></svg>
-                    <span>Surco, Lima</span>
-                  </div>
-                </div>
-              </div>
+            </nav>
 
-              {/* Footer info from site (placed last) */}
-              <div className="px-4 pb-5 pt-3 border-t border-gray-200 bg-white">
-                <div className="flex justify-center items-center gap-3 text-xs text-gray-600">
-                  <a href="#" className="hover:text-gray-900 transition-colors">Política de privacidad</a>
-                  <span className="text-gray-300">•</span>
-                  <a href="#" className="hover:text-gray-900 transition-colors">Términos de servicio</a>
-                </div>
-                <p className="mt-2 text-center text-[11px] text-gray-500">© 2025 Sparktree. Todos los derechos reservados.</p>
+            {/* CTA Button */}
+            <div className="p-4 border-t border-gray-200 bg-white">
+              <AnimatedButton
+                href="https://wa.me/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2.5 py-3 text-base font-medium"
+                variant="default"
+              >
+                <FaWhatsapp size={18} />
+                <span>Agenda tu consulta</span>
+              </AnimatedButton>
+              <div className="mt-3 text-center text-xs text-gray-500">
+                <span>Horario: Lun - Vie 9:00 - 18:00</span>
               </div>
+            </div>
+
+            {/* Información útil */}
+            <div className="px-4 py-4 border-t border-gray-200 bg-white">
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-3 text-gray-700">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V21a1 1 0 01-1 1C10.3 22 2 13.7 2 3a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.24 1.01l-2.2 2.2z" fill="currentColor" /></svg>
+                  <a href="tel:+51999999999" className="hover:text-gray-900 transition-colors">+51 999 999 999</a>
+                </div>
+                <div className="flex items-center gap-3 text-gray-700">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 2v.01L12 13 4 6.01V6h16zM4 18V8l8 5 8-5v10H4z" fill="currentColor" /></svg>
+                  <a href="mailto:contacto@tuempresa.com" className="hover:text-gray-900 transition-colors">contacto@tuempresa.com</a>
+                </div>
+                <div className="flex items-center gap-3 text-gray-700">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900"><path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 14 6 14s6-8.75 6-14c0-3.314-2.686-6-6-6zm0 8.5A2.5 2.5 0 1112 5a2.5 2.5 0 010 5.5z" fill="currentColor" /></svg>
+                  <span>Surco, Lima</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer info from site (placed last) */}
+            <div className="px-4 pb-5 pt-3 border-t border-gray-200 bg-white">
+              <div className="flex justify-center items-center gap-3 text-xs text-gray-600">
+                <a href="#" className="hover:text-gray-900 transition-colors">Política de privacidad</a>
+                <span className="text-gray-300">•</span>
+                <a href="#" className="hover:text-gray-900 transition-colors">Términos de servicio</a>
+              </div>
+              <p className="mt-2 text-center text-[11px] text-gray-500">© 2025 Sparktree. Todos los derechos reservados.</p>
             </div>
           </div>
         </div>
+      </div>
 
       <style>{`
         /* Estilos para asegurar que no haya transparencias no deseadas */

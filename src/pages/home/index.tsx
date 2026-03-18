@@ -54,7 +54,7 @@ export default function Home({ onNavigate }: HomeProps) {
         const elements = teamRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
       }
-      
+
       // Observe scroll-entrance elements
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
@@ -127,7 +127,7 @@ export default function Home({ onNavigate }: HomeProps) {
         }
       `}</style>
         </div>
-        
+
         {/* Decorative background only after scroll */}
         {hasScrolled && (
           <div className="pointer-events-none absolute inset-0 opacity-70">
@@ -143,12 +143,12 @@ export default function Home({ onNavigate }: HomeProps) {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 text-xs sm:text-sm mb-4 scroll-entrance initial-visible">
                 <span className="inline-block h-2 w-2 rounded-full bg-white" />
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
-              Tu página web. Más ventas en Lima
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-3 sm:mb-4">
+                Tu página web. Más ventas en Lima
                 <span className="text-gradient"></span>
               </h1>
               <p className="text-sm sm:text-base md:text-lg text-white mb-6 sm:mb-8 max-w-2xl mx-auto scroll-entrance slide-left">
-              Agencia de marketing digital en Lima que convierte visitas en clientesDiseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
+                Agencia de marketing digital en Lima que convierte visitas en clientesDiseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center scroll-entrance initial-visible bounce-in">
                 <button
@@ -166,16 +166,16 @@ export default function Home({ onNavigate }: HomeProps) {
               </div>
 
               {/* Trust row */}
-            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-white scroll-entrance initial-visible text-center">
-  <div className="flex items-center gap-2">
-    <span className="text-yellow-500">★★★★★</span>
-    <span className="text-xs sm:text-sm">4.9/5 por 120+ clientes</span>
-  </div>
-  <div className="hidden sm:block h-4 w-px bg-gray-300" />
-  <div className="flex items-center gap-3 opacity-80">
-    <div className="h-6 w-16 bg-gray-200 rounded" />
-  </div>
-</div>
+              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-white scroll-entrance initial-visible text-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-500">★★★★★</span>
+                  <span className="text-xs sm:text-sm">4.9/5 por 120+ clientes</span>
+                </div>
+                <div className="hidden sm:block h-4 w-px bg-gray-300" />
+                <div className="flex items-center gap-3 opacity-80">
+                  <div className="h-6 w-16 bg-gray-200 rounded" />
+                </div>
+              </div>
 
             </div>
           </div>
@@ -226,16 +226,16 @@ export default function Home({ onNavigate }: HomeProps) {
           <h2 className="text-2xl sm:text-3xl md:text-7xl font-bold text-gray-900    mb-6 text-center scroll-entrance scroll-stagger-1">
             Nuestros servicios: Estrategia, diseño y crecimiento
           </h2>
-      </div>        
-      {services.map((service, index) => (
+        </div>
+        {services.map((service, index) => (
           <section
             key={index}
             id={
               index === 0
                 ? 'service-diseno'
                 : index === 1
-                ? 'service-seo'
-                : 'service-branding'
+                  ? 'service-seo'
+                  : 'service-branding'
             }
             className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} py-10 sm:py-12 md:py-16 lg:py-20`}
           >
@@ -271,10 +271,10 @@ export default function Home({ onNavigate }: HomeProps) {
                   <div
                     className={`relative w-full max-w-2xl h-[300px] mx-auto p-6 bg-gradient-to-br ${service.gradient} rounded-3xl`}
                   >
-                    <img 
-                      src={service.image} 
-                      alt={service.title} 
-                      className="w-full h-auto transform -translate-y-24 scale-132 drop-shadow-2xl" 
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="w-full h-auto transform -translate-y-24 scale-132 drop-shadow-2xl"
                     />
                   </div>
                 </div>
@@ -301,8 +301,8 @@ export default function Home({ onNavigate }: HomeProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-10 lg:mt-12 mb-6 sm:mb-8">
             {projects.map((project, index) => (
-              <div 
-                key={project.id} 
+              <div
+                key={project.id}
                 onClick={() => onNavigate?.(`/portfolio/${project.id}`)}
                 className={`group cursor-pointer scroll-entrance scale-up scroll-stagger-${index + 3} hover:scale-105 transition-all duration-500 smooth-exit`}
               >
@@ -356,8 +356,8 @@ export default function Home({ onNavigate }: HomeProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto mb-8 sm:mb-10 md:mb-12">
             {team.map((member, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`bg-gray-100 rounded-2xl p-6 sm:p-8 md:p-10 lg:p-12 text-center scroll-entrance scale-up scroll-stagger-${index + 3} hover:bg-gray-200 hover:scale-105 hover:shadow-xl transition-all duration-500 cursor-default group smooth-exit`}
               >
                 <div className="bg-gray-200 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full mx-auto mb-4 sm:mb-5 md:mb-6 group-hover:bg-gray-300 group-hover:scale-105 transition-all duration-500"></div>

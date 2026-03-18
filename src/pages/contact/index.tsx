@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaCalendar, FaRocket, FaChevronLeft, FaChevronRight, FaPlus, FaMinus, FaXmark } from 'react-icons/fa6';
+import { FaWhatsapp, FaPhone, FaEnvelope, FaInstagram, FaLinkedin, FaTiktok, FaCalendar, FaRocket, FaPlus, FaMinus, FaXmark } from 'react-icons/fa6';
 import { MdOutlineAlternateEmail } from "react-icons/md";
 import { FaMapMarkerAlt, FaCheckCircle } from 'react-icons/fa';
+import PageBanner from '@/components/ui/PageBanner';
 
 interface ContactProps {
-  onNavigate?: (page: string) => void;
 }
 
-export default function Contact({ onNavigate }: ContactProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
+export default function Contact({ }: ContactProps) {
   const formRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
 
@@ -25,10 +24,13 @@ export default function Contact({ onNavigate }: ContactProps) {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [expandedFAQs, setExpandedFAQs] = useState<Set<number>>(new Set());
-  const [hoverChoice, setHoverChoice] = useState<'email' | 'whatsapp' | null>(null);
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
+
+  const breadcrumbs = [
+    { label: 'Inicio', path: '/' },
+    { label: 'Contacto' }
+  ];
 
   const isFormValid = (
     formData.name.trim() !== '' &&
@@ -90,11 +92,6 @@ export default function Contact({ onNavigate }: ContactProps) {
     }, observerOptions);
 
     const timeoutId = setTimeout(() => {
-      // Observe reveal elements
-      if (heroRef.current) {
-        const elements = heroRef.current.querySelectorAll('.reveal');
-        elements.forEach(el => observer.observe(el));
-      }
       if (formRef.current) {
         const elements = formRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
@@ -104,7 +101,6 @@ export default function Contact({ onNavigate }: ContactProps) {
         elements.forEach(el => observer.observe(el));
       }
 
-      // Observe scroll-entrance elements
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
     }, 100);
@@ -115,16 +111,6 @@ export default function Contact({ onNavigate }: ContactProps) {
     };
   }, []);
 
-  // Carrusel automático
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentCardIndex((prevIndex) => (prevIndex + 1) % 4);
-    }, 8000); // Cambia cada 3 segundos
-
-    return () => clearInterval(interval);
-  }, []);
-
-  //
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -147,12 +133,9 @@ export default function Contact({ onNavigate }: ContactProps) {
   };
 
   const toggleAllFAQs = () => {
-    const totalFAQs = 6; // Número total de preguntas
-    if (expandedFAQs.size === totalFAQs) {
-      // Si todas están abiertas, cerrar todas
+    if (expandedFAQs.size === 6) {
       setExpandedFAQs(new Set());
     } else {
-      // Si no todas están abiertas, abrir todas
       setExpandedFAQs(new Set([0, 1, 2, 3, 4, 5]));
     }
   };
@@ -163,22 +146,10 @@ export default function Contact({ onNavigate }: ContactProps) {
     setSubmitStatus('idle');
 
     try {
-      // Simulate form submission
       await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Here you would typically send the data to your backend
-      console.log('Form submitted:', formData);
-
       setSubmitStatus('success');
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        service: '',
-        budget: '',
-        timeline: '',
-        message: ''
+        name: '', email: '', phone: '', company: '', service: '', budget: '', timeline: '', message: ''
       });
     } catch (error) {
       setSubmitStatus('error');
@@ -187,478 +158,207 @@ export default function Contact({ onNavigate }: ContactProps) {
     }
   };
 
-  const services = [
-    'Diseño de Páginas Web',
-    'Posicionamiento SEO',
-    'Branding',
-    'E-commerce',
-    'Aplicaciones Móviles',
-    'Consultoría Digital',
-    'Marketing Digital',
-    'Mantenimiento Web',
-    'Otro'
+  const servicesList = [
+    'Diseño de Páginas Web', 'Posicionamiento SEO', 'Branding', 'E-commerce', 
+    'Aplicaciones Móviles', 'Consultoría Digital', 'Marketing Digital', 
+    'Mantenimiento Web', 'Otro'
   ];
 
   const budgets = [
-    'Menos de $1,000',
-    '$1,000 - $3,000',
-    '$3,000 - $5,000',
-    '$5,000 - $10,000',
-    'Más de $10,000',
-    'Por definir'
+    'Menos de $1,000', '$1,000 - $3,000', '$3,000 - $5,000', 
+    '$5,000 - $10,000', 'Más de $10,000', 'Por definir'
   ];
 
-  const timelines = [
-    'Urgente (1-2 semanas)',
-    'Rápido (2-4 semanas)',
-    'Normal (1-2 meses)',
-    'Flexible (2-3 meses)',
-    'Sin prisa'
-  ];
 
   const contactCards = [
     {
-      icon: FaPhone,
-      title: 'Teléfono',
-      content: '+51 958 077 827',
-      subtitle: 'Lun-Vie 9:00-18:00',
-      href: 'tel:+51958077827'
+      icon: FaPhone, title: 'Teléfono', content: '+51 958 077 827',
+      subtitle: 'Lun-Vie 9:00-18:00', href: 'tel:+51958077827'
     },
     {
-      icon: FaEnvelope,
-      title: 'Email',
-      content: 'contacto@sparktree.com',
-      subtitle: 'Respuesta en 24 horas',
-      href: 'mailto:contacto@sparktree.com'
+      icon: FaEnvelope, title: 'Email', content: 'contacto@sparktree.com',
+      subtitle: 'Respuesta en 24 horas', href: 'mailto:contacto@sparktree.com'
     },
     {
-      icon: FaMapMarkerAlt,
-      title: 'Ubicación',
-      content: 'Lima, Lima, Perú',
-      subtitle: 'Reuniones virtuales disponibles',
-      href: null
+      icon: FaMapMarkerAlt, title: 'Ubicación', content: 'Lima, Lima, Perú',
+      subtitle: 'Reuniones virtuales disponibles', href: null
     },
     {
-      icon: FaCalendar,
-      title: 'Consulta gratuita',
-      content: '30 minutos de asesoría sin costo',
-      subtitle: 'Agenda tu cita',
-      href: null,
-      action: () => setIsConsultationModalOpen(true)
+      icon: FaCalendar, title: 'Consulta gratuita', content: '30 min de asesoría',
+      subtitle: 'Agenda tu cita', href: null, action: () => setIsConsultationModalOpen(true)
     }
   ];
 
   return (
-    <div className="pt-16 sm:pt-20">
-      {/* Hero Section */}
-      <section ref={heroRef} className="relative overflow-hidden bg-gray-50 py-8 sm:py-12 md:py-16 lg:py-20 xl:py-24">
-        {/* Decorative background */}
-        <div className="pointer-events-none absolute inset-0 opacity-70">
-          <div className="absolute -top-12 sm:-top-24 -right-12 sm:-right-24 h-48 w-48 sm:h-72 sm:w-72 rounded-full bg-gradient-to-br from-gray-200 to-white blur-3xl" />
-          <div className="absolute -bottom-12 sm:-bottom-24 -left-12 sm:-left-24 h-48 w-48 sm:h-72 sm:w-72 rounded-full bg-gradient-to-tr from-gray-200 to-white blur-3xl" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 text-xs sm:text-sm mb-3 sm:mb-4 scroll-entrance initial-visible">
-              <span className="inline-block h-2 w-2 rounded-full bg-gray-900" />
-              Contacto
-            </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-3 sm:mb-4 scroll-entrance initial-visible">
-              Hablemos de tu
-              <span className="text-gradient"> proyecto</span>
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6 md:mb-8 max-w-2xl mx-auto px-2 scroll-entrance initial-visible slide-left">
-              Cuéntanos sobre tu idea y te ayudaremos a hacerla realidad. Estamos aquí para escucharte y ofrecerte la mejor solución.
-            </p>
-          </div>
-        </div>
-      </section>
+    <div className="pt-[72px]">
+      <PageBanner 
+        title="Hablemos de tu proyecto" 
+        subtitle="Cuéntanos sobre tu idea y te ayudaremos a hacerla realidad. Estamos aquí para escucharte."
+        breadcrumbs={breadcrumbs}
+      />
 
       {/* Contact Form & Info Section */}
-      <section className="py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
+      <section className="py-12 md:py-20 lg:py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
             {/* Contact Form */}
-            <div ref={formRef} className="scroll-entrance slide-left order-2 lg:order-1">
-              <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-6 md:p-8 shadow-lg">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
-                  <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <FaRocket className="text-white text-lg" />
+            <div ref={formRef} className="scroll-entrance slide-left">
+              <div className="bg-white rounded-[2.5rem] border border-gray-100 p-8 sm:p-10 shadow-2xl shadow-gray-200/50">
+                <div className="flex items-center gap-4 mb-10">
+                  <div className="w-14 h-14 bg-gray-950 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/10">
+                    <FaRocket className="text-[#41f0a5] text-2xl" />
                   </div>
                   <div>
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
-                      Cuéntanos tu proyecto
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                      Inicia tu transformación
                     </h2>
-                    <p className="text-gray-600 text-xs sm:text-sm">
-                      Completa el formulario y te contactaremos en menos de 24 horas
+                    <p className="text-gray-500 text-sm mt-1">
+                      Te responderemos personalmente en menos de 24 horas.
                     </p>
                   </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 md:space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Nombre completo *
-                      </label>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="name" className="text-sm font-semibold text-gray-700 ml-1">Nombre completo *</label>
                       <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
-                        placeholder="Tu nombre completo"
+                        type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required
+                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
+                        placeholder="Tu nombre"
                       />
                     </div>
-                    <div>
-                      <label htmlFor="email" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Email *
-                      </label>
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-semibold text-gray-700 ml-1">Email *</label>
                       <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
+                        type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required
+                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
                         placeholder="tu@email.com"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div>
-                      <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Teléfono *
-                      </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="phone" className="text-sm font-semibold text-gray-700 ml-1">WhatsApp / Teléfono *</label>
                       <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
+                        type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required
+                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
                         placeholder="+51 999 999 999"
                       />
                     </div>
-                    <div>
-                      <label htmlFor="company" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Empresa
-                      </label>
+                    <div className="space-y-2">
+                      <label htmlFor="company" className="text-sm font-semibold text-gray-700 ml-1">Empresa</label>
                       <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleInputChange}
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
+                        type="text" id="company" name="company" value={formData.company} onChange={handleInputChange}
+                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
                         placeholder="Nombre de tu empresa"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                    <div>
-                      <label htmlFor="service" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Servicio de interés *
-                      </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="service" className="text-sm font-semibold text-gray-700 ml-1">Servicio *</label>
                       <select
-                        id="service"
-                        name="service"
-                        value={formData.service}
-                        onChange={handleInputChange}
-                        required
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
+                        id="service" name="service" value={formData.service} onChange={handleInputChange} required
+                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none appearance-none"
                       >
-                        <option value="">Selecciona un servicio</option>
-                        {services.map((service) => (
-                          <option key={service} value={service}>
-                            {service}
-                          </option>
-                        ))}
+                        <option value="">Selecciona uno</option>
+                        {servicesList.map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
-                    <div>
-                      <label htmlFor="budget" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                        Presupuesto aproximado
-                      </label>
+                    <div className="space-y-2">
+                      <label htmlFor="budget" className="text-sm font-semibold text-gray-700 ml-1">Presupuesto</label>
                       <select
-                        id="budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleInputChange}
-                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
+                        id="budget" name="budget" value={formData.budget} onChange={handleInputChange}
+                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none appearance-none"
                       >
-                        <option value="">Selecciona un rango</option>
-                        {budgets.map((budget) => (
-                          <option key={budget} value={budget}>
-                            {budget}
-                          </option>
-                        ))}
+                        <option value="">Rango aproximado</option>
+                        {budgets.map((b) => <option key={b} value={b}>{b}</option>)}
                       </select>
                     </div>
                   </div>
 
-                  <div>
-                    <label htmlFor="timeline" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                      ¿Cuándo necesitas el proyecto?
-                    </label>
-                    <select
-                      id="timeline"
-                      name="timeline"
-                      value={formData.timeline}
-                      onChange={handleInputChange}
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200"
-                    >
-                      <option value="">Selecciona un plazo</option>
-                      {timelines.map((timeline) => (
-                        <option key={timeline} value={timeline}>
-                          {timeline}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">
-                      Cuéntanos sobre tu proyecto *
-                    </label>
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-semibold text-gray-700 ml-1">Mensaje *</label>
                     <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      required
-                      rows={4}
-                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-colors duration-200 resize-none"
-                      placeholder="Describe tu proyecto, objetivos, características específicas que necesitas, referencias de sitios que te gustan, y cualquier detalle que consideres importante..."
+                      id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={4}
+                      className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400 resize-none"
+                      placeholder="Cuéntanos sobre tus objetivos..."
                     />
                   </div>
 
                   {submitStatus === 'success' && (
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
-                      <FaCheckCircle className="text-green-600 text-lg flex-shrink-0" />
-                      <div>
-                        <p className="text-green-800 font-medium text-sm">
-                          ¡Mensaje enviado correctamente!
-                        </p>
-                        <p className="text-green-700 text-xs">
-                          Te contactaremos pronto. Revisa tu email para confirmación.
-                        </p>
-                      </div>
+                    <div className="p-4 bg-green-50 border border-green-100 rounded-2xl flex items-center gap-3 animate-fade-in">
+                      <FaCheckCircle className="text-[#41f0a5] text-xl flex-shrink-0" />
+                      <p className="text-green-800 text-sm font-medium">¡Enviado! Te contactaremos muy pronto.</p>
                     </div>
                   )}
 
-                  {submitStatus === 'error' && (
-                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="text-red-800 text-sm">
-                        Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo o contáctanos directamente.
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="relative group">
+                  <div className="relative pt-4">
                     <button
-                      type="submit"
-                      disabled={!isFormValid || isSubmitting}
-                      className={`w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg disabled:bg-gray-300 disabled:text-white disabled:cursor-not-allowed transition-colors duration-300 font-medium text-xs sm:text-sm flex items-center justify-center gap-2 ${isFormValid ? 'group-hover:opacity-0' : 'hover:bg-gray-800'}`}
+                      type="submit" disabled={!isFormValid || isSubmitting}
+                      className={`w-full py-5 bg-gray-950 text-white rounded-2xl font-bold transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed group relative overflow-hidden`}
                     >
-                      {isSubmitting ? (
-                        <>
-                          <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          Enviando...
-                        </>
-                      ) : (
-                        <>
-                          <FaRocket className="text-xs sm:text-sm" />
-                          Enviar proyecto
-                        </>
-                      )}
+                      <span className="relative z-10 flex items-center justify-center gap-3">
+                        {isSubmitting ? 'Enviando...' : 'Enviar proyecto'}
+                        {!isSubmitting && <FaRocket className="text-[#41f0a5] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
+                      </span>
                     </button>
-                    <div className={`pointer-events-none absolute inset-0 flex items-stretch gap-2 opacity-0 transition-opacity duration-300 ease-in-out ${isFormValid ? 'group-hover:opacity-100' : ''}`}>
-                      <a
-                        href={buildEmailLink()}
-                        onMouseEnter={() => setHoverChoice('email')}
-                        onMouseLeave={() => setHoverChoice(null)}
-                        className={`btn-breathe pointer-events-auto ${hoverChoice === 'email' ? 'w-7/12' : hoverChoice === 'whatsapp' ? 'w-5/12' : 'w-1/2'} inline-flex items-center justify-center gap-1 px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-300 ease-in-out text-xs sm:text-sm font-medium text-white ${hoverChoice === 'email' ? 'bg-blue-600' : 'bg-gray-900'}`}
-                        aria-label="Enviar por Email"
-                      >
-                        <MdOutlineAlternateEmail size={14} />
-                        Email
-                      </a>
-
-                      <a
-                        href={buildWhatsAppLink()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onMouseEnter={() => setHoverChoice('whatsapp')}
-                        onMouseLeave={() => setHoverChoice(null)}
-                        className={`btn-breathe pointer-events-auto ${hoverChoice === 'whatsapp' ? 'w-7/12' : hoverChoice === 'email' ? 'w-5/12' : 'w-1/2'} inline-flex items-center justify-center gap-1 px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-300 ease-in-out text-xs sm:text-sm font-medium text-white ${hoverChoice === 'whatsapp' ? 'bg-green-600' : 'bg-gray-900'}`}
-                        aria-label="Enviar por WhatsApp"
-                      >
-                        <FaWhatsapp size={16} />
-                        WhatsApp
-                      </a>
-                    </div>
+                    
+                    {/* Botones alternativos al hover */}
+                    {isFormValid && (
+                      <div className="absolute inset-x-0 bottom-0 top-[16px] flex opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-2xl overflow-hidden shadow-2xl">
+                        <a href={buildEmailLink()} className="flex-1 bg-blue-600 text-white flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors font-bold text-sm">
+                          <MdOutlineAlternateEmail size={18} /> Por Email
+                        </a>
+                        <a href={buildWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#41f0a5] text-black flex items-center justify-center gap-2 hover:bg-[#35d18d] transition-colors font-bold text-sm">
+                          <FaWhatsapp size={20} /> Por WhatsApp
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </form>
               </div>
             </div>
 
-            {/* Contact Info Carrusel */}
-            <div ref={infoRef} className="scroll-entrance slide-right order-1 lg:order-2">
-              <div className="space-y-4 sm:space-y-6 md:space-y-8">
-                <div>
-                  <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 sm:mb-4">
-                    Información de contacto
-                  </h2>
-                  <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                    Estamos disponibles para responder tus consultas y ayudarte con tu proyecto.
-                  </p>
-                </div>
-
-                {/* Contact Cards Carrusel */}
-                <div className="relative">
-                  <div className="overflow-hidden rounded-lg">
-                    <div
-                      className="flex transition-transform duration-500 ease-in-out"
-                      style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}
-                    >
-                      {contactCards.map((card, index) => (
-                        <div key={index} className="w-full flex-shrink-0">
-                          <div className="flex flex-col items-center text-center justify-center py-8 gap-3 sm:gap-4 p-4 sm:p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 min-h-[100px] sm:min-h-[120px]">
-                            <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gray-900 rounded-lg flex items-center justify-center">
-                              <card.icon className="text-white text-base sm:text-lg" />
-                            </div>
-                            <div className="flex-1 w-full">
-                              <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1 sm:mb-2">
-                                {card.title}
-                              </h3>
-                              {card.href ? (
-                                <a
-                                  href={card.href}
-                                  className="text-gray-600 hover:text-gray-900 transition-colors text-xs sm:text-sm md:text-base block mb-1 text-center w-full"
-                                >
-                                  {card.content}
-                                </a>
-                              ) : (card as any).action ? (
-                                <button
-                                  onClick={(card as any).action}
-                                  className="text-blue-600 hover:text-blue-800 transition-colors text-xs sm:text-sm md:text-base block mb-1 font-medium w-full text-center"
-                                >
-                                  {card.content}
-                                </button>
-                              ) : (
-                                <p className="text-gray-600 text-xs sm:text-sm md:text-base mb-1">
-                                  {card.content}
-                                </p>
-                              )}
-                              <p className="text-gray-500 text-xs">
-                                {card.subtitle}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
+            {/* Info Section */}
+            <div ref={infoRef} className="scroll-entrance slide-right space-y-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {contactCards.map((card, idx) => (
+                  <div key={idx} className="group p-8 bg-white rounded-[2rem] border border-gray-100 hover:border-[#41f0a5] transition-all duration-500 hover:shadow-2xl hover:shadow-[#41f0a5]/5 hover:-translate-y-2">
+                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#41f0a5]/10 transition-colors duration-500">
+                      <card.icon className="text-gray-900 text-xl group-hover:text-gray-950" />
                     </div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">{card.title}</h3>
+                    {card.href ? (
+                      <a href={card.href} className="text-gray-500 hover:text-gray-900 transition-colors text-sm font-medium">{card.content}</a>
+                    ) : card.action ? (
+                      <button onClick={card.action} className="text-[#41f0a5] hover:text-[#35d18d] transition-colors text-sm font-bold">{card.content}</button>
+                    ) : (
+                      <p className="text-gray-500 text-sm font-medium">{card.content}</p>
+                    )}
+                    <p className="text-xs text-gray-400 mt-2">{card.subtitle}</p>
                   </div>
+                ))}
+              </div>
 
-                  {/* Controles del carrusel */}
-                  <div className="flex items-center justify-between mt-3 sm:mt-4">
-                    <button
-                      onClick={() => setCurrentCardIndex((prev) => (prev - 1 + 4) % 4)}
-                      className="p-1.5 sm:p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <FaChevronLeft className="text-gray-600 text-xs sm:text-sm" />
-                    </button>
-
-                    {/* Indicadores */}
-                    <div className="flex gap-1.5 sm:gap-2">
-                      {contactCards.map((_, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setCurrentCardIndex(index)}
-                          className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors duration-200 ${index === currentCardIndex ? 'bg-gray-900' : 'bg-gray-300'
-                            }`}
-                        />
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={() => setCurrentCardIndex((prev) => (prev + 1) % 4)}
-                      className="p-1.5 sm:p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
-                    >
-                      <FaChevronRight className="text-gray-600 text-xs sm:text-sm" />
-                    </button>
-                  </div>
+              {/* Redes Sociales Premium */}
+              <div className="p-10 bg-gray-950 rounded-[2.5rem] relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#41f0a5] opacity-10 blur-[80px]" />
+                <h3 className="text-white font-bold text-xl mb-8">Nuestra presencia digital</h3>
+                <div className="flex gap-4">
+                  {[
+                    { icon: FaInstagram, href: "#", color: "hover:bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888]" },
+                    { icon: FaLinkedin, href: "#", color: "hover:bg-[#0077b5]" },
+                    { icon: FaTiktok, href: "#", color: "hover:bg-black" }
+                  ].map((social, i) => (
+                    <a key={i} href={social.href} className={`w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-white transition-all duration-500 ${social.color} hover:-translate-y-2 shadow-xl`}>
+                      <social.icon className="text-xl" />
+                    </a>
+                  ))}
                 </div>
-
-                {/* WhatsApp CTA */}
-                <div className="bg-gray-900 rounded-xl p-4 sm:p-6 text-center">
-                  <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <FaWhatsapp className="text-green-400 text-xl sm:text-2xl" />
-                    <h3 className="text-white font-medium text-base sm:text-lg">
-                      ¿Prefieres WhatsApp?
-                    </h3>
-                  </div>
-                  <p className="text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4">
-                    Chatea con nosotros directamente para una respuesta más rápida
-                  </p>
-                  <a
-                    href="https://wa.me/51999999999"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium text-xs sm:text-sm"
-                  >
-                    <FaWhatsapp size={16} />
-                    Chatear por WhatsApp
-                  </a>
-                </div>
-
-                {/* Redes Sociales */}
-                <div className="bg-white rounded-lg p-4 sm:p-5 border border-gray-200 shadow-sm text-center scroll-entrance">
-                  <h3 className="text-gray-900 font-medium text-sm sm:text-base md:text-lg mb-2">
-                    Síguenos en redes sociales
-                  </h3>
-                  <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
-                    {[
-                      {
-                        href: "https://instagram.com/sparktree",
-                        label: "Instagram",
-                        icon: <FaInstagram size={24} />
-                      },
-                      {
-                        href: "https://linkedin.com/company/sparktree",
-                        label: "LinkedIn",
-                        icon: <FaLinkedin size={24} />
-                      },
-                      {
-                        href: "https://tiktok.com/@sparktree",
-                        label: "TikTok",
-                        icon: <FaTiktok size={24} />
-                      }
-                    ].map(({ href, label, icon }, i) => (
-                      <a
-                        key={label}
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={`Ir a ${label}`}
-                        title={label}
-                        style={{ transitionDelay: `${i * 50}ms` }}
-                        className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-lg border border-gray-200 text-gray-700 hover:text-gray-900 bg-white shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-gray-300"
-                      >
-                        {icon}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
               </div>
             </div>
           </div>
@@ -666,303 +366,72 @@ export default function Contact({ onNavigate }: ContactProps) {
       </section>
 
       {/* FAQ Section */}
-      <section className="bg-gray-50 py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12">
-            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4 scroll-entrance">
-              Preguntas frecuentes
-            </h2>
-            <p className="text-gray-600 text-xs sm:text-sm md:text-base scroll-entrance px-2 mb-4">
-              Respuestas a las consultas más comunes sobre nuestros servicios
-            </p>
+      <section className="py-24 bg-white border-t border-gray-100">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">Preguntas frecuentes</h2>
             <button
               onClick={toggleAllFAQs}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="px-6 py-2 bg-gray-50 hover:bg-gray-100 rounded-full text-sm font-bold text-gray-600 transition-all border border-gray-200"
             >
-              {expandedFAQs.size === 6 ? (
-                <>
-                  <FaMinus size={14} />
-                  Cerrar todas
-                </>
-              ) : (
-                <>
-                  <FaPlus size={14} />
-                  Expandir todas
-                </>
-              )}
+              {expandedFAQs.size === 6 ? 'Contraer todas' : 'Expandir todas'}
             </button>
           </div>
 
-          <div className="space-y-0">
+          <div className="space-y-4">
             {[
-              {
-                question: "¿Cuánto tiempo toma desarrollar un sitio web?",
-                answer: "El tiempo de desarrollo depende de la complejidad del proyecto. Un sitio web básico puede tomar 2-3 semanas, mientras que proyectos más complejos pueden requerir 6-8 semanas. Incluimos tiempo para revisiones y ajustes."
-              },
-              {
-                question: "¿Ofrecen mantenimiento después del lanzamiento?",
-                answer: "Sí, ofrecemos planes de mantenimiento que incluyen actualizaciones de seguridad, respaldos regulares, monitoreo de rendimiento, soporte técnico y actualizaciones de contenido. Los planes van desde $50/mes hasta $200/mes según las necesidades."
-              },
-              {
-                question: "¿Trabajan con empresas de cualquier tamaño?",
-                answer: "Absolutamente. Trabajamos con startups, pequeñas empresas, medianas empresas y corporaciones. Adaptamos nuestros servicios y precios a las necesidades específicas de cada cliente, desde proyectos de $500 hasta $50,000+."
-              },
-              {
-                question: "¿Qué incluye el servicio de SEO?",
-                answer: "Nuestro servicio de SEO incluye auditoría técnica completa, optimización de contenido, investigación de palabras clave, optimización local, link building, reportes mensuales de progreso y seguimiento de rankings en Google."
-              },
-              {
-                question: "¿Pueden trabajar con mi presupuesto?",
-                answer: "Sí, trabajamos con diferentes rangos de presupuesto. Ofrecemos opciones desde sitios web básicos hasta soluciones empresariales completas. Siempre buscamos la mejor relación calidad-precio para tu proyecto."
-              },
-              {
-                question: "¿Qué tecnologías utilizan?",
-                answer: "Utilizamos las tecnologías más modernas y confiables: React, Next.js, Node.js, WordPress, Shopify, y bases de datos como PostgreSQL y MongoDB. Siempre elegimos la mejor tecnología para cada proyecto específico."
-              }
-            ].map((faq, index) => {
-              const isExpanded = expandedFAQs.has(index);
-
-              return (
-                <div key={index} className="bg-white border-b border-gray-200 last:border-b-0 scroll-entrance hover:shadow-sm transition-shadow duration-200">
-                  <button
-                    onClick={() => toggleFAQ(index)}
-                    className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:bg-gray-50 group"
-                  >
-                    <h3 className="font-medium text-gray-900 text-sm sm:text-base md:text-lg pr-4 group-hover:text-gray-700 transition-colors duration-200">
-                      {faq.question}
-                    </h3>
-                    <div className="flex-shrink-0">
-                      <div className={`transform transition-transform duration-300 ease-in-out ${isExpanded ? 'rotate-180' : 'rotate-0'
-                        }`}>
-                        {isExpanded ? (
-                          <FaMinus className="text-gray-600 text-sm sm:text-base" />
-                        ) : (
-                          <FaPlus className="text-gray-500 text-sm sm:text-base group-hover:text-gray-600 transition-colors duration-200" />
-                        )}
-                      </div>
-                    </div>
-                  </button>
-
-                  <div
-                    className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-                      }`}
-                  >
-                    <div className="px-4 sm:px-6 pb-4 sm:pb-5">
-                      <div className="border-l-2 border-gray-200 pl-4">
-                        <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </div>
+              { q: "¿Cuánto tiempo toma desarrollar un sitio web?", a: "Un sitio web estándar toma entre 3 a 5 semanas. Proyectos complejos de E-commerce o plataformas personalizadas pueden requerir de 8 a 12 semanas para garantizar la perfección en cada detalle." },
+              { q: "¿Ofrecen mantenimiento después del lanzamiento?", a: "Absolutamente. No te dejamos solo. Ofrecemos planes de soporte mensual que incluyen actualizaciones de seguridad, respaldos regulares y optimización continua de rendimiento." },
+              { q: "¿Trabajan con presupuesto ajustado?", a: "Creemos en democratizar la tecnología. Adaptamos nuestras soluciones para ofrecer el máximo valor posible según tu inversión, priorizando siempre las funcionalidades que generen más impacto." },
+              { q: "¿Qué incluye el servicio de SEO?", a: "Mucho más que palabras clave. Realizamos una optimización técnica profunda, estrategia de contenidos, perfiles de autoridad y SEO local para asegurar que tus clientes te encuentren primero." },
+              { q: "¿Garantizan resultados?", a: "Garantizamos un servicio de clase mundial. Nuestra metodología está diseñada para maximizar conversiones y visibilidad, basándonos en datos reales y las mejores prácticas de la industria." },
+              { q: "¿Qué tecnologías utilizan?", a: "Solo lo último y mejor. Dominamos React, Next.js, Node.js y las mejores soluciones No-Code según el caso. Elegimos herramientas que aseguren que tu sitio sea rápido, seguro y escalable." }
+            ].map((faq, i) => (
+              <div key={i} className={`rounded-3xl border transition-all duration-500 ${expandedFAQs.has(i) ? 'border-[#41f0a5] bg-gray-50/50' : 'border-gray-100 hover:border-gray-200'}`}>
+                <button
+                  onClick={() => toggleFAQ(i)}
+                  className="w-full px-8 py-6 text-left flex items-center justify-between"
+                >
+                  <span className="font-bold text-gray-900 text-lg">{faq.q}</span>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${expandedFAQs.has(i) ? 'bg-[#41f0a5] text-black' : 'bg-gray-100 text-gray-500'}`}>
+                    {expandedFAQs.has(i) ? <FaMinus size={12} /> : <FaPlus size={12} />}
+                  </div>
+                </button>
+                <div className={`overflow-hidden transition-all duration-500 ease-in-out ${expandedFAQs.has(i) ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                  <div className="p-8 pt-0 text-gray-500 leading-relaxed text-lg border-t border-gray-100/50 mt-2">
+                    {faq.a}
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-gray-900">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 text-center">
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-4 scroll-entrance">
-            ¿Listo para comenzar tu proyecto?
-          </h2>
-          <p className="text-gray-300 text-xs sm:text-sm md:text-base mb-6 sm:mb-8 scroll-entrance px-2">
-            No esperes más. Contáctanos ahora y recibe una consulta gratuita de 30 minutos para evaluar tu proyecto.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center scroll-entrance">
-            <a
-              href="https://wa.me/51999999999"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 font-medium text-xs sm:text-sm md:text-base"
-            >
-              <FaWhatsapp size={16} />
-              Chatear por WhatsApp
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Consultation Modal - Fijo y centrado */}
+      {/* Consultation Modal */}
       {isConsultationModalOpen && (
         <>
-          {/* Overlay */}
-          <div
-            className="fixed inset-0 z-[9998] bg-black/60 backdrop-blur-sm"
-            onClick={() => setIsConsultationModalOpen(false)}
-            aria-hidden="true"
-          />
-
-          {/* Modal FIJADO en el centro de la pantalla */}
+          <div className="fixed inset-0 z-[9998] bg-black/80 backdrop-blur-xl" onClick={() => setIsConsultationModalOpen(false)} />
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 pointer-events-none">
-            <div
-              className="relative bg-white rounded-xl shadow-2xl w-full max-w-md pointer-events-auto transform transition-all duration-300 animate-scale-in"
-              role="dialog"
-              aria-modal="true"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="border-b border-gray-100 px-6 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-                    <FaCalendar size={18} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 text-lg">Consulta Gratuita</h3>
-                    <p className="text-gray-500 text-xs">30 minutos sin costo</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setIsConsultationModalOpen(false)}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all"
-                  aria-label="Cerrar modal"
-                >
-                  <FaXmark size={20} />
-                </button>
+            <div className="relative bg-white rounded-[3rem] shadow-2xl w-full max-w-lg pointer-events-auto p-10 animate-scale-in">
+              <button onClick={() => setIsConsultationModalOpen(false)} className="absolute top-8 right-8 text-gray-400 hover:text-gray-900 transition-colors"><FaXmark size={24} /></button>
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 bg-[#41f0a5]/10 rounded-3xl flex items-center justify-center mx-auto mb-6"><FaCalendar className="text-[#41f0a5] text-3xl" /></div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-2">Consulta Estratégica</h3>
+                <p className="text-gray-500">30 minutos para transformar tu visión en un plan real.</p>
               </div>
-
-              {/* Contenido */}
-              <div className="p-6 max-h-[70vh] overflow-y-auto">
-                <div className="mb-4">
-                  <p className="text-gray-600 text-sm">
-                    Déjanos tus datos y te contactaremos para coordinar tu sesión de asesoría.
-                  </p>
+              <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setIsConsultationModalOpen(false); alert('¡Recibido! Nos vemos pronto.'); }}>
+                <input required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none" placeholder="Tu nombre" />
+                <input type="email" required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none" placeholder="Email de contacto" />
+                <div className="grid grid-cols-2 gap-4">
+                  <input type="date" required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none text-sm" />
+                  <select required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none text-sm">
+                    <option value="">Hora</option>
+                    <option>09:00 AM</option><option>11:00 AM</option><option>03:00 PM</option><option>05:00 PM</option>
+                  </select>
                 </div>
-
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  setIsConsultationModalOpen(false);
-                  alert('¡Solicitud recibida! Te contactaremos para confirmar.');
-                }} className="space-y-4">
-                  {/* Nombre */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre completo *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      placeholder="Tu nombre"
-                    />
-                  </div>
-
-                  {/* Email y Teléfono */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        required
-                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        placeholder="tu@email.com"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        WhatsApp *
-                      </label>
-                      <input
-                        type="tel"
-                        required
-                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        placeholder="+51 999 999 999"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Fecha y Hora */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Día preferido *
-                      </label>
-                      <input
-                        type="date"
-                        required
-                        min={new Date().toISOString().split('T')[0]}
-                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Hora preferida *
-                      </label>
-                      <select
-                        required
-                        className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                        defaultValue=""
-                      >
-                        <option value="" disabled>Selecciona hora</option>
-                        <option value="09:00">09:00 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="14:00">02:00 PM</option>
-                        <option value="15:00">03:00 PM</option>
-                        <option value="16:00">04:00 PM</option>
-                        <option value="17:00">05:00 PM</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Servicio */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Servicio de interés *
-                    </label>
-                    <select
-                      required
-                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      defaultValue=""
-                    >
-                      <option value="" disabled>Selecciona un servicio</option>
-                      <option value="web">Diseño Web</option>
-                      <option value="ecommerce">E-commerce</option>
-                      <option value="seo">SEO</option>
-                      <option value="branding">Branding</option>
-                      <option value="marketing">Marketing Digital</option>
-                      <option value="mobile">App Móvil</option>
-                      <option value="otro">Otro</option>
-                    </select>
-                  </div>
-
-                  {/* Mensaje */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      ¿Algo más que debamos saber? (opcional)
-                    </label>
-                    <textarea
-                      rows={3}
-                      className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none"
-                      placeholder="Breve descripción de tu proyecto..."
-                    />
-                  </div>
-
-                  {/* Botón */}
-                  <button
-                    type="submit"
-                    className="w-full bg-gray-900 text-white rounded-lg hover:bg-gray-800 active:scale-[0.98] transition-all duration-200 py-3 font-medium text-sm flex items-center justify-center gap-2 mt-2"
-                  >
-                    <FaRocket size={14} />
-                    <span>Solicitar consulta</span>
-                  </button>
-
-                  {/* Nota */}
-                  <div className="pt-4 border-t border-gray-100">
-                    <div className="flex items-start gap-2">
-                      <FaCheckCircle className="text-green-500 mt-0.5 flex-shrink-0" size={14} />
-                      <p className="text-xs text-gray-500">
-                        <strong className="text-gray-700">Sin compromiso.</strong> Tu información es confidencial.
-                      </p>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                <button type="submit" className="w-full py-5 bg-gray-950 text-white rounded-2xl font-bold hover:bg-gray-800 transition-all mt-4">Confirmar Cita</button>
+              </form>
             </div>
           </div>
         </>

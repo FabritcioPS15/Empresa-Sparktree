@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { projects } from '@/data/projects';
+import PageBanner from '@/components/ui/PageBanner';
 
 interface PortfolioProps {
   onViewProject?: (projectId: string) => void;
@@ -7,6 +8,11 @@ interface PortfolioProps {
 
 export default function Portfolio({ onViewProject }: PortfolioProps) {
   const portfolioRef = useRef<HTMLElement>(null);
+
+  const breadcrumbs = [
+    { label: 'Inicio', path: '/' },
+    { label: 'Nuestro Portafolio' }
+  ];
 
   useEffect(() => {
     const observerOptions = {
@@ -44,18 +50,15 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
   const portfolioProjects = projects;
 
   return (
-    <div className="pt-16 sm:pt-20">
-      <section ref={portfolioRef} className="py-8 sm:py-12 md:py-16 lg:py-20">
+    <div className="pt-[72px]">
+      <PageBanner 
+        title="Nuestro Portafolio" 
+        subtitle="Portafolio de diseño web y branding: proyectos con resultados reales."
+        breadcrumbs={breadcrumbs}
+      />
+      <section ref={portfolioRef} className="py-12 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="text-center mb-8 sm:mb-10 md:mb-12 lg:mb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 reveal scroll-entrance initial-visible scroll-stagger-1">
-              Nuestro Portafolio
-            </h1>
-            <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl sm:max-w-3xl mx-auto px-2 sm:px-0 reveal scroll-entrance initial-visible slide-left scroll-stagger-2">
-              Portafolio de diseño web y branding: proyectos con resultados reales.
-            </p>
-            <style>{`
+          <style>{`
         @keyframes glowPulseMint {
           0%, 100% { text-shadow: 0 0 0 rgba(16,185,129,0); }
           50% { text-shadow: 0 0 10px rgba(110,231,183,0.9), 0 0 18px rgba(16,185,129,0.6); }
@@ -66,7 +69,6 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
           text-shadow: 0 0 8px rgba(110,231,183,0.75), 0 0 14px rgba(16,185,129,0.45);
         }
       `}</style>
-          </div>
 
           {/* First Grid - Special Layout */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-4 md:gap-6 mb-16 sm:mb-10 md:mb-12">

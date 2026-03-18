@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaHeadset, FaRocket, FaCalendar } from 'react-icons/fa6';
 import { FaCheckCircle } from 'react-icons/fa';
+import PageBanner from '@/components/ui/PageBanner';
 
 interface ServicesProps {
   onNavigate?: (page: string) => void;
@@ -12,6 +13,11 @@ export default function Services({ onNavigate }: ServicesProps) {
   const [lineProgress, setLineProgress] = useState(0);
   const timelineRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<HTMLDivElement[]>([]);
+
+  const breadcrumbs = [
+    { label: 'Inicio', path: '/' },
+    { label: 'Servicios' }
+  ];
 
   useEffect(() => {
     const observerOptions = {
@@ -35,7 +41,7 @@ export default function Services({ onNavigate }: ServicesProps) {
         const elements = servicesRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
       }
-      
+
       // Observe scroll-entrance elements
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
@@ -46,7 +52,7 @@ export default function Services({ onNavigate }: ServicesProps) {
       observer.disconnect();
     };
   }, []);
-  
+
   // Animación del proceso basada en scroll y visibilidad
   useEffect(() => {
     // Observa pasos individualmente
@@ -88,6 +94,7 @@ export default function Services({ onNavigate }: ServicesProps) {
       window.removeEventListener('resize', updateProgress as EventListener);
     };
   }, []);
+
   const services = [
     {
       title: 'Diseño de Páginas Web',
@@ -107,42 +114,41 @@ export default function Services({ onNavigate }: ServicesProps) {
   ];
 
   return (
-    <div className="pt-20">
-      <section ref={servicesRef} className="py-20">
+    <div className="pt-[72px]">
+      <PageBanner 
+        title="Nuestros servicios, impulsan resultados" 
+        subtitle="Descubre cómo ayudamos a tu negocio a crecer en el mundo digital con estrategias personalizadas."
+        breadcrumbs={breadcrumbs}
+      />
+      <section ref={servicesRef} className="py-12 md:py-20 lg:py-28">
         <div className="max-w-5xl mx-auto px-6">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-20 leading-tight reveal scroll-entrance initial-visible text-center">
-        <span className="inline-block scroll-stagger-1">Nuestros servicios,</span>
-            <br />
-            <span className="inline-block scroll-stagger-2">impulsan resultados</span>
-          </h1>
-
-          <div className="space-y-16">
+          <div className="space-y-24">
             {services.map((service, index) => (
               <div
                 key={index}
-                className={`grid md:grid-cols-2 gap-12 items-center reveal hover:scale-105 transition-all duration-500 group scroll-entrance scale-up scroll-stagger-${index + 3} smooth-exit`}
+                className={`grid md:grid-cols-2 gap-12 lg:gap-20 items-center reveal hover:scale-105 transition-all duration-500 group scroll-entrance scale-up smooth-exit`}
                 style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <div className={`${index % 2 === 1 ? 'md:order-2' : ''} group-hover:scale-105 transition-transform duration-300`}>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-6 group-hover:text-gray-700 transition-colors">
+                  <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6 group-hover:text-gray-700 transition-colors">
                     {service.title}
                   </h2>
-                  <p className="text-gray-600 leading-relaxed group-hover:text-gray-700 transition-colors">
+                  <p className="text-gray-600 lg:text-lg leading-relaxed group-hover:text-gray-700 transition-colors">
                     {service.description}
                   </p>
-                  <div className="mt-6">
-                    <button 
+                  <div className="mt-8">
+                    <button
                       onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo')}`)}
-                      className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg smooth-exit"
+                      className="px-8 py-3.5 bg-gray-950 text-white rounded-full hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-xl smooth-exit"
                     >
                       Conoce más
                     </button>
                   </div>
                 </div>
                 <div className={`${index % 2 === 1 ? 'md:order-1' : ''} group-hover:scale-105 transition-transform duration-300`}>
-                  <div className="bg-gray-200 rounded-2xl aspect-video flex items-center justify-center group-hover:bg-gray-300 transition-all duration-300 group-hover:shadow-lg relative overflow-hidden">
-                    <span className="text-gray-500 group-hover:text-gray-700 transition-colors">imagen</span>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="bg-gray-100 rounded-[2rem] aspect-video flex items-center justify-center group-hover:bg-gray-200 transition-all duration-300 group-hover:shadow-2xl relative overflow-hidden border border-gray-200">
+                    <span className="text-gray-400 group-hover:text-gray-600 transition-colors font-medium">Visualización de Servicio</span>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
                 </div>
               </div>
@@ -150,98 +156,87 @@ export default function Services({ onNavigate }: ServicesProps) {
           </div>
 
           {/* Process Section - Timeline */}
-          <section className="py-8 sm:py-10 md:py-12 lg:py-16 xl:py-20 bg-white">
-            <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-              <div className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12">
-                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-4 scroll-entrance">
+          <section className="py-24 lg:py-32 bg-white">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-16 lg:mb-20">
+                <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6 scroll-entrance">
                   Nuestro proceso de trabajo
                 </h2>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base scroll-entrance px-2">
+                <p className="text-gray-500 text-lg lg:text-xl scroll-entrance px-2 max-w-2xl mx-auto">
                   Así es como trabajamos contigo para hacer realidad tu proyecto
                 </p>
               </div>
 
               <div ref={timelineRef} className="relative">
                 {/* Línea de tiempo */}
-                <div className="hidden lg:block absolute top-8 left-1/2 transform -translate-x-1/2 w-1 h-full bg-gray-200">
-                  <div 
-                    className="absolute top-0 left-0 w-full bg-gray-900 transition-all duration-2000 ease-out"
+                <div className="hidden lg:block absolute top-8 left-1/2 transform -translate-x-1/2 w-[2px] h-[calc(100%-64px)] bg-gray-100">
+                  <div
+                    className="absolute top-0 left-0 w-full bg-[#41f0a5] transition-all duration-1000 ease-out shadow-[0_0_15px_#41f0a5]"
                     style={{ height: `${lineProgress}%` }}
                   />
                 </div>
 
-                {/* Línea de tiempo móvil */}
-                <div className="lg:hidden absolute top-8 left-8 w-1 h-full bg-gray-200">
-                  <div 
-                    className="absolute top-0 left-0 w-full bg-gray-900 transition-all duration-2000 ease-out"
-                    style={{ height: `${lineProgress}%` }}
-                  />
-                </div>
-
-                <div className="space-y-8 lg:space-y-12">
+                <div className="space-y-12 lg:space-y-24">
                   {[
                     {
                       step: "01",
                       title: "Consulta inicial",
-                      description: "Posterior al envío del brief, analizamos tus necesidades y objetivos en una reunión gratuita de 30 minutos.",
+                      description: "Analizamos tus necesidades y objetivos en una reunión estratégica para entender cómo podemos ayudarte de la mejor manera.",
                       icon: FaHeadset
                     },
                     {
-                      step: "02", 
+                      step: "02",
                       title: "Propuesta personalizada",
-                      description: "Creamos una propuesta detallada con cronograma, presupuesto y alcance del proyecto.",
+                      description: "Creamos un plan de acción detallado con cronograma, presupuesto y los objetivos claros que alcanzaremos juntos.",
                       icon: FaRocket
                     },
                     {
                       step: "03",
-                      title: "Desarrollo",
-                      description: "Trabajamos en tu proyecto con comunicación constante y entregas parciales.",
+                      title: "Desarrollo y Estrategia",
+                      description: "Ejecutamos el plan con precisión técnica y creatividad, manteniendo comunicación constante sobre cada avance.",
                       icon: FaCheckCircle
                     },
                     {
                       step: "04",
-                      title: "Lanzamiento y soporte",
-                      description: "Lanzamos tu proyecto y te brindamos soporte continuo para su éxito.",
+                      title: "Lanzamiento y Optimización",
+                      description: "Lanzamos tu proyecto y seguimos monitoreando el rendimiento para asegurar un retorno de inversión real.",
                       icon: FaCalendar
                     }
                   ].map((process, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       ref={(el) => {
                         if (el) stepRefs.current[index] = el;
                       }}
                       data-step-index={index}
-                      className={`relative flex items-start lg:items-center ${
-                        index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
-                      } transition-all duration-700 ease-out ${
-                        visibleSteps.includes(index) 
-                          ? 'opacity-100 translate-y-0' 
-                          : 'opacity-0 translate-y-8'
-                      }`}
+                      className={`relative flex items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'
+                        } transition-all duration-1000 ease-out ${visibleSteps.includes(index)
+                          ? 'opacity-100 translate-y-0'
+                          : 'opacity-0 translate-y-12'
+                        }`}
                     >
                       {/* Punto de la línea de tiempo */}
-                      <div className="relative z-10 flex-shrink-0">
-                        <div className={`w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto transition-all duration-500 ${
-                          visibleSteps.includes(index) 
-                            ? 'scale-100 opacity-100' 
-                            : 'scale-75 opacity-0'
-                        }`}>
-                          <process.icon className="text-white text-xl" />
+                      <div className="hidden lg:flex relative z-10 flex-shrink-0 w-24 h-24 items-center justify-center mx-auto">
+                        <div className={`absolute inset-0 bg-[#41f0a5] rounded-full blur-2xl transition-all duration-700 ${visibleSteps.includes(index) ? 'opacity-20 scale-125' : 'opacity-0 scale-50'}`} />
+                        <div className={`relative w-20 h-20 bg-gray-950 rounded-full flex items-center justify-center transition-all duration-700 ${visibleSteps.includes(index)
+                          ? 'scale-100 rotate-0'
+                          : 'scale-75 rotate-12'
+                          }`}>
+                          <process.icon className={`text-2xl transition-colors duration-500 ${visibleSteps.includes(index) ? 'text-[#41f0a5]' : 'text-gray-500'}`} />
                         </div>
                       </div>
 
                       {/* Contenido del paso */}
-                      <div className={`ml-6 sm:ml-8 lg:ml-12 lg:w-1/2 ${
-                        index % 2 === 0 ? 'lg:pr-4 lg:pr-8' : 'lg:pl-4 lg:pl-8'
-                      }`}>
-                        <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 shadow-sm hover:shadow-md focus-within:ring-2 focus-within:ring-gray-300 transition-all duration-300">
-                          <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                            <div className="text-xl sm:text-2xl font-bold text-gray-900">{process.step}</div>
-                            <h3 className="font-semibold text-gray-900 text-base sm:text-lg">
-                              {process.title}
-                            </h3>
+                      <div className={`w-full lg:w-[42%] ${index % 2 === 0 ? 'lg:pr-12' : 'lg:pl-12'}`}>
+                        <div className="bg-gray-50 p-8 lg:p-10 rounded-[2.5rem] border border-gray-100 hover:border-gray-200 transition-all duration-500 group">
+                          <div className="flex items-center gap-4 mb-4">
+                            <span className="text-[#41f0a5] font-bold text-lg tracking-widest">{process.step}</span>
+                            <div className="h-[1px] flex-grow bg-gray-200 group-hover:bg-[#41f0a5] transition-colors duration-500" />
                           </div>
-                          <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
+                          <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                            {process.title}
+                          </h3>
+                          <p className="text-gray-500 text-lg leading-relaxed">
                             {process.description}
                           </p>
                         </div>
@@ -253,27 +248,33 @@ export default function Services({ onNavigate }: ServicesProps) {
             </div>
           </section>
 
-          <div className="text-center mt-20 reveal scroll-entrance bounce-in scroll-stagger-6">
-            <div className="bg-gray-50 rounded-2xl p-12 max-w-4xl mx-auto smooth-exit">
-              <h3 className="text-3xl font-bold text-gray-900 mb-6 scroll-entrance scroll-stagger-1">
-                ¿Listo para impulsar tu negocio?
-              </h3>
-              <p className="text-xl text-gray-600 mb-8 scroll-entrance slide-left scroll-stagger-2">
-                Descubre cómo nuestros servicios pueden transformar tu presencia digital
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button 
-                  onClick={() => window.open('https://wa.me/', '_blank')}
-                  className="px-8 py-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-lg scroll-entrance slide-left scroll-stagger-3 smooth-exit"
-                >
-                  Solicitar consulta
-                </button>
-                <button 
-                  onClick={() => onNavigate?.('portfolio')}
-                  className="px-8 py-4 border-2 border-gray-900 text-gray-900 rounded-lg hover:bg-gray-900 hover:text-white transition-all duration-300 font-medium hover:scale-105 scroll-entrance slide-right scroll-stagger-4 smooth-exit"
-                >
-                  Ver portafolio
-                </button>
+          <div className="text-center mt-24 reveal scroll-entrance bounce-in">
+            <div className="relative rounded-[3rem] p-12 lg:p-24 max-w-5xl mx-auto overflow-hidden bg-[#0a0a0a] border border-white/5 shadow-2xl group">
+              {/* Dynamic Bubbles */}
+              <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bubble-float-1 bubble-cyan opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
+              <div className="absolute bottom-[-20%] right-[10%] w-96 h-96 bubble-float-2 bubble-neon opacity-15 group-hover:opacity-30 transition-opacity duration-700" />
+              
+              {/* Content Overlay */}
+              <div className="relative z-10">
+                <h3 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-8 leading-tight">
+                  ¿Listo para impulsar <br className="hidden sm:block" /> tu negocio?
+                </h3>
+                <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">
+                  Descubre cómo nuestras soluciones digitales pueden transformar tu presencia y acelerar tu crecimiento.
+                </p>
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => window.open('https://wa.me/', '_blank')}
+                    className="group/btn relative px-12 py-5 bg-[#41f0a5] text-black font-bold rounded-full hover:scale-105 hover:shadow-[0_0_50px_rgba(65,240,165,0.3)] transition-all duration-500 overflow-hidden text-lg"
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-3">
+                      Comencemos a crecer
+                      <span className="w-0 overflow-hidden group-hover/btn:w-6 transition-all duration-300 ease-out flex items-center">
+                        <FaRocket className="text-xl translate-y-4 group-hover/btn:translate-y-0 transition-transform duration-500" />
+                      </span>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
