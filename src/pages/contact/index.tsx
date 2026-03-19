@@ -198,166 +198,210 @@ export default function Contact({ }: ContactProps) {
       />
 
       {/* Contact Form & Info Section */}
-      <section className="py-12 md:py-20 lg:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-            {/* Contact Form */}
-            <div ref={formRef} className="scroll-entrance slide-left">
-              <div className="bg-white rounded-[2.5rem] border border-gray-100 p-8 sm:p-10 shadow-2xl shadow-gray-200/50">
-                <div className="flex items-center gap-4 mb-10">
-                  <div className="w-14 h-14 bg-gray-950 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/10">
-                    <FaRocket className="text-[#41f0a5] text-2xl" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                      Inicia tu transformación
-                    </h2>
-                    <p className="text-gray-500 text-sm mt-1">
-                      Te responderemos personalmente en menos de 24 horas.
-                    </p>
-                  </div>
-                </div>
+      <section className="relative py-16 md:py-24 lg:py-32 bg-white overflow-hidden">
+        {/* Decorative Modern Blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#41f0a5]/5 blur-[120px] animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-[#3750f0]/5 blur-[150px] animate-pulse" style={{ animationDelay: '2s' }} />
+        </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-semibold text-gray-700 ml-1">Nombre completo *</label>
-                      <input
-                        type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required
-                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
-                        placeholder="Tu nombre"
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:items-start">
+            
+            {/* Contact Form - Glass Style */}
+            <div ref={formRef} className="lg:col-span-7 scroll-entrance slide-left">
+              <div className="relative group">
+                {/* Glow Effect on Hover */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-[#41f0a5]/20 to-[#3750f0]/20 rounded-[3rem] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                
+                <div className="relative bg-white/60 backdrop-blur-2xl border border-white/80 rounded-[3rem] p-8 sm:p-12 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.05)]">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 mb-12">
+                    <div className="w-16 h-16 bg-gray-950 rounded-[1.5rem] flex items-center justify-center flex-shrink-0 shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                      <FaRocket className="text-[#41f0a5] text-3xl" />
+                    </div>
+                    <div>
+                      <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
+                        Transformemos tu visión
+                      </h2>
+                      <p className="text-gray-500 mt-2 text-lg">
+                        Escuchamos tus ideas, impulsamos tus resultados.
+                      </p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                      <div className="space-y-3">
+                        <label htmlFor="name" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Tu Nombre</label>
+                        <input
+                          type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required
+                          className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none placeholder:text-gray-400 shadow-sm"
+                          placeholder="Fabricio Peña"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <label htmlFor="email" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Email de contacto</label>
+                        <input
+                          type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required
+                          className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none placeholder:text-gray-400 shadow-sm"
+                          placeholder="hola@tuempresa.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                      <div className="space-y-3">
+                        <label htmlFor="company" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Empresa / Proyecto</label>
+                        <input
+                          type="text" id="company" name="company" value={formData.company} onChange={handleInputChange}
+                          className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none placeholder:text-gray-400 shadow-sm"
+                          placeholder="Tu empresa o marca"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <label htmlFor="service" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Servicio de interés</label>
+                        <div className="relative">
+                          <select
+                            id="service" name="service" value={formData.service} onChange={handleInputChange} required
+                            className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none appearance-none shadow-sm cursor-pointer"
+                          >
+                            <option value="">Selecciona un servicio</option>
+                            {servicesList.map((s) => <option key={s} value={s}>{s}</option>)}
+                          </select>
+                          <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
+                            <FaPlus size={14} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                      <div className="space-y-3">
+                        <label htmlFor="budget" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Presupuesto estimado</label>
+                        <div className="relative">
+                          <select
+                            id="budget" name="budget" value={formData.budget} onChange={handleInputChange}
+                            className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none appearance-none shadow-sm cursor-pointer"
+                          >
+                            <option value="">Rango de inversión</option>
+                            {budgets.map((b) => <option key={b} value={b}>{b}</option>)}
+                          </select>
+                          <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
+                            <FaPlus size={14} />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-3">
+                        <label htmlFor="timeline" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Plazo deseado</label>
+                        <input
+                          type="text" id="timeline" name="timeline" value={formData.timeline} onChange={handleInputChange}
+                          className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none placeholder:text-gray-400 shadow-sm"
+                          placeholder="Ej: 2 meses"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label htmlFor="message" className="text-sm font-bold text-gray-800 ml-1 tracking-wide uppercase opacity-70">Detalles del Proyecto</label>
+                      <textarea
+                        id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={5}
+                        className="w-full px-6 py-5 bg-gray-50/50 backdrop-blur-sm border border-gray-100 rounded-[2rem] focus:ring-2 focus:ring-[#41f0a5] focus:bg-white focus:border-transparent transition-all duration-500 outline-none placeholder:text-gray-400 resize-none shadow-sm"
+                        placeholder="Cuéntanos sobre tus objetivos, retos y cualquier detalle relevante..."
                       />
                     </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-semibold text-gray-700 ml-1">Email *</label>
-                      <input
-                        type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required
-                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
-                        placeholder="tu@email.com"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="phone" className="text-sm font-semibold text-gray-700 ml-1">WhatsApp / Teléfono *</label>
-                      <input
-                        type="tel" id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required
-                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
-                        placeholder="+51 999 999 999"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="company" className="text-sm font-semibold text-gray-700 ml-1">Empresa</label>
-                      <input
-                        type="text" id="company" name="company" value={formData.company} onChange={handleInputChange}
-                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400"
-                        placeholder="Nombre de tu empresa"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label htmlFor="service" className="text-sm font-semibold text-gray-700 ml-1">Servicio *</label>
-                      <select
-                        id="service" name="service" value={formData.service} onChange={handleInputChange} required
-                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none appearance-none"
-                      >
-                        <option value="">Selecciona uno</option>
-                        {servicesList.map((s) => <option key={s} value={s}>{s}</option>)}
-                      </select>
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="budget" className="text-sm font-semibold text-gray-700 ml-1">Presupuesto</label>
-                      <select
-                        id="budget" name="budget" value={formData.budget} onChange={handleInputChange}
-                        className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none appearance-none"
-                      >
-                        <option value="">Rango aproximado</option>
-                        {budgets.map((b) => <option key={b} value={b}>{b}</option>)}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-semibold text-gray-700 ml-1">Mensaje *</label>
-                    <textarea
-                      id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={4}
-                      className="w-full px-5 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:bg-white transition-all duration-300 outline-none placeholder:text-gray-400 resize-none"
-                      placeholder="Cuéntanos sobre tus objetivos..."
-                    />
-                  </div>
-
-                  {submitStatus === 'success' && (
-                    <div className="p-4 bg-green-50 border border-green-100 rounded-2xl flex items-center gap-3 animate-fade-in">
-                      <FaCheckCircle className="text-[#41f0a5] text-xl flex-shrink-0" />
-                      <p className="text-green-800 text-sm font-medium">¡Enviado! Te contactaremos muy pronto.</p>
-                    </div>
-                  )}
-
-                  <div className="relative pt-4">
-                    <button
-                      type="submit" disabled={!isFormValid || isSubmitting}
-                      className={`w-full py-5 bg-gray-950 text-white rounded-2xl font-bold transition-all duration-500 hover:scale-[1.02] hover:shadow-xl active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed group relative overflow-hidden`}
-                    >
-                      <span className="relative z-10 flex items-center justify-center gap-3">
-                        {isSubmitting ? 'Enviando...' : 'Enviar proyecto'}
-                        {!isSubmitting && <FaRocket className="text-[#41f0a5] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />}
-                      </span>
-                    </button>
-                    
-                    {/* Botones alternativos al hover */}
-                    {isFormValid && (
-                      <div className="absolute inset-x-0 bottom-0 top-[16px] flex opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-2xl overflow-hidden shadow-2xl">
-                        <a href={buildEmailLink()} className="flex-1 bg-blue-600 text-white flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors font-bold text-sm">
-                          <MdOutlineAlternateEmail size={18} /> Por Email
-                        </a>
-                        <a href={buildWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#41f0a5] text-black flex items-center justify-center gap-2 hover:bg-[#35d18d] transition-colors font-bold text-sm">
-                          <FaWhatsapp size={20} /> Por WhatsApp
-                        </a>
+                    {submitStatus === 'success' && (
+                      <div className="p-5 bg-[#41f0a5]/10 border border-[#41f0a5]/20 rounded-[1.5rem] flex items-center gap-4 animate-fade-in-scale">
+                        <div className="w-10 h-10 bg-[#41f0a5] rounded-full flex items-center justify-center flex-shrink-0">
+                          <FaCheckCircle className="text-white text-xl" />
+                        </div>
+                        <p className="text-gray-900 font-bold">¡Mensaje recibido! Te contactaremos muy pronto.</p>
                       </div>
                     )}
-                  </div>
-                </form>
+
+                    <div className="relative pt-6">
+                      <button
+                        type="submit" disabled={!isFormValid || isSubmitting}
+                        className={`w-full py-6 bg-gray-950 text-white rounded-2xl font-black text-lg tracking-widest uppercase transition-all duration-500 hover:scale-[1.01] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed group overflow-hidden`}
+                      >
+                        <span className="relative z-10 flex items-center justify-center gap-4">
+                          {isSubmitting ? 'Procesando...' : 'Enviar Solicitud'}
+                          {!isSubmitting && <FaRocket className="text-[#41f0a5] group-hover:translate-x-12 group-hover:-translate-y-12 transition-all duration-700 ease-in-out" />}
+                        </span>
+                        
+                        {/* Shimmer Effect */}
+                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+                      </button>
+                      
+                      {/* Secondary Contact Options overlay on hover */}
+                      {isFormValid && (
+                        <div className="absolute inset-x-0 bottom-0 top-[24px] flex opacity-0 hover:opacity-100 transition-all duration-500 rounded-2xl overflow-hidden shadow-2xl translate-y-2 hover:translate-y-0">
+                          <a href={buildEmailLink()} className="flex-1 bg-white border-2 border-gray-950 text-gray-950 flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors font-black text-sm uppercase tracking-wider">
+                            <MdOutlineAlternateEmail size={20} /> Vía Email
+                          </a>
+                          <a href={buildWhatsAppLink()} target="_blank" rel="noopener noreferrer" className="flex-1 bg-[#41f0a5] text-black flex items-center justify-center gap-3 hover:bg-[#35d18d] transition-colors font-black text-sm uppercase tracking-wider">
+                            <FaWhatsapp size={22} /> Vía WhatsApp
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
 
-            {/* Info Section */}
-            <div ref={infoRef} className="scroll-entrance slide-right space-y-12">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Info Section - Premium Side Cards */}
+            <div ref={infoRef} className="lg:col-span-5 space-y-8 scroll-entrance slide-right">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
                 {contactCards.map((card, idx) => (
-                  <div key={idx} className="group p-8 bg-white rounded-[2rem] border border-gray-100 hover:border-[#41f0a5] transition-all duration-500 hover:shadow-2xl hover:shadow-[#41f0a5]/5 hover:-translate-y-2">
-                    <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#41f0a5]/10 transition-colors duration-500">
-                      <card.icon className="text-gray-900 text-xl group-hover:text-gray-950" />
+                  <div 
+                    key={idx} 
+                    className="group relative p-8 bg-white/40 backdrop-blur-xl border border-white/60 rounded-[2.5rem] transition-all duration-500 hover:translate-x-2 hover:shadow-2xl hover:shadow-black/5"
+                    onClick={() => card.action?.()}
+                  >
+                    {/* Active Accent Bar */}
+                    <div className="absolute left-0 top-1/4 bottom-1/4 w-1.5 bg-[#41f0a5] rounded-r-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className="flex items-start gap-6">
+                      <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#41f0a5] group-hover:text-black transition-all duration-500 group-hover:rotate-6 shadow-sm">
+                        <card.icon className="text-gray-900 text-2xl group-hover:text-inherit" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-1">{card.title}</h3>
+                        {card.href ? (
+                          <a href={card.href} className="text-xl font-bold text-gray-900 hover:text-[#41f0a5] transition-colors decoration-2 hover:underline underline-offset-4">{card.content}</a>
+                        ) : (
+                          <p className="text-xl font-bold text-gray-900">{card.content}</p>
+                        )}
+                        <p className="text-sm text-gray-500 mt-2 font-medium">{card.subtitle}</p>
+                      </div>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">{card.title}</h3>
-                    {card.href ? (
-                      <a href={card.href} className="text-gray-500 hover:text-gray-900 transition-colors text-sm font-medium">{card.content}</a>
-                    ) : card.action ? (
-                      <button onClick={card.action} className="text-[#41f0a5] hover:text-[#35d18d] transition-colors text-sm font-bold">{card.content}</button>
-                    ) : (
-                      <p className="text-gray-500 text-sm font-medium">{card.content}</p>
-                    )}
-                    <p className="text-xs text-gray-400 mt-2">{card.subtitle}</p>
                   </div>
                 ))}
               </div>
 
-              {/* Redes Sociales Premium */}
-              <div className="p-10 bg-gray-950 rounded-[2.5rem] relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#41f0a5] opacity-10 blur-[80px]" />
-                <h3 className="text-white font-bold text-xl mb-8">Nuestra presencia digital</h3>
-                <div className="flex gap-4">
-                  {[
-                    { icon: FaInstagram, href: "#", color: "hover:bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888]" },
-                    { icon: FaLinkedin, href: "#", color: "hover:bg-[#0077b5]" },
-                    { icon: FaTiktok, href: "#", color: "hover:bg-black" }
-                  ].map((social, i) => (
-                    <a key={i} href={social.href} className={`w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-white transition-all duration-500 ${social.color} hover:-translate-y-2 shadow-xl`}>
-                      <social.icon className="text-xl" />
-                    </a>
-                  ))}
+              {/* Redes Sociales - Glass & Dark Mix */}
+              <div className="p-10 bg-gray-950 rounded-[3rem] relative overflow-hidden group shadow-2xl">
+                {/* Background Decor */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#41f0a5]/20 blur-[100px] group-hover:bg-[#41f0a5]/30 transition-colors duration-700" />
+                
+                <div className="relative z-10">
+                  <h3 className="text-white font-bold text-xl mb-8 tracking-tight">Síguenos en nuestras redes</h3>
+                  <div className="flex gap-4">
+                    {[
+                      { icon: FaInstagram, href: "#", color: "hover:bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888]" },
+                      { icon: FaLinkedin, href: "#", color: "hover:bg-[#0077b5]" },
+                      { icon: FaTiktok, href: "#", color: "hover:bg-white hover:text-black" }
+                    ].map((social, i) => (
+                      <a 
+                        key={i} 
+                        href={social.href} 
+                        className={`w-14 h-14 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-white transition-all duration-500 ${social.color} hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)]`}
+                      >
+                        <social.icon className="text-xl" />
+                      </a>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

@@ -21,6 +21,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const [indicatorVisible, setIndicatorVisible] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const searchRef = useRef<HTMLDivElement | null>(null);
   const desktopInputRef = useRef<HTMLInputElement | null>(null);
@@ -132,6 +133,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
+    setIsMounted(true);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [currentPage]);
 
@@ -304,15 +306,15 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
       } ${isHomeTop
         ? 'bg-transparent py-2 sm:py-3 border-b border-transparent'
         : isOtherTop
-          ? 'bg-white py-1.5 sm:py-2 border-b border-gray-100 shadow-sm'
+          ? 'bg-white py-2 sm:py-2 border-b border-gray-100 shadow-sm'
           : 'bg-black/70 backdrop-blur-xl shadow-2xl py-1 border-b border-white/10'
-      }`}>
+      } ${isMounted ? 'animate-slide-in-top' : 'opacity-0'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14 sm:h-14">
           {/* Logo */}
           <button
             onClick={() => onNavigate('home')}
-            className="transition-transform duration-300 hover:scale-105"
+            className={`transition-transform duration-300 hover:scale-105 ${isMounted ? 'animate-slide-in-top entrance-stagger-1' : 'opacity-0'}`}
           >
             <img 
               src="/assets/sparktree-horizontal.png" 
@@ -331,8 +333,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               style={{ left: indicatorLeft, width: indicatorWidth }}
               aria-hidden
             />
-            {navItems.map((item) => (
-              <div key={item.id} className="relative" data-nav-item={item.id}>
+            {navItems.map((item, idx) => (
+              <div key={item.id} className={`relative ${isMounted ? `animate-slide-in-top entrance-stagger-${idx + 2}` : 'opacity-0'}`} data-nav-item={item.id}>
                 {item.hasDropdown ? (
                   <div className="flex items-center">
                     <button
@@ -412,7 +414,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             {/* Search (desktop) */}
             <div
               ref={searchRef}
-              className={`hidden sm:flex items-center overflow-visible border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 rounded-full transition-all duration-300 ease-out shadow-sm relative bg-white border-gray-200`}
+              className={`hidden sm:flex items-center overflow-visible border ${isSearchOpen ? 'w-64 pl-2 pr-2.5' : 'w-10 px-2'} h-10 rounded-full transition-all duration-300 ease-out shadow-sm relative bg-white border-gray-200 ${isMounted ? 'animate-slide-in-top entrance-stagger-7' : 'opacity-0'}`}
             >
               <button
                 type="button"
@@ -506,7 +508,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               href="https://wa.me/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-2"
+              className={`hidden sm:flex items-center gap-2 ${isMounted ? 'animate-slide-in-top entrance-stagger-8' : 'opacity-0'}`}
               variant={shouldNavItemsBeWhite ? 'transparent-white' : 'default'}
             >
               <FaWhatsapp size={18} />

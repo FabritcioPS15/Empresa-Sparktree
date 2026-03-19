@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { FaRocket, FaCheck } from 'react-icons/fa6';
+import PageBanner from '@/components/ui/PageBanner';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -6,6 +8,12 @@ interface ServicePageProps {
 
 export default function ServiceWeb({ onNavigate }: ServicePageProps) {
   const rootRef = useRef<HTMLElement>(null);
+
+  const breadcrumbs = [
+    { label: 'Inicio', path: '/' },
+    { label: 'Servicios', path: '/services' },
+    { label: 'Diseño Web' }
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -27,31 +35,256 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
     return () => { clearTimeout(timeoutId); observer.disconnect(); };
   }, []);
 
-  return (
-    <div className="pt-20">
-      <section ref={rootRef as any} className="py-12 sm:py-16 md:py-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 reveal">Diseño de Páginas Web</h1>
-          <p className="text-gray-600 text-base sm:text-lg mb-8 reveal slide-left">Creamos páginas web profesionales y optimizadas para SEO, adaptadas al mercado peruano, con un diseño moderno y rápido.</p>
+  const processSteps = [
+    {
+      number: "1",
+      title: "Análisis y estrategia",
+      description: "Primero analizamos el negocio, el mercado y los objetivos del proyecto.",
+      items: ["objetivos del sitio web", "público objetivo", "estructura del contenido", "estrategia digital"]
+    },
+    {
+      number: "2",
+      title: "Arquitectura y planificación del sitio",
+      description: "Creamos la estructura del sitio web, organizando todas las páginas y secciones para asegurar una navegación clara y eficiente.",
+      items: ["mapa del sitio", "jerarquía de contenido", "estructura de navegación"]
+    },
+    {
+      number: "3",
+      title: "Diseño visual (UI / UX)",
+      description: "Diseñamos la apariencia visual del sitio web teniendo en cuenta:",
+      items: ["identidad de marca", "experiencia de usuario", "diseño moderno y profesional", "navegación intuitiva"],
+      footer: "El objetivo es que el sitio sea atractivo, funcional y fácil de usar"
+    },
+    {
+      number: "4",
+      title: "Desarrollo web",
+      description: "En esta etapa construimos el sitio web utilizando tecnologías modernas y optimizadas.",
+      items: ["velocidad de carga", "adaptabilidad móvil (Responsive)", "SEO técnico", "seguridad y rendimiento"]
+    },
+    {
+      number: "5",
+      title: "Optimización SEO inicial",
+      description: "Implementamos las bases para el posicionamiento en buscadores. Esto incluye:",
+      items: ["optimización de estructura", "uso de palabras clave", "optimización de imágenes", "velocidad de carga", "etiquetas SEO"],
+      footer: "Esto permite que el sitio tenga mejores oportunidades de posicionarse en Google"
+    },
+    {
+      number: "6",
+      title: "Pruebas y lanzamiento",
+      description: "Antes de publicar el sitio realizamos pruebas para garantizar que todo funcione correctamente. Revisamos:",
+      items: ["compatibilidad con navegadores", "funcionamiento en dispositivos móviles", "enlaces y formularios", "rendimiento del sitio"],
+      footer: "Finalmente publicamos el sitio y lo dejamos listo para su uso"
+    }
+  ];
 
-          <div className="grid md:grid-cols-2 gap-6 sm:gap-8 mb-10">
-            <div className="rounded-2xl bg-white border border-gray-200 p-4 reveal scale-up">
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Qué incluye</h2>
-              <ul className="text-gray-600 space-y-2 text-sm">
-                <li>Arquitectura de información y UX</li>
-                <li>UI optimizada para conversión</li>
-                <li>SEO técnico base</li>
-                <li>Despliegue y analítica</li>
-              </ul>
+  const benefits = [
+    {
+      title: "Mayor visibilidad en Google",
+      description: "Una página web optimizada para SEO (Search Engine Optimization) permite que tu negocio aparezca cuando los clientes buscan tus servicios en internet."
+    },
+    {
+      title: "Generación constante de clientes potenciales",
+      description: "Un sitio web bien estructurado puede atraer visitantes interesados que luego se convierten en clientes potenciales o ventas."
+    },
+    {
+      title: "Fortalece la imagen de marca",
+      description: "Un diseño web profesional transmite credibilidad, confianza y profesionalismo, aspectos clave para cualquier empresa."
+    },
+    {
+      title: "Mejora la experiencia del usuario",
+      description: "Un sitio optimizado permite que los visitantes encuentren rápidamente la información que necesitan, mejorando su experiencia y aumentando las posibilidades de conversión."
+    },
+    {
+      title: "Escalabilidad y crecimiento",
+      description: "Una página web puede crecer junto con tu negocio, integrando nuevas funcionalidades como blog, e-commerce, reservas, automatización o integración con herramientas digitales."
+    }
+  ];
+
+  return (
+    <div className="pt-[72px]">
+      <PageBanner 
+        title="Diseño de Páginas Web Personalizadas" 
+        subtitle="Tu presencia digital, diseñada para vender e impresionar."
+        breadcrumbs={breadcrumbs}
+      />
+
+      <section ref={rootRef as any} className="relative py-16 md:py-24 overflow-hidden bg-white">
+        {/* Background Decorative Blobs */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#41f0a5]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#3750f0]/5 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+          {/* Main Hero View - Centered Intro */}
+          <div className="text-center mb-16 md:mb-24">
+            <h1 className="text-4xl md:text-6xl font-black text-gray-950 mb-8 tracking-tight reveal">
+              Diseño de Páginas Web <br /> 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">Personalizadas</span>
+            </h1>
+          </div>
+
+          {/* Intro Section - Split Layout */}
+          <div className="grid lg:grid-cols-2 gap-16 items-center mb-32">
+            <div className="space-y-8 reveal slide-left">
+              <p className="text-lg text-gray-600 leading-relaxed font-medium">
+                En Spark Tree Studio diseñamos páginas web estratégicas, modernas y optimizadas para SEO, pensadas para ayudar a las empresas a aumentar su visibilidad online, generar oportunidades de negocio y fortalecer su presencia digital.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Una página web no solo es una tarjeta de presentación digital, sino una herramienta clave para atraer clientes, comunicar el valor de tu marca y generar ventas de manera constante.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed font-semibold text-gray-900">
+                Nuestro enfoque combina diseño, estrategia, experiencia de usuario (UX), velocidad de carga y posicionamiento en buscadores, garantizando que tu sitio web no solo se vea bien, sino que también funcione como un activo digital que genere resultados reales para tu negocio.
+              </p>
+              
+              <div className="pt-4">
+                <button 
+                  onClick={() => onNavigate?.('contact')}
+                  className="px-10 py-5 bg-[#3750f0] text-white rounded-2xl font-black shadow-[0_20px_40px_rgba(55,80,240,0.3)] hover:scale-105 transition-all duration-500 hover:shadow-[0_25px_50px_rgba(55,80,240,0.4)] tracking-widest uppercase text-sm"
+                >
+                  Asesoría gratuita
+                </button>
+              </div>
             </div>
-            <div className="rounded-2xl bg-gray-200 aspect-video flex items-center justify-center reveal rotate-in">
-              <span className="text-gray-500">mockup</span>
+
+            {/* Layered Mockup Area */}
+            <div className="relative group reveal scale-up">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#41f0a5]/20 to-[#3750f0]/10 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+              
+              <div className="relative">
+                {/* Desktop Screen Mockup */}
+                <div className="bg-gray-950 rounded-[2rem] p-3 shadow-2xl transform rotate-1 group-hover:rotate-0 transition-transform duration-700">
+                  <div className="overflow-hidden rounded-xl aspect-[16/10] bg-white">
+                    <img 
+                      src="/assets/web_design.webp" 
+                      alt="Diseño Web Desktop" 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                    />
+                  </div>
+                </div>
+
+                {/* Mobile Phone Mockup Overlay */}
+                <div className="absolute -bottom-10 -right-4 w-[35%] bg-gray-950 rounded-[2.5rem] p-2 shadow-2xl border-4 border-gray-900 transform -rotate-3 group-hover:rotate-0 transition-transform duration-700 delay-100 hidden sm:block">
+                  <div className="overflow-hidden rounded-[2rem] aspect-[9/19] bg-white">
+                    <img 
+                      src="/assets/web_design.webp" 
+                      alt="Diseño Web Mobile" 
+                      className="w-full h-full object-cover object-left" 
+                    />
+                  </div>
+                  {/* Speaker detail */}
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1 bg-gray-800 rounded-full"></div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex gap-3">
-            <button className="px-5 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium" onClick={() => onNavigate?.('portfolio')}>Ver casos</button>
-            <button className="px-5 py-3 bg-white text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors font-medium" onClick={() => onNavigate?.('services')}>Todos los servicios</button>
+          {/* Process Section */}
+          <div className="py-24 border-t border-gray-100">
+            <div className="text-center mb-20 scroll-entrance">
+              <h2 className="text-3xl md:text-5xl font-black text-gray-950 mb-6 tracking-tight">
+                Nuestro proceso de diseño y desarrollo web
+              </h2>
+              <p className="text-lg text-gray-500 max-w-3xl mx-auto font-medium">
+                En Spark Tree Studio seguimos un proceso estratégico que garantiza resultados profesionales y alineados con los objetivos de cada cliente.
+              </p>
+            </div>
+
+            <div className="space-y-12 max-w-4xl mx-auto">
+              {processSteps.map((step, idx) => (
+                <div 
+                  key={idx} 
+                  className={`relative p-8 md:p-12 bg-white/40 backdrop-blur-xl border border-gray-100 rounded-[3rem] transition-all duration-500 hover:shadow-2xl hover:border-[#41f0a5]/30 scroll-entrance ${idx % 2 === 0 ? 'slide-left' : 'slide-right'}`}
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  <div className="absolute top-8 right-12 text-8xl font-black text-gray-950/5 select-none">{step.number}</div>
+                  
+                  <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start">
+                    <div className="w-16 h-16 bg-gray-950 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl group-hover:rotate-6 transition-all">
+                      <FaRocket className="text-[#41f0a5] text-2xl" />
+                    </div>
+                    
+                    <div className="flex-1 space-y-6">
+                      <h3 className="text-2xl md:text-3xl font-black text-gray-950 tracking-tight">
+                        {step.number}. {step.title}
+                      </h3>
+                      <p className="text-lg text-gray-600 font-medium leading-relaxed">
+                        {step.description}
+                      </p>
+                      
+                      {step.items && (
+                        <div className="space-y-4">
+                          <p className="text-sm font-black text-gray-400 uppercase tracking-widest">Definimos:</p>
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                            {step.items.map((item, i) => (
+                              <li key={i} className="flex items-center gap-3 group/item">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#41f0a5] group-hover/item:scale-150 transition-transform" />
+                                <span className="text-gray-600 font-medium group-hover/item:text-gray-950 transition-colors uppercase text-xs tracking-wider">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {step.footer && (
+                        <div className="pt-4 border-t border-gray-100 flex items-center gap-3 text-[#3750f0] font-bold italic">
+                          <FaCheck size={14} />
+                          <p>{step.footer}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Benefits Section */}
+          <div className="py-24">
+            <div className="text-center mb-16 scroll-entrance">
+              <h2 className="text-3xl md:text-5xl font-black text-gray-950 mb-6 tracking-tight">
+                Beneficios de tener una página web optimizada
+              </h2>
+              <p className="text-lg text-gray-500 max-w-3xl mx-auto font-medium">
+                Un sitio web optimizado ofrece múltiples ventajas para el crecimiento de una empresa.
+              </p>
+            </div>
+
+            <div className="space-y-6 max-w-4xl mx-auto">
+              {benefits.map((benefit, idx) => (
+                <div 
+                  key={idx} 
+                  className="p-6 md:p-8 rounded-2xl md:rounded-[2rem] bg-gradient-to-r from-blue-500 to-[#41f0a5] text-white shadow-[0_10px_30px_rgba(65,240,165,0.2)] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(65,240,165,0.3)] transition-all duration-500 scroll-entrance scale-up relative overflow-hidden group"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  {/* Subtle shimmer effect */}
+                  <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out" />
+                  
+                  <div className="relative z-10">
+                    <h3 className="text-xl md:text-2xl font-bold mb-2 tracking-tight">
+                      {benefit.title}
+                    </h3>
+                    <p className="text-white/90 font-medium leading-relaxed">
+                      {benefit.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="mt-24 flex flex-col sm:flex-row justify-center gap-6 reveal bounce-in">
+            <button 
+              onClick={() => onNavigate?.('portfolio')}
+              className="px-10 py-5 bg-gray-950 text-white rounded-2xl font-black shadow-xl hover:scale-105 transition-all duration-500 tracking-widest uppercase text-sm"
+            >
+              Ver portafolio de diseño
+            </button>
+            <button 
+              onClick={() => onNavigate?.('services')}
+              className="px-10 py-5 bg-white border-2 border-gray-100 text-gray-950 rounded-2xl font-black hover:border-[#41f0a5] transition-all duration-500 tracking-widest uppercase text-sm"
+            >
+              Explorar otros servicios
+            </button>
           </div>
         </div>
       </section>
