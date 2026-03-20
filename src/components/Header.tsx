@@ -651,14 +651,23 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             }`}>
           <div className="flex flex-col h-full overflow-y-auto overscroll-contain pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)]" style={{ WebkitOverflowScrolling: 'touch' }}>
             {/* Header */}
-            <div className="flex items-center justify-between h-16 px-6 border-b border-white/20 bg-transparent mobile-glow">
-              <span className="font-semibold text-white text-lg">Menú</span>
+            <div className="flex items-center justify-between h-20 px-6 border-b border-gray-100 bg-white">
+              <button 
+                onClick={() => { onNavigate('home'); setIsMobileMenuOpen(false); }}
+                className="transition-transform hover:scale-105"
+              >
+                <img 
+                  src="/assets/sparktree-horizontal.png" 
+                  alt="SparkTree" 
+                  className="h-9 w-auto object-contain brightness-0"
+                />
+              </button>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-colors"
-                aria-label="Close menu"
+                className="p-2.5 text-gray-400 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 rounded-xl transition-colors shadow-sm"
+                aria-label="Cerrar menú"
               >
-                <FaX size={20} />
+                <FaX size={16} />
               </button>
             </div>
 
