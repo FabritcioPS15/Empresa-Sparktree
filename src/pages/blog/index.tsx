@@ -15,6 +15,7 @@ export default function Blog({ onViewPost }: BlogProps) {
   ];
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
@@ -118,8 +119,6 @@ export default function Blog({ onViewPost }: BlogProps) {
       read_time: "5 min"
     }
   ];
-
-  const categories = ["Todos", "Marketing", "SEO", "E-commerce", "Redes Sociales", "Tecnología", "Conversión"];
 
   const queryTokens = query
     .toLowerCase()
@@ -324,7 +323,7 @@ export default function Blog({ onViewPost }: BlogProps) {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {posts.slice(3).map((post, index) => (
+              {posts.slice(3).map((post) => (
                 <div key={post.id} className="group cursor-pointer scroll-entrance initial-visible hover:scale-105 transition-all duration-500 smooth-exit">
                   <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all duration-500 h-full">
                     <div className="p-6">

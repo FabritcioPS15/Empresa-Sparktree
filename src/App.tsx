@@ -11,9 +11,12 @@ import Services from './pages/services';
 import ServiceWeb from './pages/services/Web';
 import ServiceSEO from './pages/services/SEO';
 import ServiceBranding from './pages/services/Branding';
+import ServiceTI from './pages/services/TI';
+import Privacy from './pages/privacy';
 import ProjectDetail from './pages/portfolio/ProjectDetail';
 import Contact from './pages/contact';
 import Footer from './components/Footer';
+import CookieConsent from './components/CookieConsent';
 
 // Blog article pages
 import TendenciasMarketingDigital2025 from './pages/blog/tendencias-marketing-digital-2025';
@@ -38,6 +41,8 @@ function App() {
     if (path === '/services/web') return 'service-web';
     if (path === '/services/seo') return 'service-seo';
     if (path === '/services/branding') return 'service-branding';
+    if (path === '/services/ti') return 'service-ti';
+    if (path === '/privacy') return 'privacy';
     if (path === '/contact') return 'contact';
     if (path.startsWith('/blog/')) return 'blog-post';
     if (path.startsWith('/portfolio/')) return 'project-detail';
@@ -74,6 +79,12 @@ function App() {
           break;
         case 'service-branding':
           path = '/services/branding';
+          break;
+        case 'service-ti':
+          path = '/services/ti';
+          break;
+        case 'privacy':
+          path = '/privacy';
           break;
         case 'contact':
           path = '/contact';
@@ -164,6 +175,8 @@ function App() {
             <Route path="/services/web" element={<ServiceWeb onNavigate={handleNavigate} />} />
             <Route path="/services/seo" element={<ServiceSEO onNavigate={handleNavigate} />} />
             <Route path="/services/branding" element={<ServiceBranding onNavigate={handleNavigate} />} />
+            <Route path="/services/ti" element={<ServiceTI onNavigate={handleNavigate} />} />
+            <Route path="/privacy" element={<Privacy onNavigate={handleNavigate} />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
@@ -172,6 +185,7 @@ function App() {
           currentPage={currentPage} 
           isExiting={isExiting}
         />
+        <CookieConsent onNavigate={handleNavigate} />
       </div>
     </ReactLenis>
   );

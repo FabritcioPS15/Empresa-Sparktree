@@ -111,6 +111,11 @@ export default function Services({ onNavigate }: ServicesProps) {
       description:
         'Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia. Una marca sólida genera lealtad y te permite cobrar lo que realmente vale tu servicio',
     },
+    {
+      title: 'Servicios TI',
+      description:
+        'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable, protegiendo tu información y optimizando tu rendimiento digital.',
+    },
   ];
 
   return (
@@ -138,7 +143,7 @@ export default function Services({ onNavigate }: ServicesProps) {
                   </p>
                   <div className="mt-8">
                     <button
-                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo')}`)}
+                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo').replace('servicios-ti', 'ti')}`)}
                       className="px-8 py-3.5 bg-gray-950 text-white rounded-full hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-xl smooth-exit"
                     >
                       Conoce más

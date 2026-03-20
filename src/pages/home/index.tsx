@@ -88,6 +88,12 @@ export default function Home({ onNavigate }: HomeProps) {
       image: '/assets/branding.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
+    {
+      title: 'Servicios TI',
+      description: 'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable.',
+      image: '/assets/web_design.webp',
+      gradient: 'from-[#3750f0] to-[#41F0A5]',
+    },
   ];
 
   const team = [
@@ -235,7 +241,9 @@ export default function Home({ onNavigate }: HomeProps) {
                 ? 'service-diseno'
                 : index === 1
                   ? 'service-seo'
-                  : 'service-branding'
+                  : index === 2
+                    ? 'service-branding'
+                    : 'service-ti'
             }
             className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} py-10 sm:py-12 md:py-16 lg:py-20`}
           >
@@ -259,7 +267,7 @@ export default function Home({ onNavigate }: HomeProps) {
                     {service.description}
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <button onClick={() => onNavigate?.(index === 0 ? 'service-web' : index === 1 ? 'service-seo' : 'service-branding')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 font-medium text-sm hover-shadow-mint">
+                    <button onClick={() => onNavigate?.(index === 0 ? 'service-web' : index === 1 ? 'service-seo' : index === 2 ? 'service-branding' : 'service-ti')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-300 font-medium text-sm hover-shadow-mint">
                       Ver servicio
                     </button>
                     <button onClick={() => onNavigate?.('portfolio')} className="px-4 sm:px-5 md:px-6 py-2.5 bg-white text-gray-900 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors duration-300 font-medium text-sm hover-shadow-blue">

@@ -68,6 +68,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { label: 'Diseño de Páginas Web', type: 'Servicio', href: 'service-web', keywords: 'web diseño paginas sitio' },
     { label: 'Posicionamiento SEO', type: 'Servicio', href: 'service-seo', keywords: 'seo posicionamiento google' },
     { label: 'Branding', type: 'Servicio', href: 'service-branding', keywords: 'branding identidad marca' },
+    { label: 'Servicios TI', type: 'Servicio', href: 'service-ti', keywords: 'ti tecnologia tecnología soporte sistemas infraestructura' },
     // Blog categories (navigate to blog)
     { label: 'Marketing', type: 'Categoría', href: 'blog', keywords: 'marketing' },
     { label: 'SEO', type: 'Categoría', href: 'blog', keywords: 'seo' },
@@ -269,6 +270,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { id: 'service-web', label: 'Diseño de Páginas Web', description: 'Sitios web que convierten' },
     { id: 'service-seo', label: 'Posicionamiento SEO', description: 'Aparece en Google' },
     { id: 'service-branding', label: 'Branding', description: 'Identidad de marca' },
+    { id: 'service-ti', label: 'Servicios TI', description: 'Soluciones tecnológicas' },
   ];
 
   const handleNavClick = (pageId: string) => {

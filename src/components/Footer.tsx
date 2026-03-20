@@ -57,6 +57,7 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
     { id: 'service-web', label: 'Diseño Web' },
     { id: 'service-seo', label: 'SEO' },
     { id: 'service-branding', label: 'Branding' },
+    { id: 'service-ti', label: 'Servicios TI' },
   ];
 
   const isActive = (id: string) => {
