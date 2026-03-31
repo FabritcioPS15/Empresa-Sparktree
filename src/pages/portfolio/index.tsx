@@ -171,6 +171,12 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                     className="min-w-[320px] sm:min-w-[450px] lg:min-w-[550px] snap-start group cursor-pointer"
                   >
                     <div className="relative bg-gray-50 rounded-[2.5rem] aspect-[16/10] mb-6 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-1000 border border-gray-100">
+                      {/* Imagen de fondo del proyecto destacado */}
+                      <img 
+                        src={project.cardImage || project.heroImage} 
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                      />
                       <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
                         <span className="text-gray-300 text-[10px] font-black uppercase tracking-[0.5em] -rotate-45">Sparktree Featured</span>
                       </div>
@@ -264,6 +270,12 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="relative bg-gray-50 rounded-[2.5rem] aspect-[4/5] mb-6 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-1000 border border-gray-100">
+                  {/* Imagen de fondo del proyecto */}
+                  <img 
+                    src={project.cardImage || project.heroImage} 
+                    alt={project.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                  />
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
                     <span className="text-gray-300 text-[10px] font-black uppercase tracking-[0.5em] -rotate-45">Sparktree Visual System</span>
                   </div>

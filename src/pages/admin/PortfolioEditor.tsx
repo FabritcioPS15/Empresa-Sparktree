@@ -180,6 +180,7 @@ export default function PortfolioEditor() {
         team: [],
         resultImages: [],
         additionalImages: [],
+        cardImage: "",
       });
       fetchProjects();
       setTimeout(() => setSaveSuccess(false), 3000);
@@ -777,6 +778,45 @@ export default function PortfolioEditor() {
 
                 {activeTab === "media" && (
                   <div className="space-y-8 animate-fade-in-scale">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                        Imagen de Tarjeta (Miniatura del Portafolio)
+                      </label>
+                      <div className="flex gap-3">
+                        <input
+                          type="text"
+                          value={formData.cardImage || ""}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              cardImage: e.target.value,
+                            })
+                          }
+                          className="flex-1 px-5 py-3 bg-gray-50 border-none rounded-2xl text-sm"
+                          placeholder="URL de la imagen para la miniatura..."
+                        />
+                        <label
+                          className={`flex items-center gap-2 px-6 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
+                        >
+                          {isUploading ? (
+                            <Loader2 className="animate-spin" size={16} />
+                          ) : (
+                            <Upload size={16} />
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) =>
+                              handleImageUpload(e, (url) =>
+                                setFormData({ ...formData, cardImage: url }),
+                              )
+                            }
+                          />
+                        </label>
+                      </div>
+                      <p className="text-[10px] text-gray-400 mt-1 italic italic">Se recomienda una imagen de 800x600px aproximadamente.</p>
+                    </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                         Media Principal (Hero - Imagen o Video)
