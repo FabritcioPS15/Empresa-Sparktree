@@ -149,13 +149,24 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
       
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
-    }, 100);
+
+      // SEGURO DE VIDA: Si en 1.5s no se han mostrado, forzar visibilidad total
+      const failSafe = setTimeout(() => {
+        document.querySelectorAll('.scroll-entrance, .reveal').forEach((el) => {
+          el.classList.add('reveal-visible', 'visible');
+          (el as HTMLElement).style.opacity = '1';
+          (el as HTMLElement).style.transform = 'none';
+        });
+      }, 1500);
+
+      return () => clearTimeout(failSafe);
+    }, 200);
 
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
     };
-  }, []);
+  }, [project]); // Re-run when project loads
 
   if (loading) {
     return (
@@ -182,8 +193,8 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
   }
 
   return (
-    <div className="pt-16 sm:pt-20">
-      <section ref={projectRef} className="py-8 sm:py-12 md:py-16 lg:py-20">
+    <div className="pt-16 sm:pt-20" style={{ opacity: 1, visibility: 'visible' }}>
+      <section ref={projectRef} className="py-8 sm:py-12 md:py-16 lg:py-20" style={{ opacity: 1, visibility: 'visible' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
           <div className="mb-6 sm:mb-8">
