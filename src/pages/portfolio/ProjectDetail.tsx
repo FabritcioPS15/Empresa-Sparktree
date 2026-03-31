@@ -1,14 +1,112 @@
-import { useEffect, useRef } from 'react';
-import { getProjectById } from '@/data/projects';
+import { useEffect, useRef, useState } from 'react';
+import { Project } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ProjectDetailProps {
-  projectId: string;
+  projectId?: string;
   onNavigate?: (page: string) => void;
+  initialData?: Project;
+  isPreview?: boolean;
 }
 
-export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailProps) {
+export default function ProjectDetail({ projectId, onNavigate, initialData, isPreview = false }: ProjectDetailProps) {
   const projectRef = useRef<HTMLElement>(null);
-  const project = getProjectById(projectId);
+  const [project, setProject] = useState<Project | null>(initialData || null);
+  const [loading, setLoading] = useState(!initialData);
+
+  useEffect(() => {
+    if (initialData) {
+      setProject(initialData);
+      setLoading(false);
+      return;
+    }
+
+    if (!projectId) {
+      setLoading(false);
+      return;
+    }
+
+    async function fetchProject() {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('id', projectId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching project:', error);
+      } else if (data) {
+        setProject(data as Project);
+      }
+      setLoading(false);
+    }
+
+    fetchProject();
+  }, [projectId, initialData]);
+
+  const renderMedia = (url: string, alt: string, className: string = "w-full h-full object-cover") => {
+    if (!url) return null;
+    const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm') || url.toLowerCase().endsWith('.ogg');
+    const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
+    const isVimeo = url.includes('vimeo.com');
+
+    if (isYouTube) {
+      const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+      return (
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}`}
+          className={className}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title={alt}
+        />
+      );
+    }
+
+    if (isVimeo) {
+      const videoId = url.split('/').pop();
+      return (
+        <iframe
+          src={`https://player.vimeo.com/video/${videoId}`}
+          className={className}
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          title={alt}
+        />
+      );
+    }
+
+    if (isVideo) {
+      return (
+        <video src={url} className={className} controls playsInline muted>
+          Your browser does not support the video tag.
+        </video>
+      );
+    }
+
+    return <img src={url} alt={alt} className={className} />;
+  };
+
+  usePageMeta({
+    title: project ? `${project.title} | Empresa SparkTree` : 'Proyecto | Empresa SparkTree',
+    description: project?.description || 'Detalle del proyecto de Empresa SparkTree',
+    url: `https://sparktree.pe/portfolio/${projectId}`,
+    image: project?.heroImage,
+    type: 'article',
+    jsonLd: project ? {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": project.title,
+      "description": project.description,
+      "provider": {
+        "@type": "Organization",
+        "name": "Empresa SparkTree"
+      },
+      "award": (project.results || []).join(", "),
+      "creator": (project.team || []).join(", ")
+    } : undefined
+  });
 
   useEffect(() => {
     const observerOptions = {
@@ -41,6 +139,14 @@ export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailPr
       observer.disconnect();
     };
   }, []);
+
+  if (loading) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!project) {
     return (
@@ -77,18 +183,22 @@ export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailPr
 
           {/* Hero Section - Brand/Project Overview */}
           <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-            {/* Hero Image Placeholder */}
-            <div className="bg-gray-200 rounded-2xl aspect-[16/9] sm:aspect-[16/8] md:aspect-[16/7] lg:aspect-[16/6] mb-6 sm:mb-8 md:mb-10 scroll-entrance scale-up scroll-stagger-1 hover:bg-gray-300 hover:scale-105 hover:shadow-lg transition-all duration-500 cursor-default smooth-exit flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-400 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-                  <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+            {/* Hero Media */}
+            <div className={`bg-gray-100 rounded-2xl aspect-[16/9] sm:aspect-[16/8] md:aspect-[16/7] lg:aspect-[16/6] mb-6 sm:mb-8 md:mb-10 overflow-hidden shadow-sm transition-all duration-500 flex items-center justify-center ${isPreview ? '' : 'scroll-entrance scale-up scroll-stagger-1'}`}>
+              {project.heroImage && (project.heroImage.startsWith('http') || project.heroImage.startsWith('/') || project.heroImage.includes('youtube')) ? (
+                renderMedia(project.heroImage, project.title)
+              ) : (
+                <div className="text-center p-8">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                    <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-gray-400 leading-relaxed text-xs sm:text-sm md:text-base italic">
+                    {project.heroImage || "No media assigned"}
+                  </p>
                 </div>
-                <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base hover:text-gray-800 transition-colors duration-500">
-                  {project.heroImage}
-                </p>
-              </div>
+              )}
             </div>
             
             <div className="max-w-4xl mx-auto">
@@ -143,7 +253,7 @@ export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailPr
               <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 scroll-entrance slide-right scroll-stagger-5">
                 <h4 className="font-bold text-gray-900 mb-3 sm:mb-4">Tecnologías</h4>
                 <div className="flex flex-wrap gap-2">
-                  {project.technologies.map((tech, index) => (
+                  {(project.technologies || []).map((tech, index) => (
                     <span
                       key={index}
                       className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm"
@@ -153,11 +263,11 @@ export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailPr
                   ))}
                 </div>
               </div>
-
+ 
               <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 scroll-entrance slide-right scroll-stagger-6">
                 <h4 className="font-bold text-gray-900 mb-3 sm:mb-4">Equipo</h4>
                 <div className="space-y-2">
-                  {project.team.map((member, index) => (
+                  {(project.team || []).map((member, index) => (
                     <p key={index} className="text-sm sm:text-base text-gray-600">
                       {member}
                     </p>
@@ -166,14 +276,14 @@ export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailPr
               </div>
             </div>
           </div>
-
+ 
           {/* Results Section */}
           <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center scroll-entrance scroll-stagger-7">
               Resultados Obtenidos
             </h2>
             <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-              {project.results.map((result, index) => (
+              {(project.results || []).map((result, index) => (
                 <div
                   key={index}
                   className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 scroll-entrance scale-up scroll-stagger-8 hover:bg-gray-50 hover:scale-105 hover:shadow-lg transition-all duration-500 cursor-default"
@@ -191,39 +301,49 @@ export default function ProjectDetail({ projectId, onNavigate }: ProjectDetailPr
             </div>
           </div>
 
-          {/* Main Result Image */}
-          <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-            <div className="bg-gray-200 rounded-2xl aspect-[16/10] sm:aspect-[16/9] md:aspect-[16/8] lg:aspect-[16/7] scroll-entrance scale-up scroll-stagger-9 hover:bg-gray-300 hover:scale-105 hover:shadow-lg transition-all duration-500 cursor-default smooth-exit flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-400 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-                  <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base hover:text-gray-800 transition-colors duration-500">
-                  {project.resultImages[0]}
-                </p>
+          {/* Main Result Media */}
+          {project.resultImages && project.resultImages.length > 0 && (
+            <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
+              <div className={`bg-gray-100 rounded-2xl aspect-[16/10] sm:aspect-[16/9] md:aspect-[16/8] lg:aspect-[16/7] overflow-hidden shadow-sm transition-all duration-500 flex items-center justify-center ${isPreview ? '' : 'scroll-entrance scale-up scroll-stagger-9'}`}>
+                {project.resultImages[0].startsWith('http') || project.resultImages[0].startsWith('/') || project.resultImages[0].includes('youtube') ? (
+                  renderMedia(project.resultImages[0], `Resultado 1 - ${project.title}`)
+                ) : (
+                  <div className="text-center p-8">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                      <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-400 leading-relaxed text-xs sm:text-sm md:text-base italic">
+                      {project.resultImages[0]}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          )}
 
-          {/* Additional Result Images */}
+          {/* Additional Result Media */}
           <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-            {project.additionalImages.map((image, index) => (
+            {(project.additionalImages || []).map((image, index) => (
               <div
                 key={index}
-                className="bg-gray-200 rounded-2xl aspect-[4/3] sm:aspect-[4/3] md:aspect-[4/3] lg:aspect-[4/3] scroll-entrance scale-up scroll-stagger-10 hover:bg-gray-300 hover:scale-105 hover:shadow-lg transition-all duration-500 cursor-default smooth-exit flex items-center justify-center"
+                className={`bg-gray-100 rounded-2xl aspect-[4/3] overflow-hidden shadow-sm transition-all duration-500 flex items-center justify-center ${isPreview ? '' : 'scroll-entrance scale-up scroll-stagger-10'}`}
               >
-                <div className="text-center">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gray-400 rounded-lg mx-auto mb-3 sm:mb-4 flex items.CENTER justify-center">
-                    <svg className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+                {image.startsWith('http') || image.startsWith('/') || image.includes('youtube') ? (
+                  renderMedia(image, `Detalle ${index + 1} - ${project.title}`)
+                ) : (
+                  <div className="text-center p-6">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gray-200 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+                      <svg className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-400 leading-relaxed text-xs sm:text-sm italic">
+                      {image}
+                    </p>
                   </div>
-                  <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base hover:text-gray-800 transition-colors duration-500">
-                    {image}
-                  </p>
-                </div>
+                )}
               </div>
             ))}
           </div>

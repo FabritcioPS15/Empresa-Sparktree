@@ -1113,3 +1113,21 @@
 
 
 }
+  /* Liquid fill animation for logo loader */
+  @keyframes fill-logo-up {
+    0% { clip-path: inset(100% 0 0 0); }
+    100% { clip-path: inset(0 0 0 0); }
+  }
+
+  .animate-fill-logo {
+    animation: fill-logo-up 3s ease-in-out infinite;
+  }
+
+  /* Utility to hide scrollbars while keeping functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }

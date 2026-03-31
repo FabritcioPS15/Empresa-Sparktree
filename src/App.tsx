@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ReactLenis } from 'lenis/react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Header from './components/Header';
+import CustomLoader from './components/common/CustomLoader';
 
 import Home from './pages/home';
 import Blog from './pages/blog';
@@ -17,6 +18,7 @@ import ProjectDetail from './pages/portfolio/ProjectDetail';
 import Contact from './pages/contact';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
+import PortfolioEditor from './pages/admin/PortfolioEditor';
 
 // Blog article pages
 import TendenciasMarketingDigital2025 from './pages/blog/tendencias-marketing-digital-2025';
@@ -30,6 +32,15 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isExiting, setIsExiting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Show loader for at least 2 seconds for aesthetic impact
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Función para obtener la página actual basada en la URL
   const getCurrentPage = () => {
@@ -46,6 +57,7 @@ function App() {
     if (path === '/contact') return 'contact';
     if (path.startsWith('/blog/')) return 'blog-post';
     if (path.startsWith('/portfolio/')) return 'project-detail';
+    if (path === '/admin/portfolio' || path === '/PortfolioEditor') return 'admin-portfolio';
     return ''; // No page active if not matched
   };
 
@@ -88,6 +100,9 @@ function App() {
           break;
         case 'contact':
           path = '/contact';
+          break;
+        case 'admin-portfolio':
+          path = '/PortfolioEditor'; // Default this to what user expects now
           break;
         default:
           path = '/';
@@ -150,7 +165,8 @@ function App() {
 
   return (
     <ReactLenis root>
-      <div className="min-h-screen bg-white">
+      {isLoading && <CustomLoader />}
+      <div className={`min-h-screen bg-white transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
 
         <Header 
           currentPage={currentPage} 
@@ -178,6 +194,8 @@ function App() {
             <Route path="/services/ti" element={<ServiceTI onNavigate={handleNavigate} />} />
             <Route path="/privacy" element={<Privacy onNavigate={handleNavigate} />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/admin/portfolio" element={<PortfolioEditor />} />
+            <Route path="/PortfolioEditor" element={<PortfolioEditor />} />
           </Routes>
         </main>
         <Footer 

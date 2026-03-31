@@ -2,7 +2,8 @@ import { FaWhatsapp, FaX, FaInstagram, FaLinkedin, FaTiktok, FaMagnifyingGlass }
 import { CgMenuRight } from 'react-icons/cg';
 import { Home as HomeIcon, Wrench, Folder, FileText, Briefcase, Newspaper } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { projects as portfolioProjects } from '@/data/projects';
+import { Project } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
 import AnimatedButton from './ui/AnimatedButton';
 
 interface HeaderProps {
@@ -27,8 +28,25 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   const desktopInputRef = useRef<HTMLInputElement | null>(null);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const mobileSearchRef = useRef<HTMLDivElement | null>(null);
+  const [dbProjects, setDbProjects] = useState<Project[]>([]);
 
-  const projectEntries = portfolioProjects.map((p) => ({
+  useEffect(() => {
+    async function fetchProjectsForSearch() {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('id, title, client, category, services')
+        .eq('isVisible', true);
+
+      if (error) {
+        console.error('Error fetching search projects:', error);
+      } else if (data) {
+        setDbProjects(data as Project[]);
+      }
+    }
+    fetchProjectsForSearch();
+  }, []);
+
+  const projectEntries = dbProjects.map((p) => ({
     label: p.title,
     type: 'Proyecto',
     href: `/portfolio/${p.id}`,

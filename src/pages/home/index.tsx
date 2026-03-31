@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { projects as allProjects } from '@/data/projects';
+import { Project } from '@/data/projects';
+import { supabase } from '@/lib/supabase';
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface HomeProps {
   onNavigate?: (page: string) => void;
@@ -12,6 +14,44 @@ export default function Home({ onNavigate }: HomeProps) {
   const projectsRef = useRef<HTMLElement>(null);
   const teamRef = useRef<HTMLElement>(null);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [recentProjects, setRecentProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    async function fetchRecentProjects() {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('isVisible', true)
+        .order('orderRank', { ascending: true })
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      if (error) {
+        console.error('Error fetching recent projects:', error);
+      } else if (data) {
+        setRecentProjects(data as Project[]);
+      }
+    }
+
+    fetchRecentProjects();
+  }, []);
+
+  usePageMeta({
+    title: 'Empresa SparkTree | Agencia de Marketing Digital & Diseño Web en Lima',
+    description: 'Convertimos visitas en ventas. Agencia líder en Lima especializada en diseño web de alto rendimiento, posicionamiento SEO y branding estratégico para negocios reales.',
+    url: 'https://sparktree.pe',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Empresa SparkTree",
+      "url": "https://sparktree.pe",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://sparktree.pe/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  });
 
   useEffect(() => {
     const onScroll = () => {
@@ -67,7 +107,7 @@ export default function Home({ onNavigate }: HomeProps) {
     };
   }, []);
 
-  const projects = allProjects.slice(0, 3);
+  // Removed projects variable, using recentProjects state directly below
 
   const services = [
     {
@@ -308,7 +348,7 @@ export default function Home({ onNavigate }: HomeProps) {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-10 lg:mt-12 mb-6 sm:mb-8">
-            {projects.map((project, index) => (
+            {recentProjects.map((project, index) => (
               <div
                 key={project.id}
                 onClick={() => onNavigate?.(`/portfolio/${project.id}`)}
@@ -319,8 +359,8 @@ export default function Home({ onNavigate }: HomeProps) {
                     <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
                   </div>
                   <div
-                    className="absolute inset-x-0 bottom-0 h-2/3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ background: `linear-gradient(to top, ${(project as any).overlayColor ?? '#A8B4FF'}, transparent)` }}
+                    className="absolute inset-x-0 bottom-0 h-[80%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                    style={{ background: `linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.4), transparent)` }}
                   />
                   <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                     <div className="text-white drop-shadow-sm">
