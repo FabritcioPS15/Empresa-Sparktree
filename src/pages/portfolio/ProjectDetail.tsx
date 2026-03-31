@@ -28,18 +28,35 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     }
 
     async function fetchProject() {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('id', projectId)
-        .single();
+      try {
+        const currentId = projectId || '';
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .eq('id', currentId)
+          .single();
 
-      if (error) {
-        console.error('Error fetching project:', error);
-      } else if (data) {
-        setProject(data as Project);
+        if (error) {
+          // Retry case-insensitive
+          const { data: retryData } = await supabase
+            .from('projects')
+            .select('*')
+            .ilike('id', currentId)
+            .single();
+          
+          if (retryData) {
+            setProject(retryData as Project);
+          } else {
+            console.error('Error fetching project:', error);
+          }
+        } else if (data) {
+          setProject(data as Project);
+        }
+      } catch (err) {
+        console.error('Error detallado de Supabase:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchProject();

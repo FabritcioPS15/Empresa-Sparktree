@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ReactLenis } from 'lenis/react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Header from './components/Header';
 import CustomLoader from './components/common/CustomLoader';
 
@@ -217,8 +217,7 @@ function BlogPostWrapper({ onBack }: { onBack: () => void }) {
 }
 
 function ProjectDetailWrapper({ onNavigate }: { onNavigate: (page: string) => void }) {
-  const location = useLocation();
-  const projectId = location.pathname.split('/')[2];
+  const { projectId } = useParams<{ projectId: string }>();
   return <ProjectDetail projectId={projectId} onNavigate={onNavigate} />;
 }
 
