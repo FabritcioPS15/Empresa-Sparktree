@@ -3,18 +3,19 @@ import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { ServiceHero } from '@/components/home/ServiceHero';
+
 
 interface HomeProps {
   onNavigate?: (page: string) => void;
 }
 
 export default function Home({ onNavigate }: HomeProps) {
-  const heroRef = useRef<HTMLElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
   const projectsRef = useRef<HTMLElement>(null);
   const teamRef = useRef<HTMLElement>(null);
-  const [hasScrolled, setHasScrolled] = useState(false);
   const [recentProjects, setRecentProjects] = useState<Project[]>([]);
+
 
   useEffect(() => {
     async function fetchRecentProjects() {
@@ -54,17 +55,11 @@ export default function Home({ onNavigate }: HomeProps) {
   });
 
   useEffect(() => {
-    const onScroll = () => {
-      // Considered "scrolled enough" after 80px
-      setHasScrolled(window.scrollY > 80);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-
     const observerOptions = {
       threshold: 0.1,
       rootMargin: '0px 0px -50px 0px'
     };
+
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -77,11 +72,6 @@ export default function Home({ onNavigate }: HomeProps) {
     }, observerOptions);
 
     const timeoutId = setTimeout(() => {
-      // Observe reveal elements
-      if (heroRef.current) {
-        const elements = heroRef.current.querySelectorAll('.reveal');
-        elements.forEach(el => observer.observe(el));
-      }
       if (servicesRef.current) {
         const elements = servicesRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
@@ -103,7 +93,6 @@ export default function Home({ onNavigate }: HomeProps) {
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
-      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 
@@ -139,103 +128,16 @@ export default function Home({ onNavigate }: HomeProps) {
   const team = [
     { name: 'Fabricio Peña', role: 'Desarrollador' },
     { name: 'Roman Reto', role: 'Diseñador UX / UI' },
+    { name: 'Guadalupe Barreto', role: 'Profesional de Marketing' },
+    { name: 'Ruth Belén de la Torre Gamarra', role: 'Profesional de Marketing' },
+    { name: 'Alvaro Carpio Lozano', role: 'Desarrollador' },
   ];
 
   return (
     <div className="pt-0">
-      {/* Hero Section */}
-      <section ref={heroRef} className={`relative overflow-hidden ${hasScrolled ? 'bg-gray-50 pt-16 sm:pt-20' : 'bg-transparent pt-0'} transition-colors duration-300 min-h-screen flex items-center`}>
-        {/* Video Background */}
-        <div className="absolute inset-0 w-full h-full">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-          >
-            <source src="/assets/fondospark.mp4" type="video/mp4" />
-          </video>
-          {/* Overlay para mejorar legibilidad del texto */}
-          <div className="absolute inset-0 bg-black/30"></div>
-          <style>{`
-        @keyframes glowPulseMint {
-          0%, 100% { text-shadow: 0 0 0 rgba(16,185,129,0); }
-          60% { text-shadow: 0 0 14px rgba(110,231,183,0.9), 0 0 18px rgba(16,185,129,0.6); }
-        }
-        .glow-text {
-          text-shadow: none;
-          transition: text-shadow 200ms ease;
-        }
-        .glow-hover:hover .glow-text {
-          animation: glowPulseMint 2.2s ease-in-out infinite;
-          text-shadow: 0 0 14px rgba(110,231,183,0.75), 0 0 14px rgba(16,185,129,0.45);
-        }
-      `}</style>
-        </div>
+      {/* New Hero Section */}
+      <ServiceHero onNavigate={onNavigate} />
 
-        {/* Decorative background only after scroll */}
-        {hasScrolled && (
-          <div className="pointer-events-none absolute inset-0 opacity-70">
-            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-gradient-to-br from-gray-200 to-white blur-3xl" />
-            <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-gradient-to-tr from-gray-200 to-white blur-3xl" />
-          </div>
-        )}
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex justify-center items-center">
-            {/* Copy side */}
-            <div className="text-center max-w-4xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 text-gray-700 text-xs sm:text-sm mb-4 scroll-entrance initial-visible">
-                <span className="inline-block h-2 w-2 rounded-full bg-white" />
-              </div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-3 sm:mb-4">
-                Tu página web. Más ventas en Lima
-                <span className="text-gradient"></span>
-              </h1>
-              <p className="text-sm sm:text-base md:text-lg text-white mb-6 sm:mb-8 max-w-2xl mx-auto scroll-entrance slide-left">
-                Agencia de marketing digital en Lima que convierte visitas en clientesDiseñamos y desarrollamos sitios rápidos, claros y orientados a resultados. Menos ruido, más ventas.              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center scroll-entrance initial-visible bounce-in">
-                <button
-                  onClick={() => onNavigate?.('services')}
-                  className="px-5 sm:px-6 md:px-7 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 font-medium text-sm sm:text-base"
-                >
-                  Quiero una web que venda
-                </button>
-                <button
-                  onClick={() => onNavigate?.('portfolio')}
-                  className="px-5 sm:px-6 md:px-7 py-2.5 sm:py-3 bg-white text-gray-900 rounded-lg border border-gray-200 hover:bg-gray-100 hover:shadow-md transition-all duration-300 font-medium text-sm sm:text-base"
-                >
-                  Ver portafolio →
-                </button>
-              </div>
-
-              {/* Trust row */}
-              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-white scroll-entrance initial-visible text-center">
-                <div className="flex items-center gap-2">
-                  <span className="text-yellow-500">★★★★★</span>
-                  <span className="text-xs sm:text-sm">4.9/5 por 120+ clientes</span>
-                </div>
-                <div className="hidden sm:block h-4 w-px bg-gray-300" />
-                <div className="flex items-center gap-3 opacity-80">
-                  <div className="h-6 w-16 bg-gray-200 rounded" />
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-        {/* Scroll-down indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center z-10">
-          <div className="scrolldown" style={{ ['--color' as any]: '#ffffff' }}>
-            <div className="chevrons">
-              <div className="chevrondown" />
-              <div className="chevrondown" />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* About Section */}
       <section className="py-10 sm:py-12 md:py-16 lg:py-20">
@@ -402,25 +304,27 @@ export default function Home({ onNavigate }: HomeProps) {
             </span>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-4xl mx-auto mb-8 sm:mb-10 md:mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 max-w-7xl mx-auto mb-8 sm:mb-10 md:mb-12">
             {team.map((member, index) => (
               <div
                 key={index}
-                className={`bg-gray-100 rounded-2xl p-6 sm:p-8 md:p-10 lg:p-12 text-center scroll-entrance scale-up scroll-stagger-${index + 3} hover:bg-gray-200 hover:scale-105 hover:shadow-xl transition-all duration-500 cursor-default group smooth-exit`}
+                className={`bg-gray-100 rounded-2xl p-6 sm:p-8 text-center scroll-entrance scale-up scroll-stagger-${index + 3} hover:bg-white hover:scale-105 hover:shadow-2xl transition-all duration-500 cursor-default group filter grayscale hover:grayscale-0 border border-transparent hover:border-emerald-100`}
               >
-                <div className="bg-gray-200 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-full mx-auto mb-4 sm:mb-5 md:mb-6 group-hover:bg-gray-300 group-hover:scale-105 transition-all duration-500"></div>
-                <p className="text-gray-900 font-bold mb-2 group-hover:text-gray-700 transition-colors duration-500 text-xs sm:text-sm">
-                  IMAGEN:
-                </p>
-                <p className="text-gray-900 font-medium text-sm sm:text-base md:text-lg group-hover:text-gray-700 transition-colors duration-500">
+                <div className="bg-gray-200 w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 group-hover:bg-gray-100 group-hover:scale-110 transition-all duration-500 flex items-center justify-center overflow-hidden">
+                  <span className="text-gray-400 group-hover:text-emerald-500 transition-colors">
+                    {member.name.charAt(0)}
+                  </span>
+                </div>
+                <p className="text-gray-900 font-bold mb-1 group-hover:text-emerald-600 transition-colors duration-500 text-sm">
                   {member.name}
                 </p>
-                <p className="text-gray-600 text-xs sm:text-sm mt-2 sm:mt-3 md:mt-4 group-hover:text-gray-800 transition-colors duration-500">
+                <p className="text-gray-500 text-xs mt-1 group-hover:text-gray-700 transition-colors duration-500 italic">
                   {member.role}
                 </p>
               </div>
             ))}
           </div>
+
 
           <p className="text-center text-gray-600 leading-relaxed max-w-3xl mx-auto text-xs sm:text-sm md:text-base px-4 sm:px-6 md:px-0 scroll-entrance slide-left scroll-stagger-5 hover:text-gray-800 hover:scale-105 transition-all duration-500 cursor-default">
             Ayudamos a las marcas a crecer y destacar en el mercado a través de estrategias de marketing innovadoras y personalizadas, enfocadas en conectar con su audiencia y maximizar su impacto digital
