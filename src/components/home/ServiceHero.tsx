@@ -40,13 +40,18 @@ const services: Service[] = [
 
 
 const logos = [
-  { name: 'Client 1', src: 'https://cdn.worldvectorlogo.com/logos/google-2.svg' },
-  { name: 'Client 2', src: 'https://cdn.worldvectorlogo.com/logos/meta-1.svg' },
-  { name: 'Client 3', src: 'https://cdn.worldvectorlogo.com/logos/netflix-3.svg' },
-  { name: 'Client 4', src: 'https://cdn.worldvectorlogo.com/logos/apple-11.svg' },
-  { name: 'Client 5', src: 'https://cdn.worldvectorlogo.com/logos/amazon-2.svg' },
-  { name: 'Client 6', src: 'https://cdn.worldvectorlogo.com/logos/microsoft-5.svg' },
+  { name: 'Logos', src: '/client_logos.jpg' },
+  { name: 'Logos', src: '/client_logos.jpg' },
+  { name: 'Logos', src: '/client_logos.jpg' },
+  { name: 'Logos', src: '/client_logos.jpg' },
 ];
+
+
+
+
+
+
+
 
 interface ServiceHeroProps {
   onNavigate?: (path: string) => void;
@@ -146,22 +151,29 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
       </div>
 
       {/* Logo Marquee */}
-      <div className="absolute bottom-0 left-0 w-full z-30 bg-black/40 backdrop-blur-md border-t border-white/10 py-10 overflow-hidden group/marquee">
+      <div className="absolute bottom-0 left-0 w-full z-30 bg-black/40 backdrop-blur-lg border-t border-white/10 py-6 overflow-hidden group/marquee">
         <div className="flex animate-marquee whitespace-nowrap items-center">
           {[...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div
               key={index}
-              className="mx-16 flex items-center justify-center filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-500 cursor-pointer scale-100 hover:scale-125 select-none"
+              className="mx-24 md:mx-32 flex items-center justify-center opacity-100 transition-all duration-500 cursor-pointer scale-100 hover:scale-105 select-none"
             >
               <img
                 src={logo.src}
                 alt={logo.name}
-                className="h-16 md:h-24 w-auto object-contain "
+                className="h-16 md:h-20 w-auto object-contain"
+                onError={(e) => console.log('Error loading logo:', e.currentTarget.src)}
               />
             </div>
+
+
+
+
+
           ))}
         </div>
       </div>
+
 
 
       <style>{`

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { ServiceHero } from '@/components/home/ServiceHero';
@@ -15,6 +17,9 @@ export default function Home({ onNavigate }: HomeProps) {
   const projectsRef = useRef<HTMLElement>(null);
   const teamRef = useRef<HTMLElement>(null);
   const [recentProjects, setRecentProjects] = useState<Project[]>([]);
+  const [projectPage, setProjectPage] = useState(0);
+  const itemsPerPage = 3;
+
 
 
   useEffect(() => {
@@ -25,7 +30,8 @@ export default function Home({ onNavigate }: HomeProps) {
         .eq('isVisible', true)
         .order('orderRank', { ascending: true })
         .order('created_at', { ascending: false })
-        .limit(3);
+        .limit(12);
+
 
       if (error) {
         console.error('Error fetching recent projects:', error);
@@ -237,59 +243,99 @@ export default function Home({ onNavigate }: HomeProps) {
       {/* Service Modals removed: direct navigation */}
 
       {/* Projects Section */}
-      <section ref={projectsRef} className="bg-gray-50 py-10 sm:py-12 md:py-16 lg:py-20">
+      <section ref={projectsRef} className="bg-gray-50 py-10 sm:py-12 md:py-16 lg:py-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 text-center px-2 sm:px-0 scroll-entrance scroll-stagger-1">
-            <span className="inline-block scroll-stagger-1 hover:scale-105 hover:text-gray-700 transition-all duration-500 cursor-default">
-              Proyectos Recientes
-            </span>
-            <br />
-            <span className="inline-block scroll-stagger-2 hover:scale-105 hover:text-gray-700 transition-all duration-500 cursor-default">
-              que Impulsamos
-            </span>
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-10 lg:mt-12 mb-6 sm:mb-8">
-            {recentProjects.map((project, index) => (
-              <div
-                key={project.id}
-                onClick={() => onNavigate?.(`/portfolio/${project.id}`)}
-                className={`group cursor-pointer scroll-entrance scale-up scroll-stagger-${index + 3} hover:scale-105 transition-all duration-500 smooth-exit`}
+          <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 text-center md:text-left scroll-entrance scroll-stagger-1">
+              <span className="inline-block hover:scale-105 hover:text-gray-700 transition-all duration-500 cursor-default">
+                Proyectos Recientes
+              </span>
+              <br />
+              <span className="inline-block hover:scale-105 hover:text-gray-700 transition-all duration-500 cursor-default">
+                que Impulsamos
+              </span>
+            </h2>
+            
+            <div className="flex gap-2">
+              <button 
+                onClick={() => setProjectPage(prev => Math.max(0, prev - 1))}
+                disabled={projectPage === 0}
+                className="p-3 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
-                <div className="relative bg-gray-200 rounded-xl aspect-[4/5] sm:aspect-[3/4] mb-2 sm:mb-3 md:mb-4 overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
-                  </div>
-                  <div
-                    className="absolute inset-x-0 bottom-0 h-[80%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{ background: `linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.4), transparent)` }}
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4 translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                    <div className="text-white drop-shadow-sm">
-                      <p className="text-base sm:text-xl md:text-2xl font-semibold leading-tight">{project.title}</p>
-                      <p className="text-xs sm:text-sm md:text-base mt-1 text-white/90">{(project as any).services?.join(' · ') ?? 'branding · diseño web'}</p>
-                    </div>
-                  </div>
-                </div>
-                <h3 className="text-center text-gray-900 font-medium text-xs sm:text-sm md:text-base group-hover:text-gray-700 transition-colors duration-500">
-                  {project.title}
-                </h3>
-              </div>
-            ))}
+                <ChevronLeft className="w-6 h-6 text-gray-700" />
+              </button>
+              <button 
+                onClick={() => setProjectPage(prev => (prev + 1) * itemsPerPage < recentProjects.length ? prev + 1 : prev)}
+                disabled={(projectPage + 1) * itemsPerPage >= recentProjects.length}
+                className="p-3 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              >
+                <ChevronRight className="w-6 h-6 text-gray-700" />
+              </button>
+            </div>
           </div>
 
-          <div className="text-center">
+          <div className="relative">
+            <div 
+              className="flex transition-transform duration-700 ease-in-out gap-6"
+              style={{ transform: `translateX(-${projectPage * 100}%)` }}
+            >
+              {recentProjects.map((project) => (
+                <div
+                  key={project.id}
+                  onClick={() => onNavigate?.(`/portfolio/${project.id}`)}
+                  className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] shrink-0 group cursor-pointer scroll-entrance scale-up transition-all duration-500"
+                >
+                  <div className="relative bg-gray-200 rounded-2xl aspect-[4/5] sm:aspect-[3/4] mb-4 overflow-hidden shadow-sm group-hover:shadow-xl group-hover:-translate-y-2 transition-all duration-500">
+                    {/* Featured Tag */}
+                    {project.isFeatured && (
+                      <div className="absolute top-4 left-4 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse">
+                        <Star className="w-3 h-3 fill-current" />
+                        <span>DESTACADO</span>
+                      </div>
+                    )}
+                    
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
+                    </div>
+                    
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-[80%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      style={{ background: `linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.4), transparent)` }}
+                    />
+                    
+                    <div className="absolute inset-x-0 bottom-0 p-6 translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                      <div className="text-white">
+                        <p className="text-xl md:text-2xl font-bold leading-tight">{project.title}</p>
+                        <p className="text-sm mt-2 text-white/80">{project.client}</p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {project.services?.slice(0, 2).map((s, i) => (
+                            <span key={i} className="px-2 py-0.5 bg-white/20 backdrop-blur-md rounded text-[10px] uppercase tracking-wider">
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <h3 className="text-center text-gray-900 font-bold group-hover:text-emerald-600 transition-colors duration-300">
+                    {project.title}
+                  </h3>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
             <button
               onClick={() => onNavigate?.('portfolio')}
-              className="glow-hover text-gray-900 font-medium transition-transform duration-300 scroll-entrance bounce-in scroll-stagger-6 px-1 py-1 smooth-exit text-xs sm:text-sm md:text-base hover:scale-105"
-              style={{ background: 'transparent' }}
+              className="px-8 py-3 bg-white text-gray-900 font-bold rounded-full border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all active:scale-95"
             >
-              <span className="glow-text">Ver más</span>
-              <span className="ml-1 align-middle">↓</span>
+              Ver todos los proyectos
             </button>
           </div>
         </div>
       </section>
+
 
       {/* Team Section */}
       <section ref={teamRef} className="py-10 sm:py-12 md:py-16 lg:py-20">
