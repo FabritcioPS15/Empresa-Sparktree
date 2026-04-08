@@ -34,6 +34,7 @@ export default function PortfolioEditor() {
     team: [],
     resultImages: [],
     additionalImages: [],
+    heroImages: [],
     isVisible: true,
     isFeatured: false,
     orderRank: 0,
@@ -191,6 +192,7 @@ export default function PortfolioEditor() {
         team: [],
         resultImages: [],
         additionalImages: [],
+        heroImages: [],
         cardImage: "",
       });
       fetchProjects();
@@ -218,6 +220,7 @@ export default function PortfolioEditor() {
             team: [],
             resultImages: [],
             additionalImages: [],
+            heroImages: [],
           });
         }
         fetchProjects();
@@ -868,109 +871,105 @@ export default function PortfolioEditor() {
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                        Galería Superior (Carrusel)
+                        Imágenes para el Slider (Hero Carrusel)
+                      </label>
+                      <div className="grid gap-3 mb-6 bg-green-50/30 p-6 rounded-[2rem] border border-green-100">
+                        {formData.heroImages?.map((val, idx) => (
+                          <div key={idx} className="flex gap-3 items-center">
+                            <div className="flex-1 relative">
+                               <input
+                                placeholder="URL de imagen o link de Youtube..."
+                                value={val}
+                                onChange={(e) => handleArrayChange("heroImages", idx, e.target.value)}
+                                className="w-full px-5 py-3 bg-white border border-gray-100 rounded-2xl text-sm pr-12 focus:ring-2 focus:ring-[#41F0A5] transition"
+                              />
+                              {(val.includes('youtube.com') || val.includes('youtu.be') || val.includes('vimeo.com') || val.includes('drive.google.com') || val.toLowerCase().endsWith('.mp4')) && (
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-500">
+                                   <Video size={18} />
+                                </div>
+                              )}
+                            </div>
+                            <label className="flex items-center gap-2 px-3 py-3 bg-white text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-50 border border-gray-100 transition">
+                              <Upload size={16} />
+                              <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleArrayChange("heroImages", idx, url))} />
+                            </label>
+                            <button onClick={() => removeArrayItem("heroImages", idx)} className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition">
+                              <X size={20} />
+                            </button>
+                          </div>
+                        ))}
+                        <button onClick={() => addArrayItem("heroImages")} className="flex items-center gap-2 text-xs font-black text-[#1e293b] bg-[#41F0A5] px-6 py-3 rounded-xl w-fit hover:scale-105 transition shadow-lg shadow-green-200">
+                          <ImageIcon size={14} /> + Añadir Imagen al Slider
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                        Galería de Resultados (Universal)
                       </label>
                       <div className="grid gap-3">
                         {formData.resultImages?.map((val, idx) => (
                           <div key={idx} className="flex gap-3 items-center">
-                            <input
-                              placeholder="URL o link del medio..."
-                              value={val}
-                              onChange={(e) =>
-                                handleArrayChange(
-                                  "resultImages",
-                                  idx,
-                                  e.target.value,
-                                )
-                              }
-                              className="flex-1 px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm"
-                            />
-                            <label
-                              className={`flex items-center gap-2 px-3 py-3 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
-                            >
-                              <Upload size={16} />
-                              <input
-                                type="file"
-                                accept="image/*,video/*"
-                                className="hidden"
-                                onChange={(e) =>
-                                  handleImageUpload(e, (url) =>
-                                    handleArrayChange("resultImages", idx, url),
-                                  )
-                                }
+                            <div className="flex-1 relative">
+                               <input
+                                placeholder="URL o link del medio..."
+                                value={val}
+                                onChange={(e) => handleArrayChange("resultImages", idx, e.target.value)}
+                                className="w-full px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm pr-12"
                               />
+                               {(val.includes('youtube.com') || val.includes('youtu.be') || val.includes('vimeo.com') || val.includes('drive.google.com') || val.toLowerCase().endsWith('.mp4')) && (
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-500">
+                                   <Video size={18} />
+                                </div>
+                              )}
+                            </div>
+                            <label className="flex items-center gap-2 px-3 py-3 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition">
+                              <Upload size={16} />
+                              <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleArrayChange("resultImages", idx, url))} />
                             </label>
-                            <button
-                              onClick={() =>
-                                removeArrayItem("resultImages", idx)
-                              }
-                              className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition"
-                            >
+                            <button onClick={() => removeArrayItem("resultImages", idx)} className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition">
                               <X size={20} />
                             </button>
                           </div>
                         ))}
-                        <button
-                          onClick={() => addArrayItem("resultImages")}
-                          className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl w-fit hover:bg-indigo-100 transition"
-                        >
-                          <ImageIcon size={14} /> + Añadir Imagen/Video
+                        <button onClick={() => addArrayItem("resultImages")} className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl w-fit hover:bg-indigo-100 transition">
+                          <ImageIcon size={14} /> + Añadir Multimedia
                         </button>
                       </div>
                     </div>
+
                     <div>
                       <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                        Galería Inferior (Detalles Adicionales)
+                        Media Adicional
                       </label>
                       <div className="grid gap-3">
                         {formData.additionalImages?.map((val, idx) => (
                           <div key={idx} className="flex gap-3 items-center">
-                            <input
-                              placeholder="URL o link del medio..."
-                              value={val}
-                              onChange={(e) =>
-                                handleArrayChange(
-                                  "additionalImages",
-                                  idx,
-                                  e.target.value,
-                                )
-                              }
-                              className="flex-1 px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm"
-                            />
-                            <label
-                              className={`flex items-center gap-2 px-3 py-3 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition ${isUploading ? "opacity-50 pointer-events-none" : ""}`}
-                            >
-                              <Upload size={16} />
-                              <input
-                                type="file"
-                                accept="image/*,video/*"
-                                className="hidden"
-                                onChange={(e) =>
-                                  handleImageUpload(e, (url) =>
-                                    handleArrayChange(
-                                      "additionalImages",
-                                      idx,
-                                      url,
-                                    ),
-                                  )
-                                }
+                            <div className="flex-1 relative">
+                               <input
+                                placeholder="URL o link del medio..."
+                                value={val}
+                                onChange={(e) => handleArrayChange("additionalImages", idx, e.target.value)}
+                                className="w-full px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm pr-12"
                               />
+                               {(val.includes('youtube.com') || val.includes('youtu.be') || val.includes('vimeo.com') || val.includes('drive.google.com') || val.toLowerCase().endsWith('.mp4')) && (
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-500">
+                                   <Video size={18} />
+                                </div>
+                              )}
+                            </div>
+                            <label className="flex items-center gap-2 px-3 py-3 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition">
+                              <Upload size={16} />
+                              <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleArrayChange("additionalImages", idx, url))} />
                             </label>
-                            <button
-                              onClick={() =>
-                                removeArrayItem("additionalImages", idx)
-                              }
-                              className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition"
-                            >
+                            <button onClick={() => removeArrayItem("additionalImages", idx)} className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition">
                               <X size={20} />
                             </button>
                           </div>
                         ))}
-                        <button
-                          onClick={() => addArrayItem("additionalImages")}
-                          className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl w-fit hover:bg-indigo-100 transition"
-                        >
-                          <Video size={14} /> + Añadir Imagen/Video
+                        <button onClick={() => addArrayItem("additionalImages")} className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl w-fit hover:bg-indigo-100 transition">
+                          <Video size={14} /> + Añadir Multimedia
                         </button>
                       </div>
                     </div>

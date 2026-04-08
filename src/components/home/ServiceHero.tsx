@@ -40,10 +40,10 @@ const services: Service[] = [
 
 
 const logos = [
-  { name: 'Logos', src: '/client_logos.jpg' },
-  { name: 'Logos', src: '/client_logos.jpg' },
-  { name: 'Logos', src: '/client_logos.jpg' },
-  { name: 'Logos', src: '/client_logos.jpg' },
+  { name: 'Logos', src: '/assets/client_logos.jpg' },
+  { name: 'Logos', src: '/assets/client_logos.jpg' },
+  { name: 'Logos', src: '/assets/client_logos.jpg' },
+  { name: 'Logos', src: '/assets/client_logos.jpg' },
 ];
 
 
@@ -156,20 +156,18 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
           {[...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div
               key={index}
-              className="mx-24 md:mx-32 flex items-center justify-center opacity-100 transition-all duration-500 cursor-pointer scale-100 hover:scale-105 select-none"
+              className="mx-16 md:mx-24 flex items-center justify-center transition-all duration-500 cursor-pointer scale-100 hover:scale-110 select-none group/logo"
             >
               <img
                 src={logo.src}
                 alt={logo.name}
-                className="h-16 md:h-20 w-auto object-contain"
-                onError={(e) => console.log('Error loading logo:', e.currentTarget.src)}
+                className="h-10 md:h-12 w-auto object-contain grayscale opacity-40 hover:opacity-100 transition-all duration-500"
+                onError={(e) => {
+                  console.log('Error loading logo:', e.currentTarget.src);
+                  e.currentTarget.style.display = 'none';
+                }}
               />
             </div>
-
-
-
-
-
           ))}
         </div>
       </div>

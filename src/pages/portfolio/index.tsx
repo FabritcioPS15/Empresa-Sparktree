@@ -3,7 +3,7 @@ import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import PageBanner from '@/components/ui/PageBanner';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { Laptop, Palette, Film, Settings, Megaphone, LayoutGrid, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Laptop, Palette, Film, Settings, Megaphone, LayoutGrid, Sparkles, ArrowUpRight, ArrowLeft, ArrowRight } from 'lucide-react';
 
 interface PortfolioProps {
   onViewProject?: (projectId: string) => void;
@@ -50,7 +50,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
   // Map existing categories to main ones for filtering
   const filteredProjects = useMemo(() => {
     if (activeCategory === 'Todos') return projectsList;
-    
+
     return projectsList.filter(p => {
       const cat = p.category.toLowerCase();
       if (activeCategory === 'Webs') return cat.includes('web') || cat.includes('ecommerce') || cat.includes('landing');
@@ -115,134 +115,131 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
 
   return (
     <div className="pt-[72px]">
-      <PageBanner 
-        title="Nuestro Portafolio" 
+      <PageBanner
+        title="Nuestro Portafolio"
         subtitle="Portafolio de diseño web y branding: proyectos con resultados reales."
         breadcrumbs={breadcrumbs}
       />
       <section ref={portfolioRef} className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Section: Featured Projects (Carousel) */}
+
+          {/* Section: Featured Projects (Restored Carousel - Premium Light Style) */}
           {featuredProjects.length > 0 && (
-            <div className="mb-32">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+            <div className="mb-24 px-4 sm:px-0">
+              <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-[#41F0A5] rounded-2xl flex items-center justify-center shadow-lg shadow-[#41F0A5]/20 animate-bounce-in">
-                    <Sparkles className="w-5 h-5 text-gray-900" />
+                  <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center border border-green-100 shadow-sm">
+                    <Sparkles className="w-6 h-6 text-[#41F0A5]" />
                   </div>
                   <div>
-                    <h2 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight">Proyectos Destacados</h2>
-                    <p className="text-gray-400 font-medium text-sm">Selección premium de nuestra trayectoria.</p>
+                    <h2 className="text-3xl font-black text-gray-900 tracking-tight">Proyectos Destacados</h2>
+                    <p className="text-[#41F0A5] font-bold text-xs uppercase tracking-widest mt-1">Selección Premium</p>
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-3">
-                  <button 
+
+                <div className="flex items-center gap-2">
+                  <button
                     onClick={() => {
                       const container = document.getElementById('featured-carousel');
                       if (container) container.scrollBy({ left: -400, behavior: 'smooth' });
                     }}
-                    className="w-12 h-12 rounded-2xl border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors group"
+                    className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center hover:bg-[#41F0A5]/10 hover:border-[#41F0A5]/30 transition-all shadow-sm group"
                   >
-                    <ArrowUpRight className="w-5 h-5 rotate-[225deg] text-gray-400 group-hover:text-gray-900 transition-colors" />
+                    <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-[#41F0A5] transition-colors" />
                   </button>
-                  <button 
+                  <button
                     onClick={() => {
                       const container = document.getElementById('featured-carousel');
                       if (container) container.scrollBy({ left: 400, behavior: 'smooth' });
                     }}
-                    className="w-12 h-12 rounded-2xl border border-gray-100 flex items-center justify-center hover:bg-gray-50 transition-colors group"
+                    className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center hover:bg-[#41F0A5]/10 hover:border-[#41F0A5]/30 transition-all shadow-sm group"
                   >
-                    <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-gray-900 transition-colors" />
+                    <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-[#41F0A5] transition-colors" />
                   </button>
                 </div>
               </div>
 
-              <div 
+              <div
                 id="featured-carousel"
-                className="flex gap-8 overflow-x-auto pb-12 snap-x snap-mandatory no-scrollbar"
+                className="flex gap-8 overflow-x-auto pb-10 snap-x snap-mandatory no-scrollbar"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {featuredProjects.map((project) => (
-                  <div 
-                    key={project.id}
-                    onClick={() => onViewProject?.(project.id)}
-                    className="min-w-[320px] sm:min-w-[450px] lg:min-w-[550px] snap-start group cursor-pointer"
-                  >
-                    <div className="relative bg-gray-50 rounded-[2.5rem] aspect-[16/10] mb-6 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-1000 border border-gray-100">
-                      {/* Imagen de fondo del proyecto destacado */}
-                      <img 
-                        src={project.cardImage || project.heroImage} 
-                        alt={project.title}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                        <span className="text-gray-300 text-[10px] font-black uppercase tracking-[0.5em] -rotate-45">Sparktree Featured</span>
-                      </div>
-                      
-                      <div className="absolute top-8 left-8 z-20">
-                        <span className="bg-white/95 backdrop-blur-md text-gray-900 text-[9px] font-black px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm group-hover:bg-[#41F0A5] transition-colors duration-500">
-                          {project.category}
-                        </span>
-                      </div>
+                {featuredProjects.map((project) => {
+                  // Map category to icon
+                  const CategoryIcon = categories.find(c => {
+                    const pCat = project.category.toLowerCase();
+                    const cLabel = c.label.toLowerCase();
+                    if (cLabel === 'webs') return pCat.includes('web') || pCat.includes('ecommerce') || pCat.includes('landing');
+                    if (cLabel === 'diseño') return pCat.includes('branding') || pCat.includes('diseño');
+                    if (cLabel === 'marketing') return pCat.includes('marketing') || pCat.includes('seo');
+                    if (cLabel === 'sistemas') return pCat.includes('sistemas') || pCat.includes('ti');
+                    if (cLabel === 'multimedia') return pCat.includes('multimedia') || pCat.includes('video');
+                    return false;
+                  })?.icon || Sparkles;
 
-                      <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out"
-                        style={{ background: `linear-gradient(to top, rgba(0,0,0,0.98), rgba(0,0,0,0.6), transparent)` }}
-                      ></div>
-                      
-                      <div className="absolute inset-0 p-10 flex flex-col justify-end translate-y-12 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-out z-10">
-                        <div className="text-white">
-                          <p className="text-4xl font-black leading-tight text-[#41F0A5] mb-2">{project.title}</p>
-                          <hr className="border-t border-white/20 my-5 w-0 group-hover:w-full transition-all duration-1000 delay-100" />
-                          <p className="text-sm font-medium text-gray-300 leading-relaxed line-clamp-2 mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
-                            {project.description}
-                          </p>
-                          <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-300">
-                            <div className="flex gap-2">
-                               {project.technologies.slice(0, 3).map((tech, i) => (
-                                 <span key={i} className="text-[8px] font-black uppercase bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 tracking-tighter">{tech}</span>
-                               ))}
-                            </div>
-                            <div className="w-12 h-12 bg-[#41F0A5] rounded-full flex items-center justify-center shadow-xl shadow-[#41F0A5]/30 -rotate-45 group-hover:rotate-0 transition-transform duration-700">
-                               <ArrowUpRight className="w-6 h-6 text-gray-900" />
-                            </div>
+                  return (
+                    <div
+                      key={project.id}
+                      onClick={() => onViewProject?.(project.id)}
+                      className="min-w-[85%] md:min-w-[calc(50%-1rem)] lg:min-w-[calc(33.33%-1.5rem)] snap-start group cursor-pointer"
+                    >
+                      <div className="relative bg-white rounded-[2.5rem] aspect-[16/10] mb-8 overflow-hidden shadow-[0_4px_30px_-10px_rgba(0,0,0,0.05)] border border-gray-100 group-hover:shadow-[0_40px_80px_-20px_rgba(65,240,165,0.15)] transition-all duration-700">
+                        <img
+                          src={project.cardImage || project.heroImage}
+                          alt={project.title}
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                        />
+                        
+                        {/* Premium Icon Badge */}
+                        <div className="absolute top-6 left-6 z-20">
+                          <div className="w-10 h-10 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/50 group-hover:bg-[#41F0A5] group-hover:text-gray-900 transition-all duration-500">
+                            <CategoryIcon className="w-5 h-5" />
+                          </div>
+                        </div>
+
+                        {/* Minimalist Hover Hint */}
+                        <div className="absolute inset-0 bg-[#41F0A5]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center">
+                          <div className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl scale-50 group-hover:scale-100 transition-all duration-700">
+                            <ArrowUpRight className="w-8 h-8 text-gray-900" />
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="px-4">
-                       <h3 className="text-2xl font-black text-gray-900 group-hover:text-indigo-600 transition-colors duration-300 tracking-tight leading-none">
-                         {project.title}
-                       </h3>
-                       <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] mt-3 group-hover:text-indigo-400 transition-colors">
-                         {project.client}
-                       </p>
+                      <div className="px-6">
+                        <div className="flex flex-col gap-1 mb-3">
+                          <h3 className="text-2xl font-black text-gray-900 group-hover:text-[#41F0A5] transition-colors tracking-tight">
+                            {project.title}
+                          </h3>
+                          <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-[#41F0A5] rounded-full"></div>
+                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                              {project.client}
+                            </span>
+                          </div>
+                        </div>
+                        <p className="text-gray-400 text-xs font-medium leading-relaxed line-clamp-1 max-w-2xl">
+                          {project.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
-          )}
-
-          {/* Categories and Filters */}
-          <div className="mt-20 mb-16">
-            <h2 className="text-center text-xs font-black text-gray-300 uppercase tracking-[0.4em] mb-10">Explora por categorías</h2>
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-4 animate-fade-in-scale">
+          )}          {/* Categories and Filters - Minimalist Redesign */}
+          <div className="mt-20 mb-16 px-4">
+            <div className="flex flex-wrap justify-center gap-2.5 animate-fade-in">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`flex items-center gap-3 px-8 py-3.5 rounded-2xl text-sm font-bold transition-all duration-300 ${
-                    activeCategory === cat.id 
-                      ? 'bg-gray-900 text-white shadow-2xl shadow-gray-400 -translate-y-1' 
-                      : 'bg-white border border-gray-100 text-gray-400 hover:text-gray-900 hover:border-gray-300'
+                  className={`px-7 py-2.5 rounded-full text-xs font-bold tracking-tight transition-all duration-300 ${
+                    activeCategory === cat.id
+                    ? 'bg-[#41F0A5] text-gray-900 shadow-lg shadow-[#41F0A5]/20 scale-105'
+                    : 'bg-white border border-gray-100 text-gray-400 hover:text-gray-900 hover:border-gray-300 hover:bg-gray-50'
                   }`}
                 >
-                  <cat.icon className={`w-4 h-4 ${activeCategory === cat.id ? 'text-[#41F0A5]' : 'text-gray-400'}`} />
-                  <span>{cat.label}</span>
+                  {cat.label}
                 </button>
               ))}
             </div>
@@ -260,75 +257,97 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
             }
           `}</style>
 
-          {/* Regular Uniform Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {filteredProjects.map((project, index) => (
-              <div
-                key={project.id}
-                onClick={() => onViewProject?.(project.id)}
-                className="group cursor-pointer reveal hover:scale-[1.03] transition-all duration-500 scroll-entrance scale-up scroll-stagger-3 relative z-1"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="relative bg-gray-50 rounded-[2.5rem] aspect-[4/5] mb-6 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-1000 border border-gray-100">
-                  {/* Imagen de fondo del proyecto */}
-                  <img 
-                    src={project.cardImage || project.heroImage} 
-                    alt={project.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                    <span className="text-gray-300 text-[10px] font-black uppercase tracking-[0.5em] -rotate-45">Sparktree Visual System</span>
-                  </div>
-                  
-                  {/* Category Badge */}
-                  <div className="absolute top-8 left-8 z-20">
-                    <span className="bg-white/95 backdrop-blur-md text-gray-900 text-[9px] font-black px-4 py-2 rounded-xl uppercase tracking-widest shadow-sm group-hover:bg-[#41F0A5] transition-colors duration-500">
-                      {project.category}
-                    </span>
+          {/* Regular Grid - Redesigned Minimalist Card Portfolio */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
+            {filteredProjects.map((project, index) => {
+              // Map category to icon
+              const CategoryIcon = categories.find(c => {
+                const pCat = project.category.toLowerCase();
+                const cLabel = c.label.toLowerCase();
+                if (cLabel === 'webs') return pCat.includes('web') || pCat.includes('ecommerce') || pCat.includes('landing');
+                if (cLabel === 'diseño') return pCat.includes('branding') || pCat.includes('diseño');
+                if (cLabel === 'marketing') return pCat.includes('marketing') || pCat.includes('seo');
+                if (cLabel === 'sistemas') return pCat.includes('sistemas') || pCat.includes('ti');
+                if (cLabel === 'multimedia') return pCat.includes('multimedia') || pCat.includes('video');
+                return false;
+              })?.icon || LayoutGrid;
+
+              return (
+                <div
+                  key={project.id}
+                  onClick={() => onViewProject?.(project.id)}
+                  className="group cursor-pointer bg-white rounded-[2rem] border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] overflow-hidden transition-all duration-700 hover:-translate-y-2 hover:shadow-[0_40px_80px_-20px_rgba(65,240,165,0.12)] reveal scroll-entrance fade-up"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  {/* Image Container */}
+                  <div className="aspect-[16/11] overflow-hidden relative">
+                    <img
+                      src={project.cardImage || project.heroImage}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
+                    
+                    {/* Category ICON Badge - Top Corner */}
+                    <div className="absolute top-5 left-5 z-20">
+                      <div className="w-10 h-10 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/50 group-hover:bg-[#41F0A5] group-hover:text-gray-900 transition-all duration-500">
+                        <CategoryIcon className="w-5 h-5" />
+                      </div>
+                    </div>
+                    
+                    {/* Ultra-Minimalist Hover Hint */}
+                    <div className="absolute inset-0 bg-[#41F0A5]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center">
+                      <div className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl scale-50 group-hover:scale-100 transition-all duration-500">
+                        <ArrowUpRight className="w-7 h-7 text-gray-900" />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Gradient Overlay on Hover */}
-                  <div
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out"
-                    style={{ background: `linear-gradient(to top, rgba(0,0,0,0.98), rgba(0,0,0,0.6), transparent)` }}
-                  ></div>
-                  
-                  {/* HOVER CONTENT: IMPROVED UI WITH SEPARATOR LINE */}
-                  <div className="absolute inset-0 p-10 flex flex-col justify-end translate-y-12 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-out z-10">
-                    <div className="text-white">
-                      <p className="text-3xl font-black leading-tight text-[#41F0A5] mb-2">{project.title}</p>
+                  {/* Info Section - Minimalist yet Informative */}
+                  <div className="p-6 pt-0 -mt-2 relative z-10">
+                    <div className="bg-white rounded-t-2xl pt-5">
+                      <div className="flex flex-col gap-1 mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#41F0A5] transition-colors tracking-tight line-clamp-1">
+                          {project.title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 bg-[#41F0A5] rounded-full"></div>
+                          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">
+                            {project.client}
+                          </span>
+                        </div>
+                      </div>
                       
-                      {/* HR Separator requested by user */}
-                      <hr className="border-t border-white/20 my-5 w-0 group-hover:w-full transition-all duration-1000 delay-100" />
-                      
-                      <p className="text-sm font-medium text-gray-300 leading-relaxed line-clamp-3 mb-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                      <p className="text-xs font-medium text-gray-400 mb-5 line-clamp-2 leading-relaxed">
                         {project.description}
                       </p>
+
+                      {/* Extra Info Row: Duration & Status */}
+                      <div className="flex items-center justify-between mb-5 py-2.5 border-y border-gray-50">
+                        {project.duration && (
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[9px] font-bold text-gray-400 uppercase">Tiempo:</span>
+                            <span className="text-[9px] font-black text-gray-700">{project.duration}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[9px] font-bold text-gray-400 uppercase">Status:</span>
+                          <span className="text-[9px] font-black text-gray-700 uppercase">Premium</span>
+                        </div>
+                      </div>
                       
-                      <div className="flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-300">
-                        <div className="flex gap-2">
-                           {project.technologies.slice(0, 2).map((tech, i) => (
-                             <span key={i} className="text-[8px] font-black uppercase bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 tracking-tighter">{tech}</span>
-                           ))}
-                        </div>
-                        <div className="w-12 h-12 bg-[#41F0A5] rounded-full flex items-center justify-center shadow-xl shadow-[#41F0A5]/30 -rotate-45 group-hover:rotate-0 transition-transform duration-700">
-                           <ArrowUpRight className="w-6 h-6 text-gray-900" />
-                        </div>
+                      {/* Technologies Section */}
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.technologies.slice(0, 3).map((tech, i) => (
+                          <span key={i} className="text-[8px] font-bold text-gray-500 bg-gray-50 px-2 py-1 rounded-md border border-gray-100/50">
+                            {tech}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="px-4">
-                   <h3 className="text-2xl font-black text-gray-900 group-hover:text-indigo-600 transition-colors duration-300 tracking-tight leading-none">
-                     {project.title}
-                   </h3>
-                   <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.3em] mt-3 group-hover:text-indigo-400 transition-colors">
-                     {project.client}
-                   </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {loading ? (

@@ -1,7 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { 
+  ArrowLeft, Clock, User, Tag, Sparkles, Check, 
+  Award, Calendar, 
+  Play, Image 
+} from 'lucide-react';
 
 interface ProjectDetailProps {
   projectId?: string;
@@ -14,7 +19,9 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
   const projectRef = useRef<HTMLElement>(null);
   const [project, setProject] = useState<Project | null>(initialData || null);
   const [loading, setLoading] = useState(!initialData);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
+  // Fetch project data
   useEffect(() => {
     if (initialData) {
       setProject(initialData);
@@ -37,7 +44,6 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
           .single();
 
         if (error) {
-          // Retry case-insensitive
           const { data: retryData } = await supabase
             .from('projects')
             .select('*')
@@ -62,19 +68,61 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     fetchProject();
   }, [projectId, initialData]);
 
-  const renderMedia = (url: string, alt: string, className: string = "w-full h-full object-cover") => {
-    if (!url) return null;
-    const isVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm') || url.toLowerCase().endsWith('.ogg');
-    const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
-    const isVimeo = url.includes('vimeo.com');
+  // Hero Slider Logic
+  const heroMedia = useMemo(() => {
+    if (!project) return [];
+    const images = project.heroImages && project.heroImages.length > 0 
+      ? project.heroImages 
+      : [project.heroImage];
+    return images.filter(Boolean);
+  }, [project]);
 
-    if (isYouTube) {
-      const videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
+  // Combined Media Gallery
+  const galleryMedia = useMemo(() => {
+    if (!project) return [];
+    return [...(project.resultImages || []), ...(project.additionalImages || [])].filter(Boolean);
+  }, [project]);
+
+  useEffect(() => {
+    if (heroMedia.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroMedia.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroMedia]);
+
+  const renderMedia = (url: string, alt: string, className: string = "w-full h-full object-cover", isGallery = false) => {
+    if (!url) return null;
+    
+    // Normalización de enlaces de Google Drive
+    let finalUrl = url;
+    const isDrive = url.includes('drive.google.com');
+    if (isDrive) {
+      if (url.includes('/view')) {
+        finalUrl = url.replace('/view', '/preview');
+      } else if (url.includes('/edit')) {
+        finalUrl = url.replace('/edit', '/preview');
+      } else if (url.includes('id=')) {
+        const id = url.split('id=')[1]?.split('&')[0];
+        if (id) finalUrl = `https://drive.google.com/file/d/${id}/preview`;
+      }
+    }
+
+    // Detección robusta de YouTube
+    const ytRegex = /^.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const ytMatch = url.match(ytRegex);
+    const videoId = (ytMatch && ytMatch[1].length === 11) ? ytMatch[1] : null;
+
+    const isYouTube = !!videoId;
+    const isVimeo = url.includes('vimeo.com');
+    const isDirectVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm') || url.toLowerCase().endsWith('.ogg');
+
+    if (isYouTube && videoId) {
       return (
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=0&hl=es&controls=1&rel=0`}
           className={className}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
           allowFullScreen
           title={alt}
         />
@@ -82,22 +130,42 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     }
 
     if (isVimeo) {
-      const videoId = url.split('/').pop();
+      const vimeoId = url.split('/').pop();
       return (
         <iframe
-          src={`https://player.vimeo.com/video/${videoId}`}
+          src={`https://player.vimeo.com/video/${vimeoId}?autoplay=0&controls=1`}
           className={className}
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
           title={alt}
+          loading="lazy"
         />
       );
     }
 
-    if (isVideo) {
+    if (isDrive) {
       return (
-        <video src={url} className={className} controls playsInline muted>
-          Your browser does not support the video tag.
+        <iframe
+          src={finalUrl}
+          className={className}
+          allow="autoplay; fullscreen"
+          allowFullScreen
+          title={alt}
+          loading="lazy"
+        />
+      );
+    }
+
+    if (isDirectVideo) {
+      return (
+        <video 
+          src={url} 
+          className={className} 
+          controls 
+          playsInline 
+          muted={!isGallery}
+        >
+          Tu navegador no soporta el video tag.
         </video>
       );
     }
@@ -110,32 +178,15 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     description: project?.description || 'Detalle del proyecto de Empresa SparkTree',
     url: `https://sparktree.pe/portfolio/${projectId}`,
     image: project?.heroImage,
-    type: 'article',
-    jsonLd: project ? {
-      "@context": "https://schema.org",
-      "@type": "CreativeWork",
-      "name": project.title,
-      "description": project.description,
-      "provider": {
-        "@type": "Organization",
-        "name": "Empresa SparkTree"
-      },
-      "award": (project.results || []).join(", "),
-      "creator": (project.team || []).join(", ")
-    } : undefined
+    type: 'article'
   });
 
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('reveal-visible');
-          entry.target.classList.add('visible');
+          entry.target.classList.add('reveal-visible', 'visible');
           observer.unobserve(entry.target);
         }
       });
@@ -143,46 +194,29 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
     const timeoutId = setTimeout(() => {
       if (isPreview) {
-        // En modo vista previa, forzar visibilidad inmediata de todo
-        const elements = document.querySelectorAll('.scroll-entrance, .reveal');
-        elements.forEach(el => {
+        document.querySelectorAll('.scroll-entrance, .reveal').forEach(el => {
           el.classList.add('reveal-visible', 'visible');
           (el as HTMLElement).style.opacity = '1';
           (el as HTMLElement).style.transform = 'none';
         });
         return;
       }
-
       if (projectRef.current) {
-        const elements = projectRef.current.querySelectorAll('.reveal');
-        elements.forEach(el => observer.observe(el));
+        projectRef.current.querySelectorAll('.reveal').forEach(el => observer.observe(el));
       }
-
-      const scrollElements = document.querySelectorAll('.scroll-entrance');
-      scrollElements.forEach(el => observer.observe(el));
-
-      // SEGURO DE VIDA: Si en 1.5s no se han mostrado, forzar visibilidad total
-      const failSafe = setTimeout(() => {
-        document.querySelectorAll('.scroll-entrance, .reveal').forEach((el) => {
-          el.classList.add('reveal-visible', 'visible');
-          (el as HTMLElement).style.opacity = '1';
-          (el as HTMLElement).style.transform = 'none';
-        });
-      }, 1500);
-
-      return () => clearTimeout(failSafe);
+      document.querySelectorAll('.scroll-entrance').forEach(el => observer.observe(el));
     }, isPreview ? 0 : 200);
 
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
     };
-  }, [project, isPreview]); // Re-run when project loads or preview mode changes
+  }, [project, isPreview]);
 
   if (loading) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-[#41F0A5] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -192,234 +226,189 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
       <div className="pt-16 sm:pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Proyecto no encontrado</h1>
-          <button
-            onClick={() => onNavigate?.('portfolio')}
-            className="px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-          >
-            Volver al portafolio
-          </button>
+          <button onClick={() => onNavigate?.('portfolio')} className="px-6 py-3 bg-gray-900 text-white rounded-lg">Volver al portafolio</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="pt-16 sm:pt-20" style={{ opacity: 1, visibility: 'visible' }}>
-      {isPreview && (
-        <style>{`
-          .scroll-entrance, .reveal {
-            opacity: 1 !important;
-            transform: none !important;
-            visibility: visible !important;
-            transition: none !important;
-          }
-        `}</style>
-      )}
-      <section ref={projectRef} className="py-8 sm:py-12 md:py-16 lg:py-20" style={{ opacity: 1, visibility: 'visible' }}>
+    <div className="min-h-screen bg-white">
+      <style>{`
+        .hero-slide { position: absolute; inset: 0; opacity: 0; transition: opacity 1.5s ease-in-out; }
+        .hero-slide.active { opacity: 1; z-index: 10; }
+      `}</style>
+
+      <section ref={projectRef} className="pt-24 pb-20 md:pt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Back Button */}
-          <div className="mb-6 sm:mb-8">
-            <button
-              onClick={() => onNavigate?.('portfolio')}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Volver al portafolio
-            </button>
+          
+          <div className="max-w-4xl mx-auto mb-12 text-center">
+            <div className="flex items-center justify-center gap-2 mb-6 scroll-entrance fade-up">
+              <button onClick={() => onNavigate?.('portfolio')} className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#41F0A5] transition-colors">Portafolio</button>
+              <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+              <span className="text-[10px] font-black text-[#41F0A5] uppercase tracking-widest leading-none">{project.category}</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 mb-6 tracking-tight scroll-entrance slide-up scroll-stagger-1 leading-[1.1]">{project.title}</h1>
+            <div className="w-20 h-1.5 bg-[#41F0A5] mx-auto rounded-full scroll-entrance scale-x scroll-stagger-2"></div>
           </div>
 
-          {/* Hero Section - Brand/Project Overview */}
-          <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-            {/* Hero Media */}
-            <div className={`bg-gray-100 rounded-2xl aspect-[16/9] sm:aspect-[16/8] md:aspect-[16/7] lg:aspect-[16/6] mb-6 sm:mb-8 md:mb-10 overflow-hidden shadow-sm transition-all duration-500 flex items-center justify-center ${isPreview ? '' : 'scroll-entrance scale-up scroll-stagger-1'}`}>
-              {project.heroImage && (project.heroImage.startsWith('http') || project.heroImage.startsWith('/') || project.heroImage.includes('youtube')) ? (
-                renderMedia(project.heroImage, project.title)
+          {/* Hero Slider Section */}
+          <div className="mb-12 md:mb-16 lg:mb-20 px-4 sm:px-0">
+            <div className={`relative bg-gray-50 rounded-[2.5rem] aspect-[16/9] sm:aspect-[16/8] md:aspect-[16/7] overflow-hidden shadow-2xl border border-gray-100 ${isPreview ? '' : 'scroll-entrance slide-up scroll-stagger-3'}`}>
+              {heroMedia.length > 0 ? (
+                <>
+                  {heroMedia.map((url, idx) => (
+                    <div key={idx} className={`hero-slide ${idx === currentHeroIndex ? 'active' : ''}`}>
+                       {renderMedia(url, `Hero visual ${idx + 1}`)}
+                    </div>
+                  ))}
+                  {heroMedia.length > 1 && (
+                    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-2.5">
+                      {heroMedia.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentHeroIndex(idx)}
+                          className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${idx === currentHeroIndex ? 'bg-[#41F0A5] w-10' : 'bg-white/40 shadow-sm'}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </>
               ) : (
-                <div className="text-center p-8">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-                    <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <p className="text-gray-400 leading-relaxed text-xs sm:text-sm md:text-base italic">
-                    {project.heroImage || "No media assigned"}
-                  </p>
+                <div className="text-center p-8 flex flex-col items-center justify-center h-full">
+                  <Sparkles className="w-16 h-16 text-gray-200 mb-4" />
+                  <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Sin Multimedia</p>
                 </div>
               )}
             </div>
-
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 text-center scroll-entrance slide-left scroll-stagger-2">
-                {project.title}
-              </h1>
-              <p className="text-gray-600 leading-relaxed text-center text-sm sm:text-base md:text-lg px-2 sm:px-0 scroll-entrance slide-left scroll-stagger-3 hover:text-gray-800 hover:scale-105 transition-all duration-500 cursor-default">
-                {project.description}
-              </p>
-            </div>
           </div>
 
-          {/* Project Details Grid */}
-          <div className="grid lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-            {/* Challenge & Solution */}
-            <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-              <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-200 scroll-entrance slide-left scroll-stagger-4">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Desafío</h3>
-                <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                  {project.challenge}
-                </p>
-              </div>
-
-              <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-200 scroll-entrance slide-left scroll-stagger-5">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Solución</h3>
-                <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                  {project.solution}
-                </p>
-              </div>
-            </div>
-
-            {/* Project Info Sidebar */}
-            <div className="space-y-4 sm:space-y-6">
-              <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 scroll-entrance slide-right scroll-stagger-4">
-                <h4 className="font-bold text-gray-900 mb-3 sm:mb-4">Información del Proyecto</h4>
-                <div className="space-y-3 text-sm sm:text-base">
-                  <div>
-                    <span className="font-medium text-gray-700">Cliente:</span>
-                    <p className="text-gray-600">{project.client}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Categoría:</span>
-                    <p className="text-gray-600">{project.category}</p>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Duración:</span>
-                    <p className="text-gray-600">{project.duration}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 scroll-entrance slide-right scroll-stagger-5">
-                <h4 className="font-bold text-gray-900 mb-3 sm:mb-4">Tecnologías</h4>
-                <div className="flex flex-wrap gap-2">
-                  {(project.technologies || []).map((tech, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 scroll-entrance slide-right scroll-stagger-6">
-                <h4 className="font-bold text-gray-900 mb-3 sm:mb-4">Equipo</h4>
-                <div className="space-y-2">
-                  {(project.team || []).map((member, index) => (
-                    <p key={index} className="text-sm sm:text-base text-gray-600">
-                      {member}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Results Section */}
-          <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center scroll-entrance scroll-stagger-7">
-              Resultados Obtenidos
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-              {(project.results || []).map((result, index) => (
-                <div
-                  key={index}
-                  className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 scroll-entrance scale-up scroll-stagger-8 hover:bg-gray-50 hover:scale-105 hover:shadow-lg transition-all duration-500 cursor-default"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center mt-1">
-                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                    <p className="text-gray-700 text-sm sm:text-base font-medium">{result}</p>
-                  </div>
+          <div className="max-w-5xl mx-auto">
+            {/* Specs Bar */}
+            <div className="bg-white rounded-[2rem] border border-gray-100 shadow-xl p-8 md:p-10 mb-16 md:mb-24 grid grid-cols-2 lg:grid-cols-4 gap-10 scroll-entrance fade-up scroll-stagger-4">
+              {[
+                { icon: <User className="w-6 h-6" />, label: "Cliente", value: project.client },
+                { icon: <Clock className="w-6 h-6" />, label: "Duración", value: project.duration },
+                { icon: <Tag className="w-6 h-6" />, label: "Tipo", value: project.category },
+                { icon: <Calendar className="w-6 h-6" />, label: "Proyecto", value: "Finalizado" }
+              ].map((spec, i) => (
+                <div key={i} className="flex items-center gap-5">
+                  <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-[#41F0A5]">{spec.icon}</div>
+                  <div><p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{spec.label}</p><p className="text-sm font-black text-gray-900">{spec.value}</p></div>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Main Result Media */}
-          {project.resultImages && project.resultImages.length > 0 && (
-            <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
-              <div className={`bg-gray-100 rounded-2xl aspect-[16/10] sm:aspect-[16/9] md:aspect-[16/8] lg:aspect-[16/7] overflow-hidden shadow-sm transition-all duration-500 flex items-center justify-center ${isPreview ? '' : 'scroll-entrance scale-up scroll-stagger-9'}`}>
-                {project.resultImages[0].startsWith('http') || project.resultImages[0].startsWith('/') || project.resultImages[0].includes('youtube') ? (
-                  renderMedia(project.resultImages[0], `Resultado 1 - ${project.title}`)
-                ) : (
-                  <div className="text-center p-8">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-gray-200 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-                      <svg className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <p className="text-gray-400 leading-relaxed text-xs sm:text-sm md:text-base italic">
-                      {project.resultImages[0]}
-                    </p>
-                  </div>
-                )}
+            {/* Narratives */}
+            <div className="grid md:grid-cols-2 gap-8 md:gap-16 mb-24 md:mb-32">
+              <div className="scroll-entrance slide-left scroll-stagger-5">
+                <div className="flex items-center gap-3 mb-6"><div className="w-8 h-1 bg-gray-200 rounded-full"></div><h3 className="text-2xl font-black text-gray-900 tracking-tight">El Desafío</h3></div>
+                <p className="text-gray-500 leading-[1.8] font-medium text-lg">{project.challenge}</p>
+              </div>
+              <div className="scroll-entrance slide-right scroll-stagger-5">
+                <div className="flex items-center gap-3 mb-6"><div className="w-8 h-1 bg-[#41F0A5] rounded-full"></div><h3 className="text-2xl font-black text-gray-900 tracking-tight">Estrategia Sparktree</h3></div>
+                <div className="bg-[#41F0A5]/5 border border-[#41F0A5]/10 p-8 rounded-[2rem]"><p className="text-gray-600 leading-[1.8] font-medium text-lg">{project.solution}</p></div>
               </div>
             </div>
-          )}
 
-          {/* Additional Result Media */}
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
-            {(project.additionalImages || []).map((image, index) => (
-              <div
-                key={index}
-                className={`bg-gray-100 rounded-2xl aspect-[4/3] overflow-hidden shadow-sm transition-all duration-500 flex items-center justify-center ${isPreview ? '' : 'scroll-entrance scale-up scroll-stagger-10'}`}
-              >
-                {image.startsWith('http') || image.startsWith('/') || image.includes('youtube') ? (
-                  renderMedia(image, `Detalle ${index + 1} - ${project.title}`)
-                ) : (
-                  <div className="text-center p-6">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gray-200 rounded-lg mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-                      <svg className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
+            {/* Impact Quote */}
+            <div className="max-w-3xl mx-auto mb-24 md:mb-32 text-center reveal">
+               <p className="text-2xl md:text-4xl font-black text-gray-800 leading-tight tracking-tight italic">"{project.description}"</p>
+            </div>
+
+            {/* Results */}
+            <div className="mb-24 md:mb-32">
+              <div className="flex items-center justify-center gap-4 mb-12">
+                <Award className="w-8 h-8 text-[#41F0A5]" />
+                <h2 className="text-3xl font-black text-gray-900 tracking-tight">Resultados de Valor</h2>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-6">
+                {(project.results || []).map((result, i) => (
+                  <div key={i} className="bg-gray-50/50 p-8 rounded-[2rem] border border-gray-100 hover:bg-white hover:shadow-xl transition-all duration-500 group reveal">
+                    <div className="flex items-start gap-4">
+                      <div className="w-8 h-8 bg-[#41F0A5] rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform"><Check className="w-5 h-5 text-gray-900" /></div>
+                      <p className="text-gray-700 font-bold leading-relaxed">{result}</p>
                     </div>
-                    <p className="text-gray-400 leading-relaxed text-xs sm:text-sm italic">
-                      {image}
-                    </p>
                   </div>
-                )}
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* CTA Section */}
-          <div className="mt-12 sm:mt-16 md:mt-20 text-center">
-            <div className="bg-gray-50 rounded-2xl p-6 sm:p-8 md:p-10 scroll-entrance bounce-in scroll-stagger-11">
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
-                ¿Te gusta lo que ves?
-              </h3>
-              <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-base md:text-lg">
-                Trabajemos juntos en tu próximo proyecto
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-                <button
-                  onClick={() => onNavigate?.('services')}
-                  className="px-6 sm:px-8 py-3 sm:py-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 hover:shadow-lg hover:scale-105 transition-all duration-300 font-medium text-sm sm:text-base"
-                >
-                  Ver nuestros servicios
-                </button>
-                <button
-                  onClick={() => onNavigate?.('contact')}
-                  className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-gray-900 rounded-lg border border-gray-200 hover:bg-gray-100 hover:shadow-md hover:scale-105 transition-all duration-300 font-medium text-sm sm:text-base"
-                >
-                  Contactar
-                </button>
-              </div>
+            {/* Universal Media Gallery (Simple Static Grid) */}
+            <div className="mb-24 md:mb-32">
+               <div className="text-center mb-16">
+                  <h2 className="text-3xl font-black text-gray-900 tracking-tight mb-4 text-center">Galería de Medios</h2>
+                  <div className="w-12 h-1 bg-[#41F0A5] mx-auto rounded-full"></div>
+               </div>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 md:auto-rows-[300px]">
+                  {galleryMedia.map((url, idx) => {
+                    const isVideo = url.toLowerCase().endsWith('.mp4') || url.includes('drive.google.com') || url.includes('youtube') || url.includes('vimeo');
+                    const isLarge = idx % 6 === 0;
+                    const isMedium = idx % 4 === 0 && !isLarge;
+                    const spanClass = isLarge ? "md:col-span-2 lg:col-span-4 lg:row-span-2" : isMedium ? "md:col-span-2 lg:col-span-2 lg:row-span-2" : "md:col-span-1 lg:col-span-2";
+
+                    return (
+                      <div 
+                        key={idx} 
+                        className={`${spanClass} relative bg-gray-50 rounded-[2.5rem] overflow-hidden group shadow-md border border-gray-100/50 hover:shadow-2xl transition-all duration-700 reveal`}
+                      >
+                         {renderMedia(url, `Medio ${idx + 1}`, "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105", true)}
+                         
+                         {/* Visual indicator for static videos (always visible) */}
+                         {isVideo && (
+                           <div className="absolute top-6 left-6 z-10 pointer-events-none group-hover:opacity-0 transition-opacity duration-300">
+                              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 text-white">
+                                <Play className="w-6 h-6 fill-white" />
+                              </div>
+                           </div>
+                         )}
+
+                         {/* Hover indicator for media type */}
+                         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center pointer-events-none">
+                            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+                               <div className="bg-white/95 backdrop-blur-md rounded-2xl py-3 px-6 flex items-center gap-3 shadow-2xl border border-white/50">
+                                  <div className="w-8 h-8 bg-[#41F0A5] rounded-xl flex items-center justify-center text-gray-900 shadow-lg shadow-[#41F0A5]/20">
+                                    {isVideo ? (
+                                      <Play className="w-4 h-4 fill-current ml-0.5" />
+                                    ) : (
+                                      <Image className="w-4 h-4" />
+                                    )}
+                                  </div>
+                                  <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] whitespace-nowrap">
+                                    {isVideo ? 'Video' : 'Imagen'}
+                                  </span>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                    );
+                  })}
+               </div>
+            </div>
+
+            {/* Tech Stack */}
+            <div className="mb-24 md:mb-32">
+               <h4 className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-10">Tecnologías Utilizadas</h4>
+               <div className="flex flex-wrap justify-center gap-3">
+                  {(project.technologies || []).map((tech, i) => (
+                    <span key={i} className="px-6 py-2.5 bg-white border border-gray-100 rounded-full text-xs font-black text-gray-600 shadow-sm hover:border-[#41F0A5]/30 transition-all cursor-default">{tech}</span>
+                  ))}
+               </div>
+            </div>
+
+            {/* Footer CTA */}
+            <div className="text-center pt-20 border-t border-gray-50">
+               <button onClick={() => onNavigate?.('portfolio')} className="inline-flex items-center gap-3 text-sm font-black text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors mb-16"><ArrowLeft className="w-4 h-4" />Ver otros proyectos</button>
+               <div className="bg-[#41F0A5] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl group">
+                  <div className="relative z-10">
+                    <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-tight uppercase">Elevamos tu marca <br/> al siguiente nivel</h3>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+                      <button onClick={() => onNavigate?.('contact')} className="px-10 py-5 bg-gray-900 text-white rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-xl">Iniciar Proyecto</button>
+                      <button onClick={() => onNavigate?.('services')} className="px-10 py-5 bg-white text-gray-900 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-md">Nuestras Soluciones</button>
+                    </div>
+                  </div>
+               </div>
             </div>
           </div>
         </div>

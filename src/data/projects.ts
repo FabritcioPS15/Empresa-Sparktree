@@ -12,6 +12,7 @@ export interface Project {
   duration: string;
   team: string[];
   heroImage: string;
+  heroImages?: string[];
   cardImage?: string;
   resultImages: string[];
   additionalImages: string[];
