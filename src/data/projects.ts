@@ -1,3 +1,9 @@
+export interface ProjectMedia {
+  url: string;
+  category?: string;
+  type?: "image" | "video" | "web";
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -14,8 +20,8 @@ export interface Project {
   heroImage: string;
   heroImages?: string[];
   cardImage?: string;
-  resultImages: string[];
-  additionalImages: string[];
+  resultImages: (string | ProjectMedia)[];
+  additionalImages: (string | ProjectMedia)[];
   isFeatured?: boolean;
   isVisible?: boolean;
   orderRank?: number;

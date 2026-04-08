@@ -16,10 +16,23 @@ import {
   EyeOff,
   Star,
   Video,
+  Globe,
+  Monitor,
+  Tag,
+  Eye as EyeIcon,
 } from "lucide-react";
 import ProjectDetail from "../portfolio/ProjectDetail";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+const PREDEFINED_SERVICES: Record<string, string[]> = {
+  "Generales": ["Diseño Web", "Branding Corporativo", "Marketing Digital", "Producción Audiovisual", "Desarrollo de Software", "Estrategia Digital"],
+  "Webs": ["Desarrollo Web", "E-commerce", "Landing Page", "Diseño UI/UX", "WordPress", "Optimización Web"],
+  "Diseño": ["Branding", "Logotipo", "Identidad Visual", "Ilustración", "Packaging", "Diseño Editorial"],
+  "Multimedia": ["Video Corporativo", "Fotografía", "Animación 2D/3D", "Edición de Video", "Drone", "Streaming"],
+  "Sistemas": ["Software a Medida", "App Móvil", "QA & Testing", "Arquitectura Cloud", "Ciberseguridad", "Soporte TI"],
+  "Marketing": ["Social Media", "Google Ads", "Meta Ads", "SEO", "Estrategia de Contenidos", "Inbound Marketing"],
+};
 
 export default function PortfolioEditor() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,10 +55,12 @@ export default function PortfolioEditor() {
   const [activeTab, setActiveTab] = useState<
     "general" | "content" | "impact" | "media"
   >("general");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [expandedPreviews, setExpandedPreviews] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     checkUser();
@@ -81,10 +96,49 @@ export default function PortfolioEditor() {
     if (error) {
       console.error("Error fetching projects:", error);
     } else if (data) {
-      // Map database snake_case to component camelCase if necessary, 
-      // but here we'll assume exact match or map explicitly if you created snake_case columns.
-      // For simplicity in this edit, assuming columns match interface keys.
-      setProjectsList(data as Project[]);
+      // Normalize media arrays to ensure they have proper ProjectMedia structure
+      const normalizedData = data.map((project: any) => ({
+        ...project,
+        resultImages: (project.resultImages || []).map((item: any) => {
+          // Si es string, verificar si ya es un JSON válido o solo es una URL
+          if (typeof item === "string") {
+            try {
+              const parsed = JSON.parse(item);
+              // Si el parseado es un objeto con url, usarlo
+              if (typeof parsed === "object" && parsed.url) {
+                return parsed;
+              }
+              // Si no, tratar el string original como URL
+              return { url: item, category: "", type: "image" };
+            } catch {
+              // Si falla el parseo, tratar el string como URL
+              return { url: item, category: "", type: "image" };
+            }
+          }
+          // Si ya es objeto, retornarlo directamente
+          return typeof item === "object" && item.url ? item : { url: item, category: "", type: "image" };
+        }),
+        additionalImages: (project.additionalImages || []).map((item: any) => {
+          // Si es string, verificar si ya es un JSON válido o solo es una URL
+          if (typeof item === "string") {
+            try {
+              const parsed = JSON.parse(item);
+              // Si el parseado es un objeto con url, usarlo
+              if (typeof parsed === "object" && parsed.url) {
+                return parsed;
+              }
+              // Si no, tratar el string original como URL
+              return { url: item, category: "", type: "image" };
+            } catch {
+              // Si falla el parseo, tratar el string como URL
+              return { url: item, category: "", type: "image" };
+            }
+          }
+          // Si ya es objeto, retornarlo directamente
+          return typeof item === "object" && item.url ? item : { url: item, category: "", type: "image" };
+        }),
+      }));
+      setProjectsList(normalizedData as Project[]);
     }
   }
 
@@ -94,20 +148,49 @@ export default function PortfolioEditor() {
     index: number,
     value: string,
   ) => {
-    const newArr = [...(formData[field] as string[])];
+    const arr = (formData[field] as any[]) || [];
+    const newArr = [...arr];
     newArr[index] = value;
     setFormData({ ...formData, [field]: newArr });
   };
 
+  const handleMediaChange = (
+    field: "resultImages" | "additionalImages",
+    index: number,
+    value: string,
+    property: "url" | "category" | "type" = "url"
+  ) => {
+    const arr = (formData[field] as any[]) || [];
+    const newArr = [...arr];
+    const current = newArr[index];
+
+    if (typeof current === "string" || !current) {
+      newArr[index] = {
+        url: property === "url" ? value : current || "",
+        category: property === "category" ? value : "",
+        type: property === "type" ? (value as any) : "image",
+      };
+    } else {
+      newArr[index] = { ...current, [property]: value };
+    }
+
+    setFormData({ ...formData, [field]: newArr });
+  };
+
   const addArrayItem = (field: keyof Project) => {
+    const currentArray = (formData[field] as any[]) || [];
+    const newItem = (field === 'resultImages' || field === 'additionalImages')
+      ? { url: "", category: "", type: "image" as const }
+      : "";
+
     setFormData({
       ...formData,
-      [field]: [...((formData[field] as string[]) || []), ""],
+      [field]: [...currentArray, newItem],
     });
   };
 
   const removeArrayItem = (field: keyof Project, index: number) => {
-    const newArr = [...(formData[field] as string[])];
+    const newArr = [...(formData[field] as any[])];
     newArr.splice(index, 1);
     setFormData({ ...formData, [field]: newArr });
   };
@@ -262,12 +345,12 @@ export default function PortfolioEditor() {
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         {isPreviewOpen && (
           <div className="fixed inset-0 z-[100] bg-white overflow-y-auto overflow-x-hidden scroll-smooth">
-            <Header currentPage="project-detail" onNavigate={() => {}} />
+            <Header currentPage="project-detail" onNavigate={() => { }} />
             <ProjectDetail projectId={editingId || "preview"} initialData={formData as any} isPreview={true} />
-            <Footer onNavigate={() => {}} currentPage="project-detail" />
-            
+            <Footer onNavigate={() => { }} currentPage="project-detail" />
+
             {/* Botón Flotante para salir de Vista Previa */}
-            <button 
+            <button
               onClick={() => setIsPreviewOpen(false)}
               className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-black transition-all shadow-2xl hover:scale-105 active:scale-95 border border-white/20 group"
             >
@@ -344,15 +427,15 @@ export default function PortfolioEditor() {
       {isPreviewOpen && (
         <div className="fixed inset-0 z-[150] bg-white overflow-y-auto overflow-x-hidden scroll-smooth animate-in fade-in duration-300">
           <div className="min-h-screen flex flex-col">
-            <Header currentPage="project-detail" onNavigate={() => {}} />
+            <Header currentPage="project-detail" onNavigate={() => { }} />
             <main className="flex-grow">
               <ProjectDetail projectId={editingId || "preview"} initialData={formData as any} isPreview={true} />
             </main>
-            <Footer onNavigate={() => {}} currentPage="project-detail" />
+            <Footer onNavigate={() => { }} currentPage="project-detail" />
           </div>
 
           {/* Botón Flotante para salir de Vista Previa */}
-          <button 
+          <button
             onClick={() => setIsPreviewOpen(false)}
             className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] bg-gray-900 text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-black transition-all shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95 border border-white/10 group"
           >
@@ -363,6 +446,7 @@ export default function PortfolioEditor() {
           </button>
         </div>
       )}
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
@@ -412,28 +496,43 @@ export default function PortfolioEditor() {
           {/* Main Editing Area */}
           <div className="lg:col-span-8 space-y-6">
             <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 overflow-hidden">
-              {/* Tabs Navigation */}
-              <div className="flex border-b border-gray-100 bg-gray-50/50">
+              {/* Area de Título del Proyecto (Editor de Contexto) */}
+              <div className="p-8 pb-0">
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                    {editingId ? <PencilLine size={24} /> : <Rocket size={24} />}
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-black text-gray-400 uppercase tracking-[0.2em]">En Edición</h2>
+                    <h3 className="text-xl font-bold text-gray-900 truncate max-w-[400px]">
+                      {formData.title || "Nuevo Proyecto Estratégico"}
+                    </h3>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tabs Navigation (Sticky) */}
+              <div className="sticky top-0 z-[55] flex border-b border-gray-100 bg-white/90 backdrop-blur-xl mt-6 px-4">
                 {[
                   {
                     id: "general",
                     label: "General",
-                    icon: <FileText size={16} />,
+                    icon: <FileText size={18} />,
                   },
                   {
                     id: "content",
                     label: "Contenido",
-                    icon: <PencilLine size={16} />,
+                    icon: <PencilLine size={18} />,
                   },
                   {
                     id: "impact",
                     label: "Impacto",
-                    icon: <Rocket size={16} />,
+                    icon: <Rocket size={18} />,
                   },
                   {
                     id: "media",
                     label: "Multimedia",
-                    icon: <ImageIcon size={16} />,
+                    icon: <ImageIcon size={18} />,
                   },
                 ].map((tab) => (
                   <button
@@ -443,14 +542,13 @@ export default function PortfolioEditor() {
                         tab.id as "general" | "content" | "impact" | "media",
                       )
                     }
-                    className={`flex-1 py-4 text-sm font-bold transition-all flex items-center justify-center gap-2 border-b-2 ${
-                      activeTab === tab.id
-                        ? "border-indigo-600 text-indigo-600 bg-white"
-                        : "border-transparent text-gray-400 hover:text-gray-600"
-                    }`}
+                    className={`flex-1 py-6 text-[10px] font-black uppercase tracking-[0.15em] transition-all flex items-center justify-center gap-3 border-b-4 ${activeTab === tab.id
+                      ? "border-indigo-600 text-indigo-600 bg-indigo-50/10"
+                      : "border-transparent text-gray-400 hover:text-gray-600 hover:bg-gray-50/50"
+                      }`}
                   >
-                    <span>{tab.icon}</span>
-                    <span className="hidden sm:inline">{tab.label}</span>
+                    <span className={`${activeTab === tab.id ? "scale-110" : "scale-100"} transition-transform`}>{tab.icon}</span>
+                    <span className="hidden lg:inline">{tab.label}</span>
                   </button>
                 ))}
               </div>
@@ -557,11 +655,10 @@ export default function PortfolioEditor() {
                             isVisible: !formData.isVisible,
                           })
                         }
-                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${
-                          formData.isVisible
-                            ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100"
-                            : "bg-gray-100 text-gray-400"
-                        }`}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${formData.isVisible
+                          ? "bg-indigo-600 text-white shadow-lg shadow-indigo-100"
+                          : "bg-gray-100 text-gray-400"
+                          }`}
                       >
                         {formData.isVisible ? (
                           <>
@@ -581,11 +678,10 @@ export default function PortfolioEditor() {
                             isFeatured: !formData.isFeatured,
                           })
                         }
-                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${
-                          formData.isFeatured
-                            ? "bg-amber-500 text-white shadow-lg shadow-amber-100"
-                            : "bg-gray-100 text-gray-400"
-                        }`}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all ${formData.isFeatured
+                          ? "bg-amber-500 text-white shadow-lg shadow-amber-100"
+                          : "bg-gray-100 text-gray-400"
+                          }`}
                       >
                         <Star
                           size={18}
@@ -597,10 +693,80 @@ export default function PortfolioEditor() {
                       </button>
                     </div>
                     <div className="sm:col-span-2">
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                        Servicios Prestados
-                      </label>
-                      <div className="space-y-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">
+                          Servicios Prestados
+                        </label>
+                        <span className="text-[10px] text-gray-300 font-bold uppercase tracking-widest">
+                          {formData.services?.length || 0} SELECCIONADOS
+                        </span>
+                      </div>
+
+                      <div className="mb-4">
+                        <div className="flex flex-col gap-4">
+                          {/* Sugerencias Generales */}
+                          <div>
+                            <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-2">Servicios Generales:</p>
+                            <div className="flex flex-wrap gap-2">
+                              {PREDEFINED_SERVICES["Generales"].map((service) => {
+                                const isSelected = formData.services?.includes(service);
+                                return (
+                                  <button
+                                    key={service}
+                                    onClick={() => {
+                                      const currentServices = formData.services || [];
+                                      if (isSelected) {
+                                        setFormData({ ...formData, services: currentServices.filter(s => s !== service) });
+                                      } else {
+                                        setFormData({ ...formData, services: [...currentServices, service] });
+                                      }
+                                    }}
+                                    className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all border ${isSelected
+                                      ? "bg-gray-800 text-white border-gray-800 shadow-md"
+                                      : "bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600"
+                                      }`}
+                                  >
+                                    {service}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+                          {/* Sugerencias por Categoría */}
+                          {formData.category && PREDEFINED_SERVICES[formData.category] && (
+                            <div>
+                              <p className="text-[9px] text-indigo-400 font-black uppercase tracking-widest mb-2">Específicos para {formData.category}:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {PREDEFINED_SERVICES[formData.category].map((service) => {
+                                  const isSelected = formData.services?.includes(service);
+                                  return (
+                                    <button
+                                      key={service}
+                                      onClick={() => {
+                                        const currentServices = formData.services || [];
+                                        if (isSelected) {
+                                          setFormData({ ...formData, services: currentServices.filter(s => s !== service) });
+                                        } else {
+                                          setFormData({ ...formData, services: [...currentServices, service] });
+                                        }
+                                      }}
+                                      className={`px-3 py-1.5 rounded-xl text-[10px] font-bold transition-all border ${isSelected
+                                        ? "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100"
+                                        : "bg-white text-gray-500 border-gray-100 hover:border-indigo-200 hover:text-indigo-600"
+                                        }`}
+                                    >
+                                      {service}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50">
                         {formData.services?.map((val, idx) => (
                           <div key={idx} className="flex gap-2">
                             <input
@@ -612,21 +778,22 @@ export default function PortfolioEditor() {
                                   e.target.value,
                                 )
                               }
-                              className="flex-1 px-5 py-2 bg-gray-50 border-none rounded-xl"
+                              className="flex-1 px-5 py-3 bg-white border border-gray-100 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-100 outline-none transition-all"
+                              placeholder="Nombre del servicio personalizado..."
                             />
                             <button
                               onClick={() => removeArrayItem("services", idx)}
-                              className="p-2 text-red-400 hover:bg-red-50 rounded-lg"
+                              className="p-3 text-red-400 hover:bg-red-50 rounded-xl transition-colors"
                             >
-                              <X size={16} />
+                              <X size={18} />
                             </button>
                           </div>
                         ))}
                         <button
                           onClick={() => addArrayItem("services")}
-                          className="text-sm font-bold text-indigo-600 hover:text-indigo-700"
+                          className="flex items-center gap-2 py-3 px-5 text-xs font-black text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all w-full border-2 border-dashed border-indigo-100"
                         >
-                          + Añadir Servicio
+                          + Añadir Servicio Personalizado
                         </button>
                       </div>
                     </div>
@@ -828,7 +995,7 @@ export default function PortfolioEditor() {
                           />
                         </label>
                       </div>
-                      <p className="text-[10px] text-gray-400 mt-1 italic italic">Se recomienda una imagen de 800x600px aproximadamente.</p>
+                      <p className="text-[10px] text-gray-400 mt-1 italic">Se recomienda una imagen de 800x600px aproximadamente.</p>
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
@@ -877,7 +1044,7 @@ export default function PortfolioEditor() {
                         {formData.heroImages?.map((val, idx) => (
                           <div key={idx} className="flex gap-3 items-center">
                             <div className="flex-1 relative">
-                               <input
+                              <input
                                 placeholder="URL de imagen o link de Youtube..."
                                 value={val}
                                 onChange={(e) => handleArrayChange("heroImages", idx, e.target.value)}
@@ -885,7 +1052,7 @@ export default function PortfolioEditor() {
                               />
                               {(val.includes('youtube.com') || val.includes('youtu.be') || val.includes('vimeo.com') || val.includes('drive.google.com') || val.toLowerCase().endsWith('.mp4')) && (
                                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-500">
-                                   <Video size={18} />
+                                  <Video size={18} />
                                 </div>
                               )}
                             </div>
@@ -905,71 +1072,364 @@ export default function PortfolioEditor() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <ImageIcon size={14} className="text-indigo-500" />
                         Galería de Resultados (Universal)
                       </label>
-                      <div className="grid gap-3">
-                        {formData.resultImages?.map((val, idx) => (
-                          <div key={idx} className="flex gap-3 items-center">
-                            <div className="flex-1 relative">
-                               <input
-                                placeholder="URL o link del medio..."
-                                value={val}
-                                onChange={(e) => handleArrayChange("resultImages", idx, e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm pr-12"
-                              />
-                               {(val.includes('youtube.com') || val.includes('youtu.be') || val.includes('vimeo.com') || val.includes('drive.google.com') || val.toLowerCase().endsWith('.mp4')) && (
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-500">
-                                   <Video size={18} />
+                      <div className="grid gap-6">
+                        {formData.resultImages?.map((item, idx) => {
+                          const val = typeof item === "string" ? item : item?.url || "";
+                          const category = typeof item === "string" ? "" : item?.category || "";
+                          const type = typeof item === "string" ? "image" : item?.type || "image";
+
+                          return (
+                            <div key={idx} className="group bg-white p-6 rounded-[2.5rem] border border-gray-100 space-y-4 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all duration-500 relative">
+                              {/* Botón Eliminar Flotante */}
+                              <button
+                                onClick={() => removeArrayItem("resultImages", idx)}
+                                className="absolute -top-2 -right-2 bg-white text-red-400 p-2 shadow-lg border border-red-50 rounded-full hover:bg-red-500 hover:text-white transition-all scale-0 group-hover:scale-100 z-10"
+                              >
+                                <X size={16} />
+                              </button>
+
+                              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                                {/* Type Selector */}
+                                <div className="flex bg-gray-50 p-1.5 rounded-2xl border border-gray-100 shrink-0 shadow-inner">
+                                  <button
+                                    onClick={() => handleMediaChange("resultImages", idx, "image", "type")}
+                                    className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter ${type === 'image' ? 'bg-white text-indigo-600 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                                    title="Imagen"
+                                  >
+                                    <ImageIcon size={14} />
+                                    {type === 'image' && <span>Imagen</span>}
+                                  </button>
+                                  <button
+                                    onClick={() => handleMediaChange("resultImages", idx, "video", "type")}
+                                    className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter ${type === 'video' ? 'bg-white text-amber-500 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                                    title="Video"
+                                  >
+                                    <Video size={14} />
+                                    {type === 'video' && <span>Video</span>}
+                                  </button>
+                                  <button
+                                    onClick={() => handleMediaChange("resultImages", idx, "web", "type")}
+                                    className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter ${type === 'web' ? 'bg-white text-emerald-500 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                                    title="Sitio Web"
+                                  >
+                                    <Globe size={14} />
+                                    {type === 'web' && <span>Web</span>}
+                                  </button>
+                                </div>
+
+                                <div className="flex-1 w-full relative group/input">
+                                  <input
+                                    placeholder="URL, link de YouTube, Drive..."
+                                    value={val}
+                                    onChange={(e) => handleMediaChange("resultImages", idx, e.target.value, "url")}
+                                    className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-[1.5rem] text-sm focus:bg-white focus:ring-4 focus:ring-indigo-100 focus:border-indigo-200 transition-all outline-none"
+                                  />
+                                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                    {val && (
+                                      <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center opacity-0 group-focus-within/input:opacity-100 transition-opacity">
+                                        <CheckCircle2 size={14} />
+                                      </div>
+                                    )}
+                                    <button
+                                      onClick={() => {
+                                        const previewId = `result-${idx}`;
+                                        setExpandedPreviews(prev => {
+                                          const newSet = new Set(prev);
+                                          if (newSet.has(previewId)) {
+                                            newSet.delete(previewId);
+                                          } else {
+                                            newSet.add(previewId);
+                                          }
+                                          return newSet;
+                                        });
+                                      }}
+                                      className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                      title="Ver vista previa"
+                                    >
+                                      <EyeIcon size={14} className="text-gray-600" />
+                                    </button>
+                                    <label className="w-8 h-8 flex items-center justify-center bg-indigo-50 text-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors">
+                                      <Upload size={14} />
+                                      <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleMediaChange("resultImages", idx, url, "url"))} />
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="grid md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-3 bg-gray-50/30 px-5 py-3 rounded-2xl border border-gray-100/50 group-hover:border-indigo-50 group-hover:bg-white transition-all">
+                                  <Tag size={12} className="text-gray-400 group-hover:text-indigo-400 transition-colors" />
+                                  <input
+                                    placeholder="Categoría del medio (ej: Diseño UI, Video Drone...)"
+                                    value={category}
+                                    onChange={(e) => handleMediaChange("resultImages", idx, e.target.value, "category")}
+                                    className="flex-1 bg-transparent border-none rounded-xl text-xs font-bold text-gray-600 outline-none placeholder:font-normal"
+                                  />
+                                </div>
+
+                                {val && (
+                                  <div className="flex items-center gap-2 text-[10px] font-black text-gray-300 uppercase tracking-widest bg-gray-50/20 px-4 rounded-xl truncate">
+                                    <Monitor size={10} />
+                                    Preview URL Detectado
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Vista Previa Desplegable */}
+                              {val && expandedPreviews.has(`result-${idx}`) && (
+                                <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 mt-4">
+                                  <div className="flex items-center justify-between mb-3">
+                                    <span className="text-xs font-black text-gray-400 uppercase tracking-wider">Vista Previa</span>
+                                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${type === 'image' ? 'bg-indigo-100 text-indigo-600' :
+                                      type === 'video' ? 'bg-amber-100 text-amber-600' :
+                                        'bg-emerald-100 text-emerald-600'
+                                      }`}>
+                                      {type === 'image' ? 'IMAGEN' : type === 'video' ? 'VIDEO' : 'WEB'}
+                                    </span>
+                                  </div>
+
+                                  <div className="bg-white rounded-xl overflow-hidden border border-gray-100">
+                                    {type === 'image' && (
+                                      <div className="aspect-video bg-gray-100 flex items-center justify-center">
+                                        <img
+                                          src={val}
+                                          alt="Preview"
+                                          className="max-w-full max-h-full object-contain"
+                                          onError={(e) => {
+                                            e.currentTarget.src = '/placeholder-image.png';
+                                          }}
+                                        />
+                                      </div>
+                                    )}
+
+                                    {type === 'video' && (
+                                      <div className="aspect-video bg-gray-900 flex items-center justify-center">
+                                        {val.includes('youtube.com') || val.includes('youtu.be') ? (
+                                          <iframe
+                                            src={val.replace('watch?v=', 'embed/').split('&')[0]}
+                                            className="w-full h-full"
+                                            allowFullScreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                          />
+                                        ) : (
+                                          <div className="text-center text-white">
+                                            <Video size={48} className="mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm opacity-75">Video URL: {val}</p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+
+                                    {type === 'web' && (
+                                      <div className="aspect-video bg-gradient-to-br from-indigo-50 to-emerald-50 flex items-center justify-center">
+                                        <div className="text-center">
+                                          <Globe size={48} className="mx-auto mb-2 text-emerald-500" />
+                                          <p className="text-sm text-gray-600 font-medium truncate max-w-xs">{val}</p>
+                                          <a
+                                            href={val}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1 mt-2 text-xs bg-emerald-500 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-600 transition-colors"
+                                          >
+                                            Abrir Sitio Web
+                                            <Globe size={10} />
+                                          </a>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </div>
-                            <label className="flex items-center gap-2 px-3 py-3 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition">
-                              <Upload size={16} />
-                              <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleArrayChange("resultImages", idx, url))} />
-                            </label>
-                            <button onClick={() => removeArrayItem("resultImages", idx)} className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition">
-                              <X size={20} />
-                            </button>
+                          );
+                        })}
+
+                        <button
+                          onClick={() => addArrayItem("resultImages")}
+                          className="group flex items-center justify-center gap-3 text-sm font-black text-indigo-600 bg-white border-2 border-dashed border-indigo-100 p-8 rounded-[2.5rem] hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-500"
+                        >
+                          <div className="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <ImageIcon size={20} />
                           </div>
-                        ))}
-                        <button onClick={() => addArrayItem("resultImages")} className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl w-fit hover:bg-indigo-100 transition">
-                          <ImageIcon size={14} /> + Añadir Multimedia
+                          <span>Añadir nuevo elemento a la galería estratégica</span>
                         </button>
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
-                        Media Adicional
+                    <div className="pt-8 border-t border-gray-100">
+                      <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <Monitor size={14} className="text-amber-500" />
+                        Media Adicional / Extras
                       </label>
-                      <div className="grid gap-3">
-                        {formData.additionalImages?.map((val, idx) => (
-                          <div key={idx} className="flex gap-3 items-center">
-                            <div className="flex-1 relative">
-                               <input
-                                placeholder="URL o link del medio..."
-                                value={val}
-                                onChange={(e) => handleArrayChange("additionalImages", idx, e.target.value)}
-                                className="w-full px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm pr-12"
-                              />
-                               {(val.includes('youtube.com') || val.includes('youtu.be') || val.includes('vimeo.com') || val.includes('drive.google.com') || val.toLowerCase().endsWith('.mp4')) && (
-                                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-500">
-                                   <Video size={18} />
+                      <div className="grid gap-6">
+                        {formData.additionalImages?.map((item, idx) => {
+                          const val = typeof item === "string" ? item : item?.url || "";
+                          const category = typeof item === "string" ? "" : item?.category || "";
+                          const type = typeof item === "string" ? "image" : item?.type || "image";
+
+                          return (
+                            <div key={idx} className="group bg-white p-6 rounded-[2.5rem] border border-gray-100 space-y-4 shadow-sm hover:shadow-xl hover:border-amber-100 transition-all duration-500 relative">
+                              <button
+                                onClick={() => removeArrayItem("additionalImages", idx)}
+                                className="absolute -top-2 -right-2 bg-white text-red-400 p-2 shadow-lg border border-red-50 rounded-full hover:bg-red-500 hover:text-white transition-all scale-0 group-hover:scale-100 z-10"
+                              >
+                                <X size={16} />
+                              </button>
+
+                              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
+                                <div className="flex bg-gray-50 p-1.5 rounded-2xl border border-gray-100 shrink-0 shadow-inner">
+                                  <button
+                                    onClick={() => handleMediaChange("additionalImages", idx, "image", "type")}
+                                    className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter ${type === 'image' ? 'bg-white text-indigo-600 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                                  >
+                                    <ImageIcon size={14} />
+                                    {type === 'image' && <span>Imagen</span>}
+                                  </button>
+                                  <button
+                                    onClick={() => handleMediaChange("additionalImages", idx, "video", "type")}
+                                    className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter ${type === 'video' ? 'bg-white text-amber-500 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                                  >
+                                    <Video size={14} />
+                                    {type === 'video' && <span>Video</span>}
+                                  </button>
+                                  <button
+                                    onClick={() => handleMediaChange("additionalImages", idx, "web", "type")}
+                                    className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-tighter ${type === 'web' ? 'bg-white text-emerald-500 shadow-md' : 'text-gray-400 hover:text-gray-600'}`}
+                                  >
+                                    <Globe size={14} />
+                                    {type === 'web' && <span>Web</span>}
+                                  </button>
+                                </div>
+
+                                <div className="flex-1 w-full relative">
+                                  <input
+                                    placeholder="URL del recurso adicional..."
+                                    value={val}
+                                    onChange={(e) => handleMediaChange("additionalImages", idx, e.target.value, "url")}
+                                    className="w-full px-6 py-4 bg-gray-50/50 border border-gray-100 rounded-[1.5rem] text-sm focus:bg-white transition-all outline-none"
+                                  />
+                                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                    {val && (
+                                      <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center opacity-0 group-focus-within/input:opacity-100 transition-opacity">
+                                        <CheckCircle2 size={14} />
+                                      </div>
+                                    )}
+                                    <button
+                                      onClick={() => {
+                                        const previewId = `additional-${idx}`;
+                                        setExpandedPreviews(prev => {
+                                          const newSet = new Set(prev);
+                                          if (newSet.has(previewId)) {
+                                            newSet.delete(previewId);
+                                          } else {
+                                            newSet.add(previewId);
+                                          }
+                                          return newSet;
+                                        });
+                                      }}
+                                      className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                                      title="Ver vista previa"
+                                    >
+                                      <EyeIcon size={14} className="text-gray-600" />
+                                    </button>
+                                    <label className="w-8 h-8 flex items-center justify-center bg-amber-50 text-amber-600 rounded-lg cursor-pointer hover:bg-amber-100 transition-colors">
+                                      <Upload size={14} />
+                                      <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleMediaChange("additionalImages", idx, url, "url"))} />
+                                    </label>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3 bg-gray-50/30 px-5 py-3 rounded-2xl border border-gray-100/50 group-hover:border-amber-50 group-hover:bg-white transition-all">
+                                <Tag size={12} className="text-gray-400 group-hover:text-amber-400 transition-colors" />
+                                <input
+                                  placeholder="Nombre o categoría del recurso..."
+                                  value={category}
+                                  onChange={(e) => handleMediaChange("additionalImages", idx, e.target.value, "category")}
+                                  className="flex-1 bg-transparent border-none rounded-xl text-xs font-bold text-gray-600 outline-none placeholder:font-normal"
+                                />
+                              </div>
+
+                              {/* Vista Previa Desplegable */}
+                              {val && expandedPreviews.has(`additional-${idx}`) && (
+                                <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100 mt-4">
+                                  <div className="flex items-center justify-between mb-3">
+                                    <span className="text-xs font-black text-gray-400 uppercase tracking-wider">Vista Previa</span>
+                                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${type === 'image' ? 'bg-indigo-100 text-indigo-600' :
+                                      type === 'video' ? 'bg-amber-100 text-amber-600' :
+                                        'bg-emerald-100 text-emerald-600'
+                                      }`}>
+                                      {type === 'image' ? 'IMAGEN' : type === 'video' ? 'VIDEO' : 'WEB'}
+                                    </span>
+                                  </div>
+
+                                  <div className="bg-white rounded-xl overflow-hidden border border-gray-100">
+                                    {type === 'image' && (
+                                      <div className="aspect-video bg-gray-100 flex items-center justify-center">
+                                        <img
+                                          src={val}
+                                          alt="Preview"
+                                          className="max-w-full max-h-full object-contain"
+                                          onError={(e) => {
+                                            e.currentTarget.src = '/placeholder-image.png';
+                                          }}
+                                        />
+                                      </div>
+                                    )}
+
+                                    {type === 'video' && (
+                                      <div className="aspect-video bg-gray-900 flex items-center justify-center">
+                                        {val.includes('youtube.com') || val.includes('youtu.be') ? (
+                                          <iframe
+                                            src={val.replace('watch?v=', 'embed/').split('&')[0]}
+                                            className="w-full h-full"
+                                            allowFullScreen
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                          />
+                                        ) : (
+                                          <div className="text-center text-white">
+                                            <Video size={48} className="mx-auto mb-2 opacity-50" />
+                                            <p className="text-sm opacity-75">Video URL: {val}</p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )}
+
+                                    {type === 'web' && (
+                                      <div className="aspect-video bg-gradient-to-br from-indigo-50 to-emerald-50 flex items-center justify-center">
+                                        <div className="text-center">
+                                          <Globe size={48} className="mx-auto mb-2 text-emerald-500" />
+                                          <p className="text-sm text-gray-600 font-medium truncate max-w-xs">{val}</p>
+                                          <a
+                                            href={val}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1 mt-2 text-xs bg-emerald-500 text-white px-3 py-1.5 rounded-lg hover:bg-emerald-600 transition-colors"
+                                          >
+                                            Abrir Sitio Web
+                                            <Globe size={10} />
+                                          </a>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </div>
-                            <label className="flex items-center gap-2 px-3 py-3 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition">
-                              <Upload size={16} />
-                              <input type="file" accept="image/*,video/*" className="hidden" onChange={(e) => handleImageUpload(e, (url) => handleArrayChange("additionalImages", idx, url))} />
-                            </label>
-                            <button onClick={() => removeArrayItem("additionalImages", idx)} className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition">
-                              <X size={20} />
-                            </button>
+                          );
+                        })}
+                        <button
+                          onClick={() => addArrayItem("additionalImages")}
+                          className="group flex items-center justify-center gap-3 text-sm font-black text-amber-600 bg-white border-2 border-dashed border-amber-100 p-8 rounded-[2.5rem] hover:bg-amber-50 hover:border-amber-300 transition-all duration-500"
+                        >
+                          <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <Video size={20} />
                           </div>
-                        ))}
-                        <button onClick={() => addArrayItem("additionalImages")} className="flex items-center gap-2 text-xs font-black text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl w-fit hover:bg-indigo-100 transition">
-                          <Video size={14} /> + Añadir Multimedia
+                          <span>Añadir multimedia de apoyo o secundaria</span>
                         </button>
                       </div>
                     </div>
@@ -977,124 +1437,153 @@ export default function PortfolioEditor() {
                 )}
               </div>
 
-              {/* Action Bar */}
-              <div className="p-8 border-t border-gray-100 flex items-center justify-between gap-3 bg-gray-50/30">
+              {/* Action Bar - Sticky and Elevated */}
+              <div className="sticky bottom-0 z-[60] bg-white/90 backdrop-blur-xl border-t border-gray-100 p-6 flex items-center justify-between gap-6 shadow-[0_-20px_50px_rgba(0,0,0,0.04)]">
                 <div className="flex-1">
                   {saveSuccess && (
-                    <div className="flex items-center gap-2 text-green-600 bg-green-50 px-4 py-2 rounded-lg w-fit animate-fade-in-scale">
-                      <CheckCircle2 size={18} />
-                      <span className="text-sm font-bold">
-                        ¡Guardado correctamente!
+                    <div className="flex items-center gap-3 text-emerald-600 bg-emerald-50 px-6 py-3 rounded-2xl w-fit animate-fade-in-scale border border-emerald-100 shadow-sm">
+                      <CheckCircle2 size={20} className="animate-bounce" />
+                      <span className="text-sm font-black uppercase tracking-wider">
+                        Estrategia Guardada con Éxito
                       </span>
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className={`px-10 py-4 text-white rounded-2xl font-bold transition-all shadow-xl shadow-gray-200 flex items-center justify-center min-w-[280px] ${
-                    isSaving
-                      ? "bg-indigo-400 cursor-not-allowed"
-                      : "bg-gray-900 hover:bg-black"
-                  }`}
-                >
-                  {isSaving ? (
-                    <>
-                      <Loader2 className="animate-spin mr-2" size={20} />
-                      Guardando en base de datos...
-                    </>
-                  ) : editingId ? (
-                    "Guardar Cambios del Proyecto"
-                  ) : (
-                    "Crear Proyecto Completo"
-                  )}
-                </button>
+
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setIsPreviewOpen(true)}
+                    className="group px-6 py-4 bg-white border border-gray-200 text-gray-700 font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all flex items-center gap-2"
+                  >
+                    <Eye size={16} className="group-hover:scale-110 transition-transform" />
+                    Vista Previa Móvil/Web
+                  </button>
+
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className={`group px-12 py-4 text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] transition-all shadow-2xl flex items-center justify-center min-w-[320px] ${isSaving
+                      ? "bg-indigo-400 cursor-not-allowed scale-95"
+                      : "bg-gray-900 hover:bg-black hover:scale-[1.02] active:scale-95 shadow-indigo-200"
+                      }`}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="animate-spin mr-3" size={20} />
+                        Procesando Cambios...
+                      </>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <Rocket size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        <span>{editingId ? "Actualizar Proyecto" : "Publicar Proyecto"}</span>
+                      </div>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
           {/* List Sidebar */}
-          <div className="lg:col-span-4">
-            <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">
-              Inventario Estratégico
-            </h2>
-            <div className="space-y-3">
-              {projectsList.map((project) => (
-                <div
-                  key={project.id}
-                  className={`group bg-white rounded-2xl p-4 border transition-all cursor-pointer ${
-                    editingId === project.id
-                      ? "border-indigo-600 ring-4 ring-indigo-50 shadow-lg"
-                      : "border-gray-100 hover:border-gray-200 hover:shadow-md"
-                  } ${!project.isVisible ? "opacity-60 bg-gray-50/50" : ""}`}
-                  onClick={() => handleEdit(project)}
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex gap-3">
-                      <div className="w-10 h-10 rounded-lg flex-shrink-0 bg-gray-100 overflow-hidden relative">
+          <div className="lg:col-span-4 h-[calc(100vh-200px)] sticky top-24">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                Inventario Estratégico
+              </h2>
+              <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full font-black">
+                {projectsList.length} TOTAL
+              </span>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative mb-6">
+              <input
+                type="text"
+                placeholder="Buscar proyecto..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-white border border-gray-100 px-5 py-3 rounded-2xl text-xs font-bold focus:ring-4 focus:ring-indigo-100 transition-all outline-none"
+              />
+              <FileText size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300" />
+            </div>
+
+            <div className="space-y-3 overflow-y-auto h-full pr-2 custom-scrollbar">
+              {projectsList
+                .filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.client.toLowerCase().includes(searchTerm.toLowerCase()))
+                .map((project) => (
+                  <div
+                    key={project.id}
+                    className={`group bg-white rounded-3xl p-5 border transition-all cursor-pointer relative overflow-hidden ${editingId === project.id
+                      ? "border-indigo-600 ring-4 ring-indigo-50 shadow-2xl scale-[1.02] z-10"
+                      : "border-gray-100 hover:border-indigo-200 shadow-sm hover:shadow-xl"
+                      } ${!project.isVisible ? "opacity-60 bg-gray-50/50" : ""}`}
+                    onClick={() => handleEdit(project)}
+                  >
+                    {editingId === project.id && (
+                      <div className="absolute top-0 right-0 w-12 h-12 bg-indigo-600 flex items-center justify-center text-white rounded-bl-3xl shadow-lg">
+                        <PencilLine size={18} />
+                      </div>
+                    )}
+
+                    <div className="flex gap-4">
+                      <div className="w-16 h-16 rounded-2xl flex-shrink-0 bg-gray-50 overflow-hidden relative border border-gray-100">
                         {project.heroImage ? (
                           <img
                             src={project.heroImage}
                             alt=""
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                         ) : (
-                          <div className="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-300 text-xs font-bold">
+                          <div className="w-full h-full bg-indigo-50 flex items-center justify-center text-indigo-300 text-lg font-black">
                             {project.title.charAt(0)}
                           </div>
                         )}
                         {!project.isVisible && (
-                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                            <EyeOff size={12} className="text-white" />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
+                            <EyeOff size={16} className="text-white" />
                           </div>
                         )}
                       </div>
-                      <div>
-                        <div className="flex items-center gap-1.5">
-                          <h4 className="font-bold text-gray-900 leading-tight line-clamp-1">
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <h4 className="font-bold text-gray-900 leading-tight truncate pr-4">
                             {project.title}
                           </h4>
                           {project.isFeatured && (
                             <Star
                               size={12}
-                              className="text-amber-500 fill-amber-500"
+                              className="text-amber-500 fill-amber-500 shrink-0"
                             />
                           )}
                         </div>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-[9px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md uppercase tracking-tighter">
                             {project.category}
-                          </p>
-                          <span className="text-[9px] bg-gray-100 px-1.5 rounded-full text-gray-500 font-bold">
-                            #{project.orderRank || 0}
+                          </span>
+                          <span className="text-[9px] font-bold text-gray-400 uppercase">
+                            {project.client}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(project.id);
-                      }}
-                      className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+
+                    <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
+                      <span className="text-[9px] font-black text-gray-300 uppercase tracking-[0.2em]">
+                        Rank #{project.orderRank || 0}
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(project.id);
+                        }}
+                        className="p-2 text-gray-200 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
+                        <X size={16} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div className="mt-8 p-6 bg-indigo-900 rounded-3xl text-white shadow-2xl shadow-indigo-200">
@@ -1111,3 +1600,4 @@ export default function PortfolioEditor() {
     </div>
   );
 }
+

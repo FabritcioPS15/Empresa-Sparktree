@@ -102,6 +102,16 @@ export default function Services({ onNavigate }: ServicesProps) {
         'Tu sitio será hermoso, rápido y, lo más importante, intuitivo. Nos enfocamos en la Experiencia del Usuario (UX) para que tus visitantes encuentren lo que necesitan sin fricción y realicen la acción que deseas (comprar, contactar, cotizar). Un diseño optimizado significa más clientes con el mismo tráfico.',
     },
     {
+      title: 'Marketing Digital',
+      description:
+        'Creamos estrategias integrales de marketing digital para aumentar tu visibilidad y atraer clientes calificados. Desde campañas en redes sociales hasta email marketing y publicidad pagada, te ayudamos a alcanzar tus objetivos de negocio y maximizar tu retorno de inversión.',
+    },
+    {
+      title: 'Desarrollo de Aplicaciones',
+      description:
+        'Desarrollamos aplicaciones móviles y de escritorio a medida para tu negocio. Apps nativas, híbridas o progresivas que ofrecen experiencias excepcionales, mejoran la eficiencia operativa y crean nuevas oportunidades de conexión con tus clientes.',
+    },
+    {
       title: 'Posicionamiento SEO',
       description:
         'Dejaremos de depender solo de la publicidad pagada. Optimizamos tu web para que aparezca en los primeros resultados de Google cuando tus clientes busquen tus servicios o productos. Lograrás tráfico constante, calificado y gratuito que trabajará por ti 24/7',
@@ -110,6 +120,11 @@ export default function Services({ onNavigate }: ServicesProps) {
       title: 'Branding',
       description:
         'Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia. Una marca sólida genera lealtad y te permite cobrar lo que realmente vale tu servicio',
+    },
+    {
+      title: 'Consultoría Digital',
+      description:
+        'Asesoramos a tu empresa en su transformación digital. Analizamos tus procesos, identificamos oportunidades de mejora y diseñamos estrategias tecnológicas que optimizan operaciones, reducen costos y preparan tu negocio para el futuro digital.',
     },
     {
       title: 'Servicios TI',
@@ -143,7 +158,7 @@ export default function Services({ onNavigate }: ServicesProps) {
                   </p>
                   <div className="mt-8">
                     <button
-                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo').replace('servicios-ti', 'ti')}`)}
+                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo').replace('servicios-ti', 'ti').replace('marketing-digital', 'marketing').replace('desarrollo-de-aplicaciones', 'apps').replace('consultoría-digital', 'consulting')}`)}
                       className="px-8 py-3.5 bg-gray-950 text-white rounded-full hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-xl smooth-exit"
                     >
                       Conoce más

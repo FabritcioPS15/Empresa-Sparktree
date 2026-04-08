@@ -2,10 +2,10 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { usePageMeta } from '@/hooks/usePageMeta';
-import { 
-  ArrowLeft, Clock, User, Tag, Sparkles, Check, 
-  Award, Calendar, 
-  Play, Image 
+import {
+  ArrowLeft, Clock, User, Tag, Sparkles, Check,
+  Award, Calendar,
+  Play
 } from 'lucide-react';
 
 interface ProjectDetailProps {
@@ -71,8 +71,8 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
   // Hero Slider Logic
   const heroMedia = useMemo(() => {
     if (!project) return [];
-    const images = project.heroImages && project.heroImages.length > 0 
-      ? project.heroImages 
+    const images = project.heroImages && project.heroImages.length > 0
+      ? project.heroImages
       : [project.heroImage];
     return images.filter(Boolean);
   }, [project]);
@@ -80,7 +80,15 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
   // Combined Media Gallery
   const galleryMedia = useMemo(() => {
     if (!project) return [];
-    return [...(project.resultImages || []), ...(project.additionalImages || [])].filter(Boolean);
+    const images = (project.resultImages || []) as (string | { url: string; category?: string })[];
+    const additional = (project.additionalImages || []) as (string | { url: string; category?: string })[];
+
+    return [...images, ...additional]
+      .filter(Boolean)
+      .map(item => {
+        if (typeof item === 'string') return { url: item, category: '', type: undefined };
+        return item as { url: string; category?: string; type?: "image" | "video" | "web" };
+      });
   }, [project]);
 
   useEffect(() => {
@@ -91,9 +99,9 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     return () => clearInterval(timer);
   }, [heroMedia]);
 
-  const renderMedia = (url: string, alt: string, className: string = "w-full h-full object-cover", isGallery = false) => {
+  const renderMedia = (url: string, alt: string, className: string = "w-full h-full object-cover", isGallery = false, type?: string) => {
     if (!url) return null;
-    
+
     // Normalización de enlaces de Google Drive
     let finalUrl = url;
     const isDrive = url.includes('drive.google.com');
@@ -116,8 +124,23 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     const isYouTube = !!videoId;
     const isVimeo = url.includes('vimeo.com');
     const isDirectVideo = url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm') || url.toLowerCase().endsWith('.ogg');
+    const isExplicitVideo = type === 'video';
+    const isExplicitWeb = type === 'web';
 
-    if (isYouTube && videoId) {
+    if (isExplicitWeb) {
+      return (
+        <div className={className + " bg-white overflow-hidden"}>
+          <iframe
+            src={url}
+            className="w-full h-full border-none"
+            title={alt}
+            allow="fullscreen"
+          />
+        </div>
+      );
+    }
+
+    if ((isYouTube && videoId) || isExplicitVideo) {
       return (
         <iframe
           src={`https://www.youtube.com/embed/${videoId}?autoplay=0&hl=es&controls=1&rel=0`}
@@ -158,11 +181,11 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
     if (isDirectVideo) {
       return (
-        <video 
-          src={url} 
-          className={className} 
-          controls 
-          playsInline 
+        <video
+          src={url}
+          className={className}
+          controls
+          playsInline
           muted={!isGallery}
         >
           Tu navegador no soporta el video tag.
@@ -241,7 +264,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
       <section ref={projectRef} className="pt-24 pb-20 md:pt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <div className="max-w-4xl mx-auto mb-12 text-center">
             <div className="flex items-center justify-center gap-2 mb-6 scroll-entrance fade-up">
               <button onClick={() => onNavigate?.('portfolio')} className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-[#41F0A5] transition-colors">Portafolio</button>
@@ -259,7 +282,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
                 <>
                   {heroMedia.map((url, idx) => (
                     <div key={idx} className={`hero-slide ${idx === currentHeroIndex ? 'active' : ''}`}>
-                       {renderMedia(url, `Hero visual ${idx + 1}`)}
+                      {renderMedia(url, `Hero visual ${idx + 1}`)}
                     </div>
                   ))}
                   {heroMedia.length > 1 && (
@@ -313,7 +336,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
             {/* Impact Quote */}
             <div className="max-w-3xl mx-auto mb-24 md:mb-32 text-center reveal">
-               <p className="text-2xl md:text-4xl font-black text-gray-800 leading-tight tracking-tight italic">"{project.description}"</p>
+              <p className="text-2xl md:text-4xl font-black text-gray-800 leading-tight tracking-tight italic">"{project.description}"</p>
             </div>
 
             {/* Results */}
@@ -336,79 +359,79 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
             {/* Universal Media Gallery (Simple Static Grid) */}
             <div className="mb-24 md:mb-32">
-               <div className="text-center mb-16">
-                  <h2 className="text-3xl font-black text-gray-900 tracking-tight mb-4 text-center">Galería de Medios</h2>
-                  <div className="w-12 h-1 bg-[#41F0A5] mx-auto rounded-full"></div>
-               </div>
-               
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 md:auto-rows-[300px]">
-                  {galleryMedia.map((url, idx) => {
-                    const isVideo = url.toLowerCase().endsWith('.mp4') || url.includes('drive.google.com') || url.includes('youtube') || url.includes('vimeo');
-                    const isLarge = idx % 6 === 0;
-                    const isMedium = idx % 4 === 0 && !isLarge;
-                    const spanClass = isLarge ? "md:col-span-2 lg:col-span-4 lg:row-span-2" : isMedium ? "md:col-span-2 lg:col-span-2 lg:row-span-2" : "md:col-span-1 lg:col-span-2";
+              <div className="text-center mb-16">
+                <h2 className="text-3xl font-black text-gray-900 tracking-tight mb-4 text-center">Galería de Medios</h2>
+                <div className="w-12 h-1 bg-[#41F0A5] mx-auto rounded-full"></div>
+              </div>
 
-                    return (
-                      <div 
-                        key={idx} 
-                        className={`${spanClass} relative bg-gray-50 rounded-[2.5rem] overflow-hidden group shadow-md border border-gray-100/50 hover:shadow-2xl transition-all duration-700 reveal`}
-                      >
-                         {renderMedia(url, `Medio ${idx + 1}`, "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105", true)}
-                         
-                         {/* Visual indicator for static videos (always visible) */}
-                         {isVideo && (
-                           <div className="absolute top-6 left-6 z-10 pointer-events-none group-hover:opacity-0 transition-opacity duration-300">
-                              <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 text-white">
-                                <Play className="w-6 h-6 fill-white" />
-                              </div>
-                           </div>
-                         )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 md:auto-rows-[300px]">
+                {galleryMedia.map((item, idx) => {
+                  const url = item.url;
+                  const category = item.category;
+                  const isVideo = item.type === 'video' || (!item.type && (url.toLowerCase().endsWith('.mp4') || url.includes('drive.google.com') || url.includes('youtube') || url.includes('vimeo')));
+                  const isWeb = item.type === 'web';
+                  const isLarge = idx % 6 === 0;
+                  const isMedium = idx % 4 === 0 && !isLarge;
+                  const spanClass = isLarge ? "md:col-span-2 lg:col-span-4 lg:row-span-2" : isMedium ? "md:col-span-2 lg:col-span-2 lg:row-span-2" : "md:col-span-1 lg:col-span-2";
 
-                         {/* Hover indicator for media type */}
-                         <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center pointer-events-none">
-                            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
-                               <div className="bg-white/95 backdrop-blur-md rounded-2xl py-3 px-6 flex items-center gap-3 shadow-2xl border border-white/50">
-                                  <div className="w-8 h-8 bg-[#41F0A5] rounded-xl flex items-center justify-center text-gray-900 shadow-lg shadow-[#41F0A5]/20">
-                                    {isVideo ? (
-                                      <Play className="w-4 h-4 fill-current ml-0.5" />
-                                    ) : (
-                                      <Image className="w-4 h-4" />
-                                    )}
-                                  </div>
-                                  <span className="text-[10px] font-black text-gray-900 uppercase tracking-[0.2em] whitespace-nowrap">
-                                    {isVideo ? 'Video' : 'Imagen'}
-                                  </span>
-                               </div>
+                  return (
+                    <div
+                      key={idx}
+                      className={`${spanClass} relative bg-gray-50 rounded-[2.5rem] overflow-hidden group shadow-md border border-gray-100/50 hover:shadow-2xl transition-all duration-700 reveal`}
+                    >
+                      {renderMedia(url, `Medio ${idx + 1}`, "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105", true, item.type)}
+
+                      {/* Visual indicator for static videos (always visible) */}
+                      {isVideo && (
+                        <div className="absolute top-6 left-6 z-10 pointer-events-none group-hover:opacity-0 transition-opacity duration-300">
+                          <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 text-white">
+                            <Play className="w-6 h-6 fill-white" />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Hover indicator for media type - Minimalist Redesign with Category */}
+                      <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-start p-10 pointer-events-none">
+                        <div className="relative overflow-hidden w-full">
+                          {category && (
+                            <div className="text-[#41F0A5] text-[10px] font-black tracking-[0.2em] uppercase mb-1 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500 delay-100">
+                              {category}
                             </div>
-                         </div>
+                          )}
+                          <span className="text-[11px] font-black text-white uppercase tracking-[0.25em] whitespace-nowrap block mb-1">
+                            {isWeb ? 'Ver Sitio Web' : isVideo ? 'Ver Video' : 'Ver Imagen'}
+                          </span>
+                          <div className="h-0.5 bg-[#41F0A5] w-0 group-hover:w-full transition-all duration-700 ease-out"></div>
+                        </div>
                       </div>
-                    );
-                  })}
-               </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Tech Stack */}
             <div className="mb-24 md:mb-32">
-               <h4 className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-10">Tecnologías Utilizadas</h4>
-               <div className="flex flex-wrap justify-center gap-3">
-                  {(project.technologies || []).map((tech, i) => (
-                    <span key={i} className="px-6 py-2.5 bg-white border border-gray-100 rounded-full text-xs font-black text-gray-600 shadow-sm hover:border-[#41F0A5]/30 transition-all cursor-default">{tech}</span>
-                  ))}
-               </div>
+              <h4 className="text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-10">Tecnologías Utilizadas</h4>
+              <div className="flex flex-wrap justify-center gap-3">
+                {(project.technologies || []).map((tech, i) => (
+                  <span key={i} className="px-6 py-2.5 bg-white border border-gray-100 rounded-full text-xs font-black text-gray-600 shadow-sm hover:border-[#41F0A5]/30 transition-all cursor-default">{tech}</span>
+                ))}
+              </div>
             </div>
 
             {/* Footer CTA */}
             <div className="text-center pt-20 border-t border-gray-50">
-               <button onClick={() => onNavigate?.('portfolio')} className="inline-flex items-center gap-3 text-sm font-black text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors mb-16"><ArrowLeft className="w-4 h-4" />Ver otros proyectos</button>
-               <div className="bg-[#41F0A5] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl group">
-                  <div className="relative z-10">
-                    <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-tight uppercase">Elevamos tu marca <br/> al siguiente nivel</h3>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                      <button onClick={() => onNavigate?.('contact')} className="px-10 py-5 bg-gray-900 text-white rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-xl">Iniciar Proyecto</button>
-                      <button onClick={() => onNavigate?.('services')} className="px-10 py-5 bg-white text-gray-900 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-md">Nuestras Soluciones</button>
-                    </div>
+              <button onClick={() => onNavigate?.('portfolio')} className="inline-flex items-center gap-3 text-sm font-black text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors mb-16"><ArrowLeft className="w-4 h-4" />Ver otros proyectos</button>
+              <div className="bg-[#41F0A5] rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl group">
+                <div className="relative z-10">
+                  <h3 className="text-3xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight leading-tight uppercase">Elevamos tu marca <br /> al siguiente nivel</h3>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+                    <button onClick={() => onNavigate?.('contact')} className="px-10 py-5 bg-gray-900 text-white rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-xl">Iniciar Proyecto</button>
+                    <button onClick={() => onNavigate?.('services')} className="px-10 py-5 bg-white text-gray-900 rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-105 transition-all shadow-md">Nuestras Soluciones</button>
                   </div>
-               </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
