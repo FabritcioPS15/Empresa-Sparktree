@@ -43,7 +43,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
             .select('*')
             .ilike('id', currentId)
             .single();
-          
+
           if (retryData) {
             setProject(retryData as Project);
           } else {
@@ -142,11 +142,22 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
     }, observerOptions);
 
     const timeoutId = setTimeout(() => {
+      if (isPreview) {
+        // En modo vista previa, forzar visibilidad inmediata de todo
+        const elements = document.querySelectorAll('.scroll-entrance, .reveal');
+        elements.forEach(el => {
+          el.classList.add('reveal-visible', 'visible');
+          (el as HTMLElement).style.opacity = '1';
+          (el as HTMLElement).style.transform = 'none';
+        });
+        return;
+      }
+
       if (projectRef.current) {
         const elements = projectRef.current.querySelectorAll('.reveal');
         elements.forEach(el => observer.observe(el));
       }
-      
+
       const scrollElements = document.querySelectorAll('.scroll-entrance');
       scrollElements.forEach(el => observer.observe(el));
 
@@ -160,13 +171,13 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
       }, 1500);
 
       return () => clearTimeout(failSafe);
-    }, 200);
+    }, isPreview ? 0 : 200);
 
     return () => {
       clearTimeout(timeoutId);
       observer.disconnect();
     };
-  }, [project]); // Re-run when project loads
+  }, [project, isPreview]); // Re-run when project loads or preview mode changes
 
   if (loading) {
     return (
@@ -194,6 +205,16 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
   return (
     <div className="pt-16 sm:pt-20" style={{ opacity: 1, visibility: 'visible' }}>
+      {isPreview && (
+        <style>{`
+          .scroll-entrance, .reveal {
+            opacity: 1 !important;
+            transform: none !important;
+            visibility: visible !important;
+            transition: none !important;
+          }
+        `}</style>
+      )}
       <section ref={projectRef} className="py-8 sm:py-12 md:py-16 lg:py-20" style={{ opacity: 1, visibility: 'visible' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Back Button */}
@@ -228,7 +249,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
                 </div>
               )}
             </div>
-            
+
             <div className="max-w-4xl mx-auto">
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 text-center scroll-entrance slide-left scroll-stagger-2">
                 {project.title}
@@ -249,7 +270,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
                   {project.challenge}
                 </p>
               </div>
-              
+
               <div className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-200 scroll-entrance slide-left scroll-stagger-5">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Solución</h3>
                 <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
@@ -291,7 +312,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
                   ))}
                 </div>
               </div>
- 
+
               <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 scroll-entrance slide-right scroll-stagger-6">
                 <h4 className="font-bold text-gray-900 mb-3 sm:mb-4">Equipo</h4>
                 <div className="space-y-2">
@@ -304,7 +325,7 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
               </div>
             </div>
           </div>
- 
+
           {/* Results Section */}
           <div className="mb-8 sm:mb-12 md:mb-16 lg:mb-20">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 text-center scroll-entrance scroll-stagger-7">

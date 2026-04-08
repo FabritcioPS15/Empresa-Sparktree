@@ -15,11 +15,11 @@ import {
   Eye,
   EyeOff,
   Star,
-  RefreshCw,
   Video,
-  Monitor,
 } from "lucide-react";
 import ProjectDetail from "../portfolio/ProjectDetail";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default function PortfolioEditor() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,6 +50,17 @@ export default function PortfolioEditor() {
     checkUser();
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (isPreviewOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isPreviewOpen]);
 
   async function checkUser() {
     const { data } = await supabase.auth.getSession();
@@ -247,20 +258,21 @@ export default function PortfolioEditor() {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         {isPreviewOpen && (
-          <div className="fixed inset-0 z-[100] bg-white overflow-y-auto">
-            <div className="sticky top-0 z-[110] bg-white/80 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <span className="bg-indigo-100 text-indigo-600 text-[10px] font-black px-2 py-1 rounded uppercase">Modo Vista Previa</span>
-                <h2 className="font-bold text-gray-900">Visualizando: {formData.title || "Nuevo Proyecto"}</h2>
-              </div>
-              <button 
-                onClick={() => setIsPreviewOpen(false)}
-                className="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-gray-800 transition shadow-lg"
-              >
-                <X size={16} /> Cerrar Previsualización
-              </button>
-            </div>
+          <div className="fixed inset-0 z-[100] bg-white overflow-y-auto overflow-x-hidden scroll-smooth">
+            <Header currentPage="project-detail" onNavigate={() => {}} />
             <ProjectDetail projectId={editingId || "preview"} initialData={formData as any} isPreview={true} />
+            <Footer onNavigate={() => {}} currentPage="project-detail" />
+            
+            {/* Botón Flotante para salir de Vista Previa */}
+            <button 
+              onClick={() => setIsPreviewOpen(false)}
+              className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-gray-900/90 backdrop-blur-md text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-black transition-all shadow-2xl hover:scale-105 active:scale-95 border border-white/20 group"
+            >
+              <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center group-hover:rotate-90 transition-transform">
+                <X size={20} />
+              </div>
+              <span>Salir de Vista Previa</span>
+            </button>
           </div>
         )}
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-gray-100 animate-fade-in-scale">
@@ -327,27 +339,25 @@ export default function PortfolioEditor() {
   return (
     <div className="pt-24 min-h-screen bg-gray-50 pb-20 relative">
       {isPreviewOpen && (
-        <div className="fixed inset-0 z-[100] bg-white overflow-y-auto animate-in fade-in duration-300">
-          <div className="sticky top-0 z-[110] bg-white/95 backdrop-blur-md border-b border-gray-100 p-4 flex justify-between items-center shadow-md">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-indigo-50 rounded-2xl flex items-center justify-center">
-                <Monitor className="w-5 h-5 text-indigo-600" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                  Sparktree Visual System <span className="text-green-500">• Vista Previa Activa</span>
-                </div>
-                <h2 className="font-bold text-gray-900">{formData.title || "Sin título"}</h2>
-              </div>
-            </div>
-            <button 
-              onClick={() => setIsPreviewOpen(false)}
-              className="bg-gray-900 text-white px-6 py-3 rounded-2xl text-sm font-black flex items-center gap-2 hover:bg-black transition-all shadow-xl shadow-gray-200"
-            >
-              <X size={18} /> Cerrar Previsualización
-            </button>
+        <div className="fixed inset-0 z-[150] bg-white overflow-y-auto overflow-x-hidden scroll-smooth animate-in fade-in duration-300">
+          <div className="min-h-screen flex flex-col">
+            <Header currentPage="project-detail" onNavigate={() => {}} />
+            <main className="flex-grow">
+              <ProjectDetail projectId={editingId || "preview"} initialData={formData as any} isPreview={true} />
+            </main>
+            <Footer onNavigate={() => {}} currentPage="project-detail" />
           </div>
-          <ProjectDetail projectId={editingId || "preview"} initialData={formData as any} isPreview={true} />
+
+          {/* Botón Flotante para salir de Vista Previa */}
+          <button 
+            onClick={() => setIsPreviewOpen(false)}
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] bg-gray-900 text-white px-8 py-4 rounded-2xl font-black flex items-center gap-3 hover:bg-black transition-all shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:scale-105 active:scale-95 border border-white/10 group"
+          >
+            <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center group-hover:rotate-90 transition-transform shadow-inner">
+              <X size={20} />
+            </div>
+            <span className="tracking-tight">Salir de Vista Previa</span>
+          </button>
         </div>
       )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
