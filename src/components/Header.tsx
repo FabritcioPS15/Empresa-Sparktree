@@ -77,7 +77,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   // Simple site-wide index (pages, services, categories, posts)
   const searchIndex = [
     // Pages
-    { label: 'Nosotros', type: 'Página', href: 'home', keywords: 'nosotros agencia sobre nosotros' },
+    { label: 'Inicio', type: 'Página', href: 'home', keywords: 'inicio home principal sparktree' },
+    { label: 'Nosotros', type: 'Página', href: 'nosotros', keywords: 'nosotros agencia sobre nosotros hub empresarial equipo' },
     { label: 'Servicios', type: 'Página', href: 'services', keywords: 'servicios' },
     { label: 'Portafolio', type: 'Página', href: 'portfolio', keywords: 'portafolio proyectos trabajos' },
     { label: 'Blog', type: 'Página', href: 'blog', keywords: 'blog artículos' },
@@ -281,7 +282,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   }, []);
 
   const navItems = [
-    { id: 'home', label: 'Nosotros' },
+    { id: 'home', label: 'Inicio' },
+    { id: 'nosotros', label: 'Nosotros' },
     { id: 'services', label: 'Servicios', hasDropdown: true },
     { id: 'portfolio', label: 'Portafolio' },
     { id: 'blog', label: 'Blog' },

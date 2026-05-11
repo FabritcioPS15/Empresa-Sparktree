@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Rocket, Zap } from 'lucide-react';
+import CountUp from '@/components/common/CountUp';
 
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
 import { usePageMeta } from '@/hooks/usePageMeta';
@@ -106,15 +107,15 @@ export default function Home({ onNavigate }: HomeProps) {
 
   const services = [
     {
-      title: 'Diseño de Páginas Web',
-      description: 'Tu sitio será hermoso, rápido y, lo más importante, intuitivo. Nos enfocamos en la Experiencia del Usuario (UX) para que tus visitantes encuentren lo que necesitan sin fricción y realicen la acción que deseas',
-      image: '/assets/web_design.webp',
+      title: 'Tu Equipo de Marketing Externo',
+      description: 'Olvídate de contratar personal. Nosotros operamos como tu departamento de marketing dedicado, gestionando estrategia, pauta y crecimiento digital con enfoque en ROI.',
+      image: '/assets/seo_positioning.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
-      title: 'Posicionamiento SEO',
-      description: 'Dejamos de depender solo de la publicidad pagada. Optimizamos tu web para que aparezca en los primeros resultados de Google cuando tus clientes busquen tus servicios o productos.',
-      image: '/assets/seo_positioning.webp',
+      title: 'Diseño Web de Alto Rendimiento',
+      description: 'Sitios web optimizados para convertir. Nos enfocamos en la experiencia del usuario (UX) para que cada visita se transforme en una oportunidad de venta real.',
+      image: '/assets/web_design.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
@@ -144,18 +145,41 @@ export default function Home({ onNavigate }: HomeProps) {
       {/* New Hero Section */}
       <ServiceHero onNavigate={onNavigate} />
 
+      {/* Mini Stats Bar */}
+      <div className="bg-white py-8 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <CountUp end={98} suffix="%" className="text-2xl md:text-3xl font-black text-gray-900 block" />
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Retención</p>
+            </div>
+            <div>
+              <CountUp end={150} suffix="+" className="text-2xl md:text-3xl font-black text-gray-900 block" />
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Casos de Éxito</p>
+            </div>
+            <div>
+              <CountUp end={24} suffix="/7" className="text-2xl md:text-3xl font-black text-gray-900 block" />
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Soporte IA</p>
+            </div>
+            <div>
+              <CountUp end={100} suffix="%" className="text-2xl md:text-3xl font-black text-gray-900 block" />
+              <p className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Compromiso</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       {/* About Section */}
       <section className="py-10 sm:py-12 md:py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto mb-8 sm:mb-10 md:mb-12 lg:mb-16">
             <div className="bg-gray-100 rounded-2xl p-4 sm:p-6 md:p-8 text-center mb-6 sm:mb-8 md:mb-10 scroll-entrance scale-up scroll-stagger-1 hover:bg-gray-200 hover:scale-105 hover:shadow-lg transition-all duration-500 cursor-default smooth-exit">
-              <p className="text-gray-600 leading-relaxed text-xs sm:text-sm md:text-base hover:text-gray-800 transition-colors duration-500">
-                Imagen de la marca, su nombre y de lo que trata
-              </p>
+              <h2 className="text-2xl md:text-4xl font-black text-gray-900 mb-2">SparkTree Hub</h2>
+              <p className="text-emerald-600 font-bold tracking-widest uppercase text-xs">Ecosistema de Soluciones Digitales</p>
             </div>
             <p className="text-gray-600 leading-relaxed text-center text-xs sm:text-sm md:text-base px-2 sm:px-0 scroll-entrance slide-left scroll-stagger-2 hover:text-gray-800 hover:scale-105 transition-all duration-500 cursor-default">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Somos un hub empresarial diseñado para impulsar negocios reales. No solo creamos herramientas, construimos el motor tecnológico y creativo que tu empresa necesita para dominar el mercado digital actual.
             </p>
           </div>
 
@@ -169,6 +193,53 @@ export default function Home({ onNavigate }: HomeProps) {
               <p className="text-gray-500 group-hover:text-gray-700 transition-colors duration-500 text-xs sm:text-sm text-center">
                 Imagen referencial del resultado del proyecto
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SaaS Spotlight Section */}
+      <section className="py-20 bg-gray-900 text-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full -z-0" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="scroll-entrance slide-left">
+              <span className="inline-block px-3 py-1 mb-6 text-xs font-semibold tracking-widest uppercase border border-emerald-400 text-emerald-400 rounded-full">
+                SaaS & Automatización
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
+                Alquila tu área de <span className="text-emerald-400">Atención Automática</span>
+              </h2>
+              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                Presentamos <strong>SparkBots</strong>: Nuestra tecnología propietaria de IA diseñada para responder, calificar y agendar clientes 24/7 sin intervención humana.
+              </p>
+              <ul className="space-y-4 mb-10">
+                <li className="flex items-center gap-3">
+                  <div className="bg-emerald-500/20 p-1 rounded-full"><Rocket className="w-4 h-4 text-emerald-400" /></div>
+                  <span className="text-sm md:text-base">Respuesta instantánea en WhatsApp y Web.</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="bg-emerald-500/20 p-1 rounded-full"><Rocket className="w-4 h-4 text-emerald-400" /></div>
+                  <span className="text-sm md:text-base">Integración con tu CRM actual.</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="bg-emerald-500/20 p-1 rounded-full"><Rocket className="w-4 h-4 text-emerald-400" /></div>
+                  <span className="text-sm md:text-base">Entrenados con la voz de tu marca.</span>
+                </li>
+              </ul>
+              <button onClick={() => onNavigate?.('contact')} className="px-8 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20">
+                Alquilar SparkBots →
+              </button>
+            </div>
+            <div className="relative scroll-entrance scale-up">
+              <div className="aspect-video bg-gray-800 rounded-3xl border border-gray-700 shadow-2xl flex items-center justify-center overflow-hidden">
+                <div className="p-8 text-center">
+                  <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+                    <Zap className="w-10 h-10 text-emerald-400" />
+                  </div>
+                  <p className="text-emerald-400 font-mono text-sm">[Interfaz SparkBots en desarrollo...]</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

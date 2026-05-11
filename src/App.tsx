@@ -16,6 +16,7 @@ import ServiceTI from './pages/services/TI';
 import Privacy from './pages/privacy';
 import ProjectDetail from './pages/portfolio/ProjectDetail';
 import Contact from './pages/contact';
+import Nosotros from './pages/nosotros';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
 import PortfolioEditor from './pages/admin/PortfolioEditor';
@@ -54,6 +55,7 @@ function App() {
     if (path === '/services/branding') return 'service-branding';
     if (path === '/services/ti') return 'service-ti';
     if (path === '/privacy') return 'privacy';
+    if (path === '/nosotros') return 'nosotros';
     if (path === '/contact') return 'contact';
     if (path.startsWith('/blog/')) return 'blog-post';
     if (path.startsWith('/portfolio/')) return 'project-detail';
@@ -97,6 +99,9 @@ function App() {
           break;
         case 'privacy':
           path = '/privacy';
+          break;
+        case 'nosotros':
+          path = '/nosotros';
           break;
         case 'contact':
           path = '/contact';
@@ -193,7 +198,8 @@ function App() {
             <Route path="/services/branding" element={<ServiceBranding onNavigate={handleNavigate} />} />
             <Route path="/services/ti" element={<ServiceTI onNavigate={handleNavigate} />} />
             <Route path="/privacy" element={<Privacy onNavigate={handleNavigate} />} />
-            <Route path="/contact" element={<Contact />} />
+             <Route path="/contact" element={<Contact />} />
+            <Route path="/nosotros" element={<Nosotros />} />
             <Route path="/admin/portfolio" element={<PortfolioEditor />} />
             <Route path="/PortfolioEditor" element={<PortfolioEditor />} />
           </Routes>

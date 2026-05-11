@@ -12,28 +12,36 @@ interface Service {
 
 const services: Service[] = [
   {
-    title: 'Diseño Web de Alto Impacto',
-    subtitle: 'Presencia Digital',
-    description: 'Transformamos tu visión en una experiencia digital cautivadora que convierte visitantes en clientes leales.',
+    title: 'Hub de Soluciones Tecnológicas',
+    subtitle: 'Ingeniería',
+    description: 'Desarrollamos software a medida y soluciones de IT que escalan con tu negocio. El motor técnico que tu empresa necesita.',
     image: '/assets/hero_web.png',
-    cta: 'Empezar mi Proyecto',
-    path: 'service-web'
+    cta: 'Ver Soluciones',
+    path: 'service-ti'
   },
   {
-    title: 'Posicionamiento SEO Estratégico',
-    subtitle: 'Visibilidad',
-    description: 'DOMINA los resultados de búsqueda. Llevamos tu negocio a la primera página de Google con estrategias probadas.',
+    title: 'Tu Equipo de Marketing Externo',
+    subtitle: 'Outsourcing',
+    description: 'No necesitas contratar un equipo interno. Nosotros somos tu departamento de marketing dedicado a resultados.',
     image: '/assets/hero_seo.png',
-    cta: 'Escalar mi Negocio',
-    path: 'service-seo'
+    cta: 'Empezar ahora',
+    path: 'contact'
   },
   {
-    title: 'Branding & Identidad Visual',
-    subtitle: 'Personalidad',
-    description: 'Creamos marcas memorables que resuenan con tu audiencia y te diferencian de la competencia.',
+    title: 'Automatización con IA (SaaS)',
+    subtitle: 'SparkBots',
+    description: 'Alquila nuestros bots inteligentes para atención al cliente y ventas. Automatiza tu área de respuestas 24/7.',
     image: '/assets/hero_branding.png',
-    cta: 'Definir mi Marca',
-    path: 'service-branding'
+    cta: 'Ver SparkBots',
+    path: 'service-ti'
+  },
+  {
+    title: 'Diseño Web de Alto Impacto',
+    subtitle: 'Presencia',
+    description: 'Convertimos tu marca en una experiencia digital única que atrae y fideliza clientes.',
+    image: '/assets/hero_web.png',
+    cta: 'Crear mi Web',
+    path: 'service-web'
   }
 ];
 

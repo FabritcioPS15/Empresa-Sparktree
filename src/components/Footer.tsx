@@ -35,7 +35,8 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
   }, []);
 
   const mainLinks = [
-    { id: 'home', label: 'Nosotros' },
+    { id: 'home', label: 'Inicio' },
+    { id: 'nosotros', label: 'Nosotros' },
     { id: 'services', label: 'Servicios' },
     { id: 'portfolio', label: 'Portafolio' },
     { id: 'blog', label: 'Blog' },
@@ -134,16 +135,16 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
           </div>
 
           {/* Column 4: Redes */}
-          <div className="footer-reveal reveal space-y-6 w-full lg:w-auto">
+          <div className="footer-reveal reveal space-y-4 w-full lg:w-auto">
             <h3 className="hidden lg:block text-lg font-bold text-white tracking-wider uppercase">Conectemos</h3>
-            <div className="flex flex-row lg:flex-col items-center justify-center lg:items-start lg:justify-start gap-4 lg:space-y-4">
+            <div className="flex flex-row lg:flex-col items-center justify-center lg:items-start lg:justify-start gap-2 lg:space-y-1">
               {socialLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 text-gray-400 transition-all duration-300 hover:text-[#41f0a5] group">
+                  className="flex items-center gap-2 text-gray-400 transition-all duration-300 hover:text-[#41f0a5] group">
                   <span className="p-2.5 lg:p-3 rounded-xl bg-white/5 group-hover:bg-[#41f0a5]/10 group-hover:scale-110 transition-all shadow-lg">
                     <link.Icon size={22} />
                   </span>
