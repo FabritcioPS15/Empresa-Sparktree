@@ -45,7 +45,7 @@ export default function Home({ onNavigate }: HomeProps) {
   }, []);
 
   usePageMeta({
-    title: 'Empresa SparkTree | Agencia de Marketing Digital & Diseño Web en Lima',
+    title: 'SparkTree | Agencia de Marketing Digital & Diseño Web en Lima',
     description: 'Convertimos visitas en ventas. Agencia líder en Lima especializada en diseño web de alto rendimiento, posicionamiento SEO y branding estratégico para negocios reales.',
     url: 'https://sparktree.pe',
     jsonLd: {
@@ -227,9 +227,14 @@ export default function Home({ onNavigate }: HomeProps) {
                   <span className="text-sm md:text-base">Entrenados con la voz de tu marca.</span>
                 </li>
               </ul>
-              <button onClick={() => onNavigate?.('contact')} className="px-8 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20">
-                Alquilar SparkBots →
-              </button>
+              <div className="flex flex-wrap gap-4">
+                <button onClick={() => onNavigate?.('contact')} className="px-8 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20">
+                  Alquilar SparkBots →
+                </button>
+                <button onClick={() => onNavigate?.('service-bots')} className="px-8 py-4 bg-transparent border border-emerald-500/30 text-emerald-400 font-bold rounded-xl hover:bg-emerald-500/10 transition-all">
+                  Conoce más
+                </button>
+              </div>
             </div>
             <div className="relative scroll-entrance scale-up">
               <div className="aspect-video bg-gray-800 rounded-3xl border border-gray-700 shadow-2xl flex items-center justify-center overflow-hidden">
@@ -326,16 +331,16 @@ export default function Home({ onNavigate }: HomeProps) {
                 que Impulsamos
               </span>
             </h2>
-            
+
             <div className="flex gap-2">
-              <button 
+              <button
                 onClick={() => setProjectPage(prev => Math.max(0, prev - 1))}
                 disabled={projectPage === 0}
                 className="p-3 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ChevronLeft className="w-6 h-6 text-gray-700" />
               </button>
-              <button 
+              <button
                 onClick={() => setProjectPage(prev => (prev + 1) * itemsPerPage < recentProjects.length ? prev + 1 : prev)}
                 disabled={(projectPage + 1) * itemsPerPage >= recentProjects.length}
                 className="p-3 rounded-full border border-gray-200 bg-white shadow-sm hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
@@ -346,7 +351,7 @@ export default function Home({ onNavigate }: HomeProps) {
           </div>
 
           <div className="relative">
-            <div 
+            <div
               className="flex transition-transform duration-700 ease-in-out gap-6"
               style={{ transform: `translateX(-${projectPage * 100}%)` }}
             >
@@ -364,16 +369,16 @@ export default function Home({ onNavigate }: HomeProps) {
                         <span>DESTACADO</span>
                       </div>
                     )}
-                    
+
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-gray-500 text-xs sm:text-sm">imagen</span>
                     </div>
-                    
+
                     <div
                       className="absolute inset-x-0 bottom-0 h-[80%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                       style={{ background: `linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.4), transparent)` }}
                     />
-                    
+
                     <div className="absolute inset-x-0 bottom-0 p-6 translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
                       <div className="text-white">
                         <p className="text-xl md:text-2xl font-bold leading-tight">{project.title}</p>

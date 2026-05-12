@@ -51,8 +51,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
     field: "resultImages" | "additionalImages",
     item: any,
     idx: number,
-    colorClass: string,
-    icon: React.ReactNode
+    colorClass: string
   ) => {
     const val = typeof item === "string" ? item : item?.url || "";
     const category = typeof item === "string" ? "" : item?.category || "";
@@ -403,7 +402,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
         </label>
         <div className="grid gap-6">
           {formData.resultImages?.map((item, idx) =>
-            renderMediaItem("resultImages", item, idx, "indigo", <ImageIcon size={20} />)
+            renderMediaItem("resultImages", item, idx, "indigo")
           )}
 
           <button
@@ -426,7 +425,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
         </label>
         <div className="grid gap-6">
           {formData.additionalImages?.map((item, idx) =>
-            renderMediaItem("additionalImages", item, idx, "amber", <Video size={20} />)
+            renderMediaItem("additionalImages", item, idx, "amber")
           )}
 
           <button

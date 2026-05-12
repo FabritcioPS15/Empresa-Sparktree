@@ -88,6 +88,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { label: 'Posicionamiento SEO', type: 'Servicio', href: 'service-seo', keywords: 'seo posicionamiento google' },
     { label: 'Branding', type: 'Servicio', href: 'service-branding', keywords: 'branding identidad marca' },
     { label: 'Servicios TI', type: 'Servicio', href: 'service-ti', keywords: 'ti tecnologia tecnología soporte sistemas infraestructura' },
+    { label: 'SparkBots (IA)', type: 'Servicio', href: 'service-bots', keywords: 'ia bot sparkbots inteligencia artificial automatizacion' },
     // Blog categories (navigate to blog)
     { label: 'Marketing', type: 'Categoría', href: 'blog', keywords: 'marketing' },
     { label: 'SEO', type: 'Categoría', href: 'blog', keywords: 'seo' },
@@ -295,6 +296,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { id: 'service-seo', label: 'Posicionamiento SEO', description: 'Aparece en Google' },
     { id: 'service-branding', label: 'Branding', description: 'Identidad de marca' },
     { id: 'service-ti', label: 'Servicios TI', description: 'Soluciones tecnológicas' },
+    { id: 'service-bots', label: 'SparkBots (IA)', description: 'Automatización inteligente' },
   ];
 
   const handleNavClick = (pageId: string) => {

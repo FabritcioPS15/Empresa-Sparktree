@@ -59,6 +59,7 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
     { id: 'service-seo', label: 'SEO' },
     { id: 'service-branding', label: 'Branding' },
     { id: 'service-ti', label: 'Servicios TI' },
+    { id: 'service-bots', label: 'SparkBots (IA)' },
   ];
 
   const isActive = (id: string) => {
