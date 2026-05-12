@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Rocket, Zap, MessageSquare, Bot, Users, BarChart3, ArrowRight, CheckCircle2, ShieldCheck, Globe, Cpu } from 'lucide-react';
+import { MessageSquare, Bot, Users, BarChart3, ArrowRight, CheckCircle2, ShieldCheck, Globe, Cpu } from 'lucide-react';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface SparkBotsProps {
   onNavigate?: (page: string) => void;
@@ -12,6 +13,52 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  usePageMeta({
+    title: 'SparkBots | Alquiler de Bots de IA para Atención al Cliente - SparkTree',
+    description: 'Alquila bots de IA conversacional para WhatsApp y web. Atención 24/7, calificación automática de leads y agendamiento. Transforma tu servicio al cliente con SparkBots de SparkTree.',
+    url: 'https://sparktree.pe/services/bots',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "SparkBots - IA Conversacional",
+      "description": "Servicio de alquiler de bots de IA para atención al cliente automatizada",
+      "provider": {
+        "@type": "Organization",
+        "name": "SparkTree",
+        "url": "https://sparktree.pe"
+      },
+      "serviceType": "AI Chatbot Service",
+      "areaServed": "Lima, Perú",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de Automatización con IA",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Bots para WhatsApp"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Atención Automatizada 24/7"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Calificación de Leads con IA"
+            }
+          }
+        ]
+      }
+    }
+  });
 
   const chatMessages = [
     { sender: 'SparktreeBot', text: '¡Hola! Soy el asistente virtual de Sparktree. ¿Cómo puedo ayudarte hoy con tu transformación digital?', type: 'bot' },
@@ -115,7 +162,7 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
               No dejes que ningún <span className="text-emerald-500">Lead</span> se enfríe.
             </h1>
             <p className="text-gray-400 text-xl mb-10 leading-relaxed scroll-entrance delay-100">
-              Presentamos <strong>SparkBots</strong>: La solución de IA que califica, responde y agenda citas 24/7 con el tono y la personalidad de tu marca.
+              Presentamos <strong>SparkBots</strong>: La solución de IA que califica, responde y agenda citas 24/7 con el tono y la personalidad de tu marca. Ideal para empresas en Lima y Perú que buscan automatizar su atención al cliente.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 scroll-entrance delay-200">
               <button 
@@ -279,7 +326,7 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
                   <div className="absolute top-[15%] left-[10%] animate-in fade-in slide-in-from-left duration-1000">
                     <div className="bg-white p-2 rounded-[2rem] shadow-2xl border-2 border-gray-50 flex flex-col items-center">
                       <div className="w-24 h-24 bg-gray-100 rounded-3xl overflow-hidden mb-3">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" />
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Usuario consultando sobre servicios" />
                       </div>
                       <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center -mt-6 border-4 border-white">
                         <span className="text-white text-xs font-bold">?</span>
@@ -292,7 +339,7 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
                   <div className="absolute top-[15%] right-[10%] animate-in fade-in slide-in-from-right duration-1000 delay-200">
                     <div className="bg-white p-2 rounded-[2rem] shadow-2xl border-2 border-gray-50 flex flex-col items-center">
                       <div className="w-24 h-24 bg-emerald-100 rounded-3xl overflow-hidden mb-3">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" alt="User" />
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka" alt="Cliente satisfecho con SparkBots" />
                       </div>
                       <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center -mt-6 border-4 border-white">
                         <CheckCircle2 size={14} className="text-white" />
@@ -305,7 +352,7 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
                   <div className="absolute bottom-[15%] left-[10%] animate-in fade-in slide-in-from-left duration-1000 delay-400">
                     <div className="bg-white p-2 rounded-[2rem] shadow-2xl border-2 border-gray-50 flex flex-col items-center">
                       <div className="w-24 h-24 bg-indigo-50 rounded-3xl overflow-hidden mb-3">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bo" alt="User" />
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Bo" alt="Usuario calificado por IA" />
                       </div>
                       <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center -mt-6 border-4 border-white">
                         <CheckCircle2 size={14} className="text-white" />
@@ -318,7 +365,7 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
                   <div className="absolute bottom-[15%] right-[10%] animate-in fade-in slide-in-from-right duration-1000 delay-600">
                     <div className="bg-white p-2 rounded-[2rem] shadow-2xl border-2 border-gray-50 flex flex-col items-center">
                       <div className="w-24 h-24 bg-gray-50 rounded-3xl overflow-hidden mb-3 opacity-50 grayscale">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Caleb" alt="User" />
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Caleb" alt="Cliente en proceso de atención" />
                       </div>
                       <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center -mt-6 border-4 border-white">
                         <span className="text-white text-xs font-bold">...</span>
@@ -391,7 +438,7 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
               <div className="relative z-10">
                 <img 
                   src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=2070&auto=format&fit=crop" 
-                  alt="AI Technology" 
+                  alt="Tecnología de IA y automatización - SparkTree" 
                   className="rounded-[3rem] shadow-2xl border border-white/10 grayscale hover:grayscale-0 transition-all duration-700"
                 />
                 <div className="absolute -bottom-10 -left-10 bg-emerald-500 p-8 rounded-[2rem] shadow-2xl max-w-[240px] hidden md:block animate-bounce-subtle">
@@ -413,8 +460,8 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
               <h2 className="text-4xl md:text-6xl font-black text-white mb-8">
                 ¿Listo para transformar <br />tu atención al cliente?
               </h2>
-              <p className="text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
-                Ofrecemos planes de alquiler mensual o implementación perpetua. Contáctanos hoy para recibir una consultoría gratuita sobre IA.
+              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                Ofrecemos planes de alquiler mensual o implementación perpetua para empresas en Perú. Contáctanos hoy para recibir una consultoría gratuita sobre automatización con IA.
               </p>
               <div className="flex flex-wrap justify-center gap-6">
                 <div className="flex items-center gap-2 text-emerald-400 font-bold">

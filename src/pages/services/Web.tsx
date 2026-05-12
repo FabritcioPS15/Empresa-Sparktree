@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { FaRocket, FaCheck } from 'react-icons/fa6';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -34,6 +35,52 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
 
     return () => { clearTimeout(timeoutId); observer.disconnect(); };
   }, []);
+
+  usePageMeta({
+    title: 'Diseño Web Profesional | SparkTree - Agencia Marketing Digital Lima',
+    description: 'Creamos sitios web personalizados y optimizados para SEO en Lima. Diseño responsive, desarrollo moderno y experiencia de usuario excepcional para tu negocio. ¡Transforma tu presencia digital! Especialistas en diseño web Lima, desarrollo web Perú, páginas web profesionales, diseño responsive, SEO web, experiencia usuario UX, agencia web, sitio web empresarial.',
+    url: 'https://sparktree.pe/services/web',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Diseño Web Profesional",
+      "description": "Servicio de diseño y desarrollo web personalizado con optimización SEO incluida",
+      "provider": {
+        "@type": "Organization",
+        "name": "SparkTree",
+        "url": "https://sparktree.pe"
+      },
+      "serviceType": "Web Design",
+      "areaServed": "Lima, Perú",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios de Diseño Web",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Diseño Web Personalizado"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Desarrollo Web Responsive"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Optimización SEO"
+            }
+          }
+        ]
+      }
+    }
+  });
 
   const processSteps = [
     {
@@ -126,7 +173,7 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-32">
             <div className="space-y-8 reveal slide-left">
               <p className="text-lg text-gray-600 leading-relaxed font-medium">
-                En Spark Tree Studio diseñamos páginas web estratégicas, modernas y optimizadas para SEO, pensadas para ayudar a las empresas a aumentar su visibilidad online, generar oportunidades de negocio y fortalecer su presencia digital.
+                En SparkTree Studio diseñamos páginas web estratégicas, modernas y optimizadas para SEO, pensadas para ayudar a las empresas en Lima y Perú a aumentar su visibilidad online, generar oportunidades de negocio y fortalecer su presencia digital con resultados medibles.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
                 Una página web no solo es una tarjeta de presentación digital, sino una herramienta clave para atraer clientes, comunicar el valor de tu marca y generar ventas de manera constante.
@@ -155,7 +202,7 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
                   <div className="overflow-hidden rounded-xl aspect-[16/10] bg-white">
                     <img 
                       src="/assets/web_design.webp" 
-                      alt="Diseño Web Desktop" 
+                      alt="Diseño Web Profesional - SparkTree Agencia Digital" 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                     />
                   </div>
@@ -166,7 +213,7 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
                   <div className="overflow-hidden rounded-[2rem] aspect-[9/19] bg-white">
                     <img 
                       src="/assets/web_design.webp" 
-                      alt="Diseño Web Mobile" 
+                      alt="Diseño Web Mobile Responsive - SparkTree" 
                       className="w-full h-full object-cover object-left" 
                     />
                   </div>

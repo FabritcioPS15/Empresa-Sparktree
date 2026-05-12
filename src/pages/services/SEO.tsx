@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -33,6 +34,52 @@ export default function ServiceSEO({ onNavigate }: ServicePageProps) {
 
     return () => { clearTimeout(timeoutId); observer.disconnect(); };
   }, []);
+
+  usePageMeta({
+    title: 'Posicionamiento SEO en Google | SparkTree - Agencia Marketing Digital Lima',
+    description: 'Especialistas en SEO para empresas en Lima. Mejoramos tu posicionamiento en Google con estrategias orgánicas efectivas. ¡Aumenta tu visibilidad y atrae más clientes!',
+    url: 'https://sparktree.pe/services/seo',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Posicionamiento SEO",
+      "description": "Servicio de optimización SEO para mejorar posicionamiento en Google",
+      "provider": {
+        "@type": "Organization",
+        "name": "SparkTree",
+        "url": "https://sparktree.pe"
+      },
+      "serviceType": "SEO Services",
+      "areaServed": "Lima, Perú",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Servicios SEO",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Auditoría SEO"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "SEO On Page"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Link Building"
+            }
+          }
+        ]
+      }
+    }
+  });
 
   const processSteps = [
     {
@@ -91,10 +138,10 @@ export default function ServiceSEO({ onNavigate }: ServicePageProps) {
           <div className="grid lg:grid-cols-2 gap-16 items-center mb-24 md:mb-32">
             <div className="space-y-6 reveal slide-left">
               <p className="text-base md:text-lg text-gray-900 font-bold leading-relaxed">
-                Dejamos de depender solo de la publicidad pagada. Optimizamos tu web para que aparezca en los primeros resultados de Google cuando tus clientes busquen tus servicios o productos.
+                Dejamos de depender solo de la publicidad pagada. Optimizamos tu web para que aparezca en los primeros resultados de Google cuando tus clientes en Lima y Perú busquen tus servicios o productos.
               </p>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed font-medium">
-                En SparkTree Studio, desarrollamos estrategias de posicionamiento SEO enfocadas en aumentar tu visibilidad, atraer tráfico de calidad y generar clientes potenciales de manera orgánica.
+                En SparkTree Studio, desarrollamos estrategias de posicionamiento SEO enfocadas en aumentar tu visibilidad online, atraer tráfico de calidad y generar clientes potenciales de manera orgánica para empresas en Perú.
               </p>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed font-medium">
                 Trabajamos el SEO como un proceso integral que combina análisis, optimización técnica y contenido estratégico.
