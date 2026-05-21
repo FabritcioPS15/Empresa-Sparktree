@@ -6,18 +6,32 @@ import { ChevronDown } from 'lucide-react';
 import PageBanner from '@/components/ui/PageBanner';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import es from 'react-phone-input-2/lang/es.json';
 
 export default function Contact() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    email: string;
+    phone: string;
+    company: string;
+    service: string[];
+    budget: string;
+    timeline: string;
+    message: string;
+  }>({
     name: '',
     email: '',
     phone: '',
     company: '',
-    service: '',
+    service: [],
     budget: '',
     timeline: '',
     message: ''
   });
+
+  const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false);
+  const [isBudgetDropdownOpen, setIsBudgetDropdownOpen] = useState(false);
+  const [isTimelineDropdownOpen, setIsTimelineDropdownOpen] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -45,23 +59,68 @@ export default function Contact() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleServiceToggle = (selectedService: string) => {
+    setFormData(prev => {
+      const isSelected = prev.service.includes(selectedService);
+      const newServices = isSelected
+        ? prev.service.filter(s => s !== selectedService)
+        : [...prev.service, selectedService];
+      return { ...prev, service: newServices };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', phone: '', company: '', service: '', budget: '', timeline: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', company: '', service: [], budget: '', timeline: '', message: '' });
     } catch (error) {
+      console.error('Error al enviar el formulario:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    // Reset budget when services change because ranges might change
+    setFormData(prev => ({ ...prev, budget: '' }));
+  }, [formData.service]);
+
   const servicesList = ['Diseño Web', 'SEO', 'Branding', 'Social Media', 'Apps Móviles', 'Otro'];
-  const budgets = ['< $1,000', '$1,000 - $3,000', '$3,000 - $5,000', '> $5,000'];
+
+  const serviceBasePrices: Record<string, number> = {
+    'Diseño Web': 300,
+    'SEO': 150,
+    'Branding': 400,
+    'Social Media': 200,
+    'Apps Móviles': 2000,
+    'Otro': 300
+  };
+
+  const basePrice = formData.service.reduce((total, s) => total + (serviceBasePrices[s] || 0), 0) || 500;
+
+  const dynamicBudgets = [
+    `S/. ${basePrice.toLocaleString('es-PE')} - S/. ${(basePrice + 500).toLocaleString('es-PE')}`,
+    `S/. ${(basePrice + 500).toLocaleString('es-PE')} - S/. ${(basePrice + 1500).toLocaleString('es-PE')}`,
+    `S/. ${(basePrice + 1500).toLocaleString('es-PE')} - S/. ${(basePrice + 2000).toLocaleString('es-PE')}`,
+    `> S/. ${(basePrice + 2000).toLocaleString('es-PE')}`
+  ];
+
   const timelines = ['Inmediato', 'En 1 mes', 'En 3 meses', 'A definir'];
 
   return (
@@ -76,7 +135,7 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
 
           {/* Left Side: Project Form */}
-          <div className="lg:col-span-7 bg-white rounded-3xl p-8 md:p-12 shadow-[0_10px_40px_-15px_rgba(37,99,235,0.1)] border border-blue-50">
+          <div className="lg:col-span-7 bg-white rounded-3xl p-8 md:p-12 shadow-[0_10px_40px_-15px_rgba(34,139,34,0.1)] border border-green-50">
             <div className="mb-10">
               <h2 className="text-3xl font-black text-gray-900 mb-2">Cuéntanos tu proyecto</h2>
               <p className="text-gray-500 font-medium">Completa el formulario y te contactaremos en menos de 24 horas</p>
@@ -88,7 +147,7 @@ export default function Contact() {
                   <label className="text-sm font-bold text-gray-700 ml-1">Nombre completo</label>
                   <input
                     type="text" name="name" value={formData.name} onChange={handleInputChange} required
-                    className="w-full px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none placeholder:text-gray-300"
+                    className="w-full px-5 py-4 bg-white border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:border-transparent transition-all outline-none placeholder:text-gray-300"
                     placeholder="Nombre completo"
                   />
                 </div>
@@ -96,7 +155,7 @@ export default function Contact() {
                   <label className="text-sm font-bold text-gray-700 ml-1">Email</label>
                   <input
                     type="email" name="email" value={formData.email} onChange={handleInputChange} required
-                    className="w-full px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none placeholder:text-gray-300"
+                    className="w-full px-5 py-4 bg-white border border-gray-300 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:border-transparent transition-all outline-none placeholder:text-gray-300"
                     placeholder="Correo electrónico"
                   />
                 </div>
@@ -105,7 +164,7 @@ export default function Contact() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2 relative group/phone">
                   <label className="text-sm font-bold text-gray-700 ml-1">Teléfono</label>
-                  <div className="flex items-center border border-blue-100 rounded-2xl bg-white focus-within:ring-2 focus-within:ring-blue-500 transition-all h-[58px] relative">
+                  <div className="flex items-center border border-[#41f0a5]/30 rounded-2xl bg-white focus-within:ring-2 focus-within:ring-[#41f0a5] transition-all h-[58px] relative">
                     <div className="relative h-full flex items-center">
                       <PhoneInput
                         country={'pe'}
@@ -125,11 +184,12 @@ export default function Contact() {
                         countryCodeEditable={false}
                         inputClass="!hidden"
                         containerClass="!border-none !w-auto !h-full"
-                        buttonClass="!bg-white !border-r !border-blue-50 !rounded-l-2xl !px-3 hover:!bg-gray-100 !flex !items-center !justify-center !w-[90px] !h-full !static"
-                        dropdownClass="!bg-white !rounded-xl !shadow-2xl !border-blue-50 !text-gray-700"
+                        buttonClass="!bg-white !border-r !border-[#41f0a5]/20 !rounded-l-2xl !px-3 hover:!bg-gray-100 !flex !items-center !justify-center !w-[90px] !h-full !static"
+                        dropdownClass="!bg-white !rounded-xl !shadow-2xl !border-[#41f0a5]/20 !text-gray-700"
                         enableSearch={true}
                         searchPlaceholder="Buscar..."
                         disableSearchIcon={true} // Removes the default emoji/icon
+                        localization={es}
                       />
                     </div>
                     <input
@@ -259,7 +319,7 @@ export default function Contact() {
                   <label className="text-sm font-bold text-gray-700 ml-1">Empresa</label>
                   <input
                     type="text" name="company" value={formData.company} onChange={handleInputChange}
-                    className="w-full px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none placeholder:text-gray-300"
+                    className="w-full px-5 py-4 bg-white border border-[#41f0a5]/30 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:border-transparent transition-all outline-none placeholder:text-gray-300"
                     placeholder="Nombre de empresa"
                   />
                 </div>
@@ -267,29 +327,96 @@ export default function Contact() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Servicio de interés</label>
+                  <label className="text-sm font-bold text-gray-700 ml-1">Servicios de interés</label>
                   <div className="relative">
-                    <select
-                      name="service" value={formData.service} onChange={handleInputChange} required
-                      className="w-full appearance-none px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer text-gray-600 font-medium"
+                    <div
+                      onClick={() => setIsServiceDropdownOpen(!isServiceDropdownOpen)}
+                      className={`w-full min-h-[58px] px-5 py-4 bg-white border ${isServiceDropdownOpen ? 'border-[#41f0a5] ring-2 ring-[#41f0a5]' : 'border-[#41f0a5]/30'} rounded-2xl transition-all cursor-pointer flex items-center justify-between`}
                     >
-                      <option value="">Selecciona un servicio</option>
-                      {servicesList.map(s => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                    <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <div className="flex flex-wrap gap-2 flex-1 mr-2">
+                        {formData.service.length === 0 ? (
+                          <span className="text-gray-300 font-medium">Selecciona uno o más</span>
+                        ) : (
+                          formData.service.map(s => (
+                            <span key={s} className="bg-[#41f0a5]/20 text-green-900 px-3 py-1 rounded-xl text-sm font-bold flex items-center gap-2">
+                              {s}
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleServiceToggle(s);
+                                }}
+                                className="hover:text-black transition-colors"
+                              >
+                                &times;
+                              </button>
+                            </span>
+                          ))
+                        )}
+                      </div>
+                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isServiceDropdownOpen ? 'rotate-180' : ''}`} />
+                    </div>
+
+                    {isServiceDropdownOpen && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setIsServiceDropdownOpen(false)}></div>
+                        <div className="absolute z-20 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2 animate-fade-in-up">
+                          {servicesList.map(s => (
+                            <div
+                              key={s}
+                              onClick={() => handleServiceToggle(s)}
+                              className={`px-5 py-3 cursor-pointer hover:bg-gray-50 flex items-center gap-3 transition-colors ${formData.service.includes(s) ? 'bg-[#41f0a5]/10' : ''}`}
+                            >
+                              <div className={`w-5 h-5 rounded-[6px] border flex items-center justify-center transition-colors ${formData.service.includes(s) ? 'bg-[#41f0a5] border-[#41f0a5]' : 'border-gray-300'}`}>
+                                {formData.service.includes(s) && <FaCheckCircle className="text-black w-3 h-3" />}
+                              </div>
+                              <span className={formData.service.includes(s) ? 'font-bold text-gray-900' : 'text-gray-600 font-medium'}>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-gray-700 ml-1">Presupuesto aproximado</label>
                   <div className="relative">
-                    <select
-                      name="budget" value={formData.budget} onChange={handleInputChange} required
-                      className="w-full appearance-none px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer text-gray-600 font-medium"
+                    <div
+                      onClick={() => setIsBudgetDropdownOpen(!isBudgetDropdownOpen)}
+                      className={`w-full min-h-[58px] px-5 py-4 bg-white border ${isBudgetDropdownOpen ? 'border-[#41f0a5] ring-2 ring-[#41f0a5]' : 'border-[#41f0a5]/30'} rounded-2xl transition-all cursor-pointer flex items-center justify-between`}
                     >
-                      <option value="">Selecciona un rango</option>
-                      {budgets.map(b => <option key={b} value={b}>{b}</option>)}
-                    </select>
-                    <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <div className="flex-1 mr-2">
+                        {formData.budget ? (
+                          <span className="text-gray-900 font-bold">{formData.budget}</span>
+                        ) : (
+                          <span className="text-gray-300 font-medium">Selecciona un rango</span>
+                        )}
+                      </div>
+                      <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isBudgetDropdownOpen ? 'rotate-180' : ''}`} />
+                    </div>
+
+                    {isBudgetDropdownOpen && (
+                      <>
+                        <div className="fixed inset-0 z-10" onClick={() => setIsBudgetDropdownOpen(false)}></div>
+                        <div className="absolute z-20 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2 animate-fade-in-up">
+                          {dynamicBudgets.map(b => (
+                            <div
+                              key={b}
+                              onClick={() => {
+                                setFormData(prev => ({ ...prev, budget: b }));
+                                setIsBudgetDropdownOpen(false);
+                              }}
+                              className={`px-5 py-3 cursor-pointer hover:bg-gray-50 flex items-center gap-3 transition-colors ${formData.budget === b ? 'bg-[#41f0a5]/10' : ''}`}
+                            >
+                              <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${formData.budget === b ? 'bg-[#41f0a5] border-[#41f0a5]' : 'border-gray-300'}`}>
+                                {formData.budget === b && <div className="w-2 h-2 bg-black rounded-full" />}
+                              </div>
+                              <span className={formData.budget === b ? 'font-bold text-gray-900' : 'text-gray-600 font-medium'}>{b}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -297,14 +424,42 @@ export default function Contact() {
               <div className="space-y-2">
                 <label className="text-sm font-bold text-gray-700 ml-1">¿Cuándo necesitas el proyecto?</label>
                 <div className="relative">
-                  <select
-                    name="timeline" value={formData.timeline} onChange={handleInputChange} required
-                    className="w-full appearance-none px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer text-gray-600 font-medium"
+                  <div
+                    onClick={() => setIsTimelineDropdownOpen(!isTimelineDropdownOpen)}
+                    className={`w-full min-h-[58px] px-5 py-4 bg-white border ${isTimelineDropdownOpen ? 'border-[#41f0a5] ring-2 ring-[#41f0a5]' : 'border-[#41f0a5]/30'} rounded-2xl transition-all cursor-pointer flex items-center justify-between`}
                   >
-                    <option value="">Selecciona un plazo</option>
-                    {timelines.map(t => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                  <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    <div className="flex-1 mr-2">
+                      {formData.timeline ? (
+                        <span className="text-gray-900 font-bold">{formData.timeline}</span>
+                      ) : (
+                        <span className="text-gray-300 font-medium">Selecciona un plazo</span>
+                      )}
+                    </div>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isTimelineDropdownOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                  
+                  {isTimelineDropdownOpen && (
+                    <>
+                      <div className="fixed inset-0 z-10" onClick={() => setIsTimelineDropdownOpen(false)}></div>
+                      <div className="absolute z-20 w-full mt-2 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden py-2 animate-fade-in-up">
+                        {timelines.map(t => (
+                          <div
+                            key={t}
+                            onClick={() => {
+                              setFormData(prev => ({ ...prev, timeline: t }));
+                              setIsTimelineDropdownOpen(false);
+                            }}
+                            className={`px-5 py-3 cursor-pointer hover:bg-gray-50 flex items-center gap-3 transition-colors ${formData.timeline === t ? 'bg-[#41f0a5]/10' : ''}`}
+                          >
+                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${formData.timeline === t ? 'bg-[#41f0a5] border-[#41f0a5]' : 'border-gray-300'}`}>
+                              {formData.timeline === t && <div className="w-2 h-2 bg-black rounded-full" />}
+                            </div>
+                            <span className={formData.timeline === t ? 'font-bold text-gray-900' : 'text-gray-600 font-medium'}>{t}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -312,7 +467,7 @@ export default function Contact() {
                 <label className="text-sm font-bold text-gray-700 ml-1">Cuéntanos sobre tu proyecto</label>
                 <textarea
                   name="message" value={formData.message} onChange={handleInputChange} required rows={4}
-                  className="w-full px-5 py-4 bg-white border border-blue-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none placeholder:text-gray-300 resize-none font-medium text-gray-600"
+                  className="w-full px-5 py-4 bg-white border border-[#41f0a5]/30 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:border-transparent transition-all outline-none placeholder:text-gray-300 resize-none font-medium text-gray-600"
                   placeholder="Describe tu proyecto, objetivos, características, datos importantes, referencias..."
                 />
               </div>
@@ -326,7 +481,7 @@ export default function Contact() {
 
               <button
                 type="submit" disabled={isSubmitting}
-                className="w-full py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-lg tracking-widest uppercase transition-all shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50"
+                className="w-full py-5 bg-[#41f0a5] text-black hover:bg-green-500 hover:text-white rounded-2xl font-black text-lg tracking-widest uppercase transition-all shadow-lg shadow-blue-200 active:scale-95 disabled:opacity-50"
               >
                 {isSubmitting ? 'Procesando...' : 'Enviar'}
               </button>
@@ -341,7 +496,7 @@ export default function Contact() {
             </div>
 
             {/* WhatsApp Card */}
-            <div className="bg-[#41F0A5] rounded-[2rem] p-8 text-center shadow-lg shadow-green-100">
+            <div className="bg-green-50 rounded-[2rem] p-8 text-center shadow-lg shadow-green-100">
               <h3 className="text-gray-900 font-black text-lg mb-4">¿Prefieres WhatsApp?</h3>
               <a
                 href="https://wa.me/51958077827" target="_blank" rel="noopener noreferrer"
@@ -353,50 +508,50 @@ export default function Contact() {
             </div>
 
             {/* Contact Box Card */}
-            <div className="bg-blue-600 rounded-[2.5rem] p-8 space-y-4 shadow-xl shadow-blue-100">
+            <div className="bg-[41f0a5] rounded-[2.5rem] p-8 space-y-4 shadow-xl shadow-green-100">
               <div
                 onClick={() => setIsConsultationModalOpen(true)}
                 className="bg-white hover:bg-gray-50 transition-colors p-4 rounded-xl flex items-center gap-4 cursor-pointer group"
               >
-                <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg group-hover:scale-110 transition-transform">
-                  <MdOutlineHeadsetMic className="text-blue-600 text-xl" />
+                <div className="w-10 h-10 flex items-center justify-center bg-green-50 rounded-lg group-hover:scale-110 transition-transform">
+                  <MdOutlineHeadsetMic className="text-41f0a5 text-xl" />
                 </div>
-                <span className="text-blue-600 font-bold">Consulta gratuita</span>
+                <span className="text-41f0a5 font-bold">Consulta gratuita</span>
               </div>
 
               <a href="tel:+51958077827" className="bg-white hover:bg-gray-50 transition-colors p-4 rounded-xl flex items-center gap-4 cursor-pointer group">
                 <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg group-hover:scale-110 transition-transform">
-                  <FaPhone className="text-blue-600 text-lg" />
+                  <FaPhone className="text-41f0a5 text-lg" />
                 </div>
-                <span className="text-blue-600 font-bold">+51 958 077 827</span>
+                <span className="text-41f0a5 font-bold">+51 958 077 827</span>
               </a>
 
               <a href="mailto:sparktree.pe@gmail.com" className="bg-white hover:bg-gray-50 transition-colors p-4 rounded-xl flex items-center gap-4 cursor-pointer group">
                 <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg group-hover:scale-110 transition-transform">
-                  <FaEnvelope className="text-blue-600 text-lg" />
+                  <FaEnvelope className="text-41f0a5 text-lg" />
                 </div>
-                <span className="text-blue-600 font-bold">sparktree.pe@gmail.com</span>
+                <span className="text-41f0a5 font-bold">sparktree.pe@gmail.com</span>
               </a>
 
               <div className="bg-white/95 p-4 rounded-xl flex items-center gap-4 border border-white/20">
-                <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg">
-                  <FaMapMarkerAlt className="text-blue-600 text-lg" />
+                <div className="w-10 h-10 flex items-center justify-center bg-green-50 rounded-lg">
+                  <FaMapMarkerAlt className="text-41f0a5 text-lg" />
                 </div>
-                <span className="text-blue-600 font-bold">Lima, Lima, Perú</span>
+                <span className="text-41f0a5 font-bold">Lima, Lima, Perú</span>
               </div>
             </div>
 
             {/* Social Media Card */}
-            <div className="bg-white rounded-3xl p-8 border border-blue-50 shadow-lg shadow-blue-50">
-              <h4 className="text-blue-600 font-bold text-center mb-6">Siguenos en nuestras redes sociales</h4>
+            <div className="bg-white rounded-3xl p-8 border border-green-50 shadow-lg shadow-green-50">
+              <h4 className="text-41f0a5 font-bold text-center mb-6">Siguenos en nuestras redes sociales</h4>
               <div className="flex justify-center gap-6">
-                <a href="#" className="w-14 h-14 bg-blue-500 text-white rounded-2xl flex items-center justify-center hover:scale-110 transition-transform shadow-md shadow-blue-100">
+                <a href="#" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
                   <FaInstagram size={24} />
                 </a>
-                <a href="#" className="w-14 h-14 bg-blue-500 text-white rounded-2xl flex items-center justify-center hover:scale-110 transition-transform shadow-md shadow-blue-100">
+                <a href="#" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
                   <FaTiktok size={24} />
                 </a>
-                <a href="#" className="w-14 h-14 bg-blue-500 text-white rounded-2xl flex items-center justify-center hover:scale-110 transition-transform shadow-md shadow-blue-100">
+                <a href="#" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
                   <FaLinkedin size={24} />
                 </a>
               </div>
@@ -418,11 +573,11 @@ export default function Contact() {
                 <p className="text-gray-500 text-sm">Agenda una reunión gratuita de 30 minutos.</p>
               </div>
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setIsConsultationModalOpen(false); alert('¡Recibido!'); }}>
-                <input required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-medium" placeholder="Tu nombre" />
-                <input type="email" required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-medium" placeholder="Email de contacto" />
+                <input required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none font-medium" placeholder="Tu nombre" />
+                <input type="email" required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none font-medium" placeholder="Email de contacto" />
                 <div className="grid grid-cols-2 gap-4">
-                  <input type="date" required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold" />
-                  <select required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold">
+                  <input type="date" required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none text-sm font-bold" />
+                  <select required className="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#41f0a5] outline-none text-sm font-bold">
                     <option value="">Hora</option>
                     <option>09:00 AM</option><option>11:00 AM</option><option>03:00 PM</option><option>05:00 PM</option>
                   </select>

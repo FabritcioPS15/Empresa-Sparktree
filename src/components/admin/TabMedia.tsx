@@ -266,11 +266,11 @@ export const TabMedia: React.FC<TabMediaProps> = ({
                 cardImage: e.target.value,
               })
             }
-            className="flex-1 px-5 py-3 bg-gray-50 border-none rounded-2xl text-sm"
+            className="flex-1 px-5 py-3 bg-gradient-to-br from-gray-50 to-indigo-50/30 border-2 border-gray-100 rounded-2xl text-sm focus:ring-4 focus:ring-indigo-100 focus:border-indigo-300 transition-all"
             placeholder="URL de la imagen para la miniatura..."
           />
           <label
-            className={`flex items-center gap-2 px-6 bg-indigo-50 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-100 transition ${isUploading ? "opacity-50 pointer-events-none" : ""
+            className={`flex items-center gap-2 px-6 bg-gradient-to-r from-indigo-50 to-indigo-100 text-indigo-600 font-bold rounded-2xl cursor-pointer hover:from-indigo-100 hover:to-indigo-200 transition-all ${isUploading ? "opacity-50 pointer-events-none" : ""
               }`}
           >
             {isUploading ? (
@@ -310,11 +310,11 @@ export const TabMedia: React.FC<TabMediaProps> = ({
                 heroImage: e.target.value,
               })
             }
-            className="flex-1 px-5 py-3 bg-gray-50 border-none rounded-2xl text-sm"
+            className="flex-1 px-5 py-3 bg-gradient-to-br from-gray-50 to-purple-50/30 border-2 border-gray-100 rounded-2xl text-sm focus:ring-4 focus:ring-purple-100 focus:border-purple-300 transition-all"
             placeholder="URL de imagen, video o link de YouTube..."
           />
           <label
-            className={`flex items-center gap-2 px-6 bg-indigo-600 text-white font-bold rounded-2xl cursor-pointer hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 ${isUploading ? "opacity-50 pointer-events-none" : ""
+            className={`flex items-center gap-2 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-2xl cursor-pointer hover:from-indigo-700 hover:to-purple-700 transition-all shadow-lg shadow-indigo-200 ${isUploading ? "opacity-50 pointer-events-none" : ""
               }`}
           >
             {isUploading ? (
@@ -342,7 +342,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
           Imágenes para el Slider (Hero Carrusel)
         </label>
-        <div className="grid gap-3 mb-6 bg-emerald-50/10 p-6 rounded-[2rem] border border-emerald-100/50">
+        <div className="grid gap-3 mb-6 bg-gradient-to-br from-emerald-50/20 to-teal-50/20 p-6 rounded-[2rem] border-2 border-emerald-100/50">
           {formData.heroImages?.map((val, idx) => (
             <div key={idx} className="flex gap-3 items-center">
               <div className="flex-1 relative">
@@ -352,7 +352,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
                   onChange={(e) =>
                     handleArrayChange("heroImages", idx, e.target.value)
                   }
-                  className="w-full px-5 py-3 bg-white border border-gray-100 rounded-2xl text-sm pr-12 focus:ring-2 focus:ring-[#41F0A5] transition"
+                  className="w-full px-5 py-3 bg-white border-2 border-gray-100 rounded-2xl text-sm pr-12 focus:ring-4 focus:ring-emerald-100 focus:border-emerald-300 transition-all"
                 />
                 {(val.includes("youtube.com") ||
                   val.includes("youtu.be") ||
@@ -364,7 +364,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
                     </div>
                   )}
               </div>
-              <label className="flex items-center gap-2 px-3 py-3 bg-white text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-50 border border-gray-100 transition">
+              <label className="flex items-center gap-2 px-3 py-3 bg-white text-indigo-600 font-bold rounded-2xl cursor-pointer hover:bg-indigo-50 border-2 border-gray-100 hover:border-indigo-200 transition-all">
                 <Upload size={16} />
                 <input
                   type="file"
@@ -379,7 +379,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
               </label>
               <button
                 onClick={() => removeArrayItem("heroImages", idx)}
-                className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition"
+                className="text-red-400 p-2 hover:bg-red-50 rounded-2xl transition hover:shadow-md"
               >
                 <X size={20} />
               </button>
@@ -387,7 +387,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
           ))}
           <button
             onClick={() => addArrayItem("heroImages")}
-            className="flex items-center gap-2 text-xs font-black text-[#1e293b] bg-[#41F0A5] px-6 py-3 rounded-xl w-fit hover:scale-105 transition shadow-lg shadow-emerald-200"
+            className="flex items-center gap-2 text-xs font-black text-white bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-3 rounded-xl w-fit hover:scale-105 transition-all shadow-lg shadow-emerald-200"
           >
             <ImageIcon size={14} /> + Añadir Imagen al Slider
           </button>
@@ -407,7 +407,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
 
           <button
             onClick={() => addArrayItem("resultImages")}
-            className="group flex items-center justify-center gap-3 text-sm font-black text-indigo-600 bg-white border-2 border-dashed border-indigo-100 p-8 rounded-[2.5rem] hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-500"
+            className="group flex items-center justify-center gap-3 text-sm font-black text-indigo-600 bg-white border-2 border-dashed border-indigo-100 p-8 rounded-[2.5rem] hover:bg-indigo-50 hover:border-indigo-300 transition-all duration-500 hover:shadow-lg"
           >
             <div className="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <ImageIcon size={20} />
@@ -418,7 +418,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
       </div>
 
       {/* Media Adicional */}
-      <div className="pt-8 border-t border-gray-100">
+      <div className="pt-8 border-t-2 border-gray-100">
         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 flex items-center gap-2">
           <Monitor size={14} className="text-amber-500" />
           Media Adicional / Extras
@@ -430,7 +430,7 @@ export const TabMedia: React.FC<TabMediaProps> = ({
 
           <button
             onClick={() => addArrayItem("additionalImages")}
-            className="group flex items-center justify-center gap-3 text-sm font-black text-amber-600 bg-white border-2 border-dashed border-amber-100 p-8 rounded-[2.5rem] hover:bg-amber-50 hover:border-amber-300 transition-all duration-500"
+            className="group flex items-center justify-center gap-3 text-sm font-black text-amber-600 bg-white border-2 border-dashed border-amber-100 p-8 rounded-[2.5rem] hover:bg-amber-50 hover:border-amber-300 transition-all duration-500 hover:shadow-lg"
           >
             <div className="w-10 h-10 bg-amber-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
               <Video size={20} />

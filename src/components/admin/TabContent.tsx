@@ -24,7 +24,7 @@ export const TabContent: React.FC<TabContentProps> = ({
               description: e.target.value,
             })
           }
-          className="w-full px-5 py-3 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition h-32 leading-relaxed"
+          className="w-full px-5 py-4 bg-gradient-to-br from-gray-50 to-indigo-50/30 border-2 border-gray-100 rounded-2xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-300 transition-all h-32 leading-relaxed resize-none"
           placeholder="Escribe una breve introducción del proyecto..."
         />
       </div>
@@ -40,7 +40,7 @@ export const TabContent: React.FC<TabContentProps> = ({
               challenge: e.target.value,
             })
           }
-          className="w-full px-5 py-3 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition h-32 leading-relaxed"
+          className="w-full px-5 py-4 bg-gradient-to-br from-gray-50 to-purple-50/30 border-2 border-gray-100 rounded-2xl focus:ring-4 focus:ring-purple-100 focus:border-purple-300 transition-all h-32 leading-relaxed resize-none"
           placeholder="¿Cuál era el problema principal a resolver?"
         />
       </div>
@@ -53,7 +53,7 @@ export const TabContent: React.FC<TabContentProps> = ({
           onChange={(e) =>
             setFormData({ ...formData, solution: e.target.value })
           }
-          className="w-full px-5 py-3 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 transition h-32 leading-relaxed"
+          className="w-full px-5 py-4 bg-gradient-to-br from-gray-50 to-emerald-50/30 border-2 border-gray-100 rounded-2xl focus:ring-4 focus:ring-emerald-100 focus:border-emerald-300 transition-all h-32 leading-relaxed resize-none"
           placeholder="¿Cómo abordaste el desafío y qué solución implementaste?"
         />
       </div>

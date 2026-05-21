@@ -189,7 +189,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                           alt={project.title}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                         />
-                        
+
                         {/* Premium Icon Badge */}
                         <div className="absolute top-6 left-6 z-20">
                           <div className="w-10 h-10 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/50 group-hover:bg-[#41F0A5] group-hover:text-gray-900 transition-all duration-500">
@@ -233,11 +233,10 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-7 py-2.5 rounded-full text-xs font-bold tracking-tight transition-all duration-300 ${
-                    activeCategory === cat.id
-                    ? 'bg-[#41F0A5] text-gray-900 shadow-lg shadow-[#41F0A5]/20 scale-105'
-                    : 'bg-white border border-gray-100 text-gray-400 hover:text-gray-900 hover:border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className={`px-7 py-2.5 rounded-full text-xs font-bold tracking-tight transition-all duration-300 ${activeCategory === cat.id
+                      ? 'bg-[#41F0A5] text-gray-900 shadow-lg shadow-[#41F0A5]/20 scale-105'
+                      : 'bg-white border border-gray-100 text-gray-400 hover:text-gray-900 hover:border-gray-300 hover:bg-gray-50'
+                    }`}
                 >
                   {cat.label}
                 </button>
@@ -286,14 +285,14 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                       alt={project.title}
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
-                    
+
                     {/* Category ICON Badge - Top Corner */}
                     <div className="absolute top-5 left-5 z-20">
                       <div className="w-10 h-10 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-white/50 group-hover:bg-[#41F0A5] group-hover:text-gray-900 transition-all duration-500">
                         <CategoryIcon className="w-5 h-5" />
                       </div>
                     </div>
-                    
+
                     {/* Ultra-Minimalist Hover Hint */}
                     <div className="absolute inset-0 bg-[#41F0A5]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-center justify-center">
                       <div className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl scale-50 group-hover:scale-100 transition-all duration-500">
@@ -316,7 +315,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                           </span>
                         </div>
                       </div>
-                      
+
                       <p className="text-xs font-medium text-gray-400 mb-5 line-clamp-2 leading-relaxed">
                         {project.description}
                       </p>
@@ -334,7 +333,7 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
                           <span className="text-[9px] font-black text-gray-700 uppercase">Premium</span>
                         </div>
                       </div>
-                      
+
                       {/* Technologies Section */}
                       <div className="flex flex-wrap gap-1.5">
                         {project.technologies.slice(0, 3).map((tech, i) => (
@@ -362,14 +361,6 @@ export default function Portfolio({ onViewProject }: PortfolioProps) {
               <p className="text-gray-400 text-xl font-black tracking-tight uppercase">Próximamente más proyectos</p>
             </div>
           )}
-
-          {/* Final CTA Button */}
-          <div className="text-center mt-32 reveal scroll-entrance bounce-in">
-            <button className="glow-hover text-gray-900 font-black transition-all duration-500 hover:scale-110 px-12 py-6 bg-white rounded-[2rem] border border-gray-100 shadow-2xl hover:shadow-[#41F0A5]/20 group">
-              <span className="glow-text text-xl uppercase tracking-[0.2em]">Ver toda la trayectoria</span>
-              <Sparkles className="inline-block ml-4 w-6 h-6 text-[#41F0A5] group-hover:animate-spin" />
-            </button>
-          </div>
         </div>
       </section>
     </div>

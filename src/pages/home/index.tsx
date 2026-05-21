@@ -133,9 +133,8 @@ export default function Home({ onNavigate }: HomeProps) {
   ];
 
   const team = [
-    { name: 'Fabricio Peña', role: 'Desarrollador' },
+    { name: 'Fabritcio Peña', role: 'Desarrollador' },
     { name: 'Roman Reto', role: 'Diseñador UX / UI' },
-    { name: 'Guadalupe Barreto', role: 'Profesional de Marketing' },
     { name: 'Ruth Belén de la Torre Gamarra', role: 'Profesional de Marketing' },
     { name: 'Alvaro Carpio Lozano', role: 'Desarrollador' },
   ];
