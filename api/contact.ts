@@ -26,50 +26,60 @@ export default async function handler(req: any, res: any) {
       to: 'sparktree.rs@gmail.com',
       subject: `Nuevo contacto: ${name}`,
       html: `
-        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; padding: 40px 20px; color: #334155;">
-          <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
-            <div style="background-color: #41f0a5; padding: 30px; text-align: center;">
-              <h2 style="margin: 0; color: #0f172a; font-size: 26px; font-weight: 800;">¡Nuevo Contacto! 🚀</h2>
+      html: `
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0a0a0a; padding: 40px 20px; color: #f3f4f6; text-align: center;">
+          <div style="max-width: 550px; margin: 0 auto; background: #171717; border: 1px solid #333333; border-radius: 8px; overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            
+            <div style="padding: 35px 30px 25px 30px; border-bottom: 1px solid #262626; text-align: center; background-color: #0f0f0f;">
+              <!-- Asegúrate de reemplazar 'https://www.tudominio.com' por tu dominio real donde esté alojada la imagen -->
+              <img src="https://tudominio.com/assets/sparktree-horizontal.png" alt="Sparktree Logo" style="max-width: 180px; height: auto;" />
+              <h2 style="margin: 25px 0 0 0; color: #41f0a5; font-size: 16px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;">Nueva Solicitud de Contacto</h2>
             </div>
-            <div style="padding: 40px 30px;">
-              <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px; color: #475569;">Alguien acaba de enviar un mensaje a través del formulario de la web. Aquí están los detalles del prospecto:</p>
+
+            <div style="padding: 35px 30px;">
+              <p style="font-size: 14px; color: #a3a3a3; margin-bottom: 30px; line-height: 1.5;">Se ha registrado una nueva consulta a través del sitio web. A continuación se detallan los datos del prospecto:</p>
               
-              <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #d4d4d4;">
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>🧑 Nombre:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600; color: #0f172a;">${name}</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373; width: 40%;">Nombre Completo:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600; color: #ffffff;">${name}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>✉️ Email:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;"><a href="mailto:${email}" style="color: #2563eb; text-decoration: none;">${email}</a></td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373;">Correo Electrónico:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600;"><a href="mailto:${email}" style="color: #41f0a5; text-decoration: none;">${email}</a></td>
                 </tr>
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>📞 Teléfono:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;"><a href="tel:${phone}" style="color: #2563eb; text-decoration: none;">${phone}</a></td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373;">Teléfono de Contacto:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600;"><a href="tel:${phone}" style="color: #41f0a5; text-decoration: none;">${phone}</a></td>
                 </tr>
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>🏢 Empresa:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600; color: #0f172a;">${company || 'No especificada'}</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373;">Empresa:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600; color: #ffffff;">${company || 'No especificada'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>🎯 Servicios:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600; color: #0f172a;">${service && service.length > 0 ? service.join(', ') : 'No especificado'}</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373;">Servicios Requeridos:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600; color: #ffffff;">${service && service.length > 0 ? service.join(', ') : 'No especificado'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>💰 Presupuesto:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600; color: #10b981;">${budget || 'No especificado'}</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373;">Presupuesto Estimado:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600; color: #41f0a5;">${budget || 'No especificado'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; color: #64748b;"><strong>⏱️ Plazo:</strong></td>
-                  <td style="padding: 14px 0; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600; color: #0f172a;">${timeline || 'No especificado'}</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; color: #737373;">Plazo del Proyecto:</td>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #262626; font-weight: 600; color: #ffffff;">${timeline || 'No especificado'}</td>
                 </tr>
               </table>
 
-              <div style="margin-top: 35px; background-color: #f8fafc; padding: 24px; border-radius: 12px; border-left: 4px solid #41f0a5;">
-                <h3 style="margin-top: 0; color: #0f172a; font-size: 16px; font-weight: 700;">📝 Mensaje del cliente:</h3>
-                <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #475569; white-space: pre-wrap;">${message}</p>
+              <div style="margin-top: 35px; background-color: #262626; padding: 20px 24px; border-radius: 6px; border-left: 3px solid #41f0a5;">
+                <h3 style="margin-top: 0; margin-bottom: 10px; color: #ffffff; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Mensaje Adjunto:</h3>
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #d4d4d4; white-space: pre-wrap;">${message}</p>
               </div>
             </div>
+            
+            <div style="padding: 20px; text-align: center; background-color: #0f0f0f; border-top: 1px solid #262626; font-size: 12px; color: #525252;">
+              Este es un correo automatizado generado por el sistema de <strong>Sparktree</strong>.
+            </div>
+
           </div>
         </div>
       `
