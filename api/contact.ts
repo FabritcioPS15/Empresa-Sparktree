@@ -26,7 +26,6 @@ export default async function handler(req: any, res: any) {
       to: 'sparktree.rs@gmail.com',
       subject: `Nuevo contacto: ${name}`,
       html: `
-      html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #0a0a0a; padding: 40px 20px; color: #f3f4f6; text-align: center;">
           <div style="max-width: 550px; margin: 0 auto; background: #171717; border: 1px solid #333333; border-radius: 8px; overflow: hidden; text-align: left; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
             
