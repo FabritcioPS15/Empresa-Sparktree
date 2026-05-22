@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -7,6 +8,20 @@ interface ServicePageProps {
 
 export default function ServiceBranding({ onNavigate }: ServicePageProps) {
   const rootRef = useRef<HTMLElement>(null);
+
+  usePageMeta({
+    title: 'Branding Estratégico en Lima | SparkTree - Identidad Corporativa',
+    description: 'Servicio de branding y diseño de identidad corporativa en Lima. Creamos marcas que conectan, destacan y venden. Logótipo, manual de marca y estrategia visual.',
+    url: 'https://sparktree.pe/services/branding',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Branding Estratégico",
+      "provider": { "@type": "Organization", "name": "SparkTree" },
+      "description": "Servicio de branding y diseño de identidad corporativa para empresas",
+      "url": "https://sparktree.pe/services/branding"
+    }
+  });
 
   const breadcrumbs = [
     { label: 'Inicio', path: '/' },

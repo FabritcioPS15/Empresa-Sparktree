@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FaHeadset, FaRocket, FaCalendar } from 'react-icons/fa6';
 import { FaCheckCircle } from 'react-icons/fa';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ServicesProps {
   onNavigate?: (page: string) => void;
@@ -13,6 +14,20 @@ export default function Services({ onNavigate }: ServicesProps) {
   const [lineProgress, setLineProgress] = useState(0);
   const timelineRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<HTMLDivElement[]>([]);
+
+  usePageMeta({
+    title: 'Servicios Digitales | SparkTree - Diseño Web, SEO, Branding y Más',
+    description: 'Descubre nuestros servicios de diseño web, marketing digital, SEO, branding, desarrollo de apps y consultoría digital en Lima. Soluciones personalizadas para tu negocio.',
+    url: 'https://sparktree.pe/services',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Servicios Digitales de SparkTree",
+      "provider": { "@type": "Organization", "name": "SparkTree" },
+      "description": "Servicios de diseño web, marketing digital, SEO, branding y desarrollo de software",
+      "url": "https://sparktree.pe/services"
+    }
+  });
 
   const breadcrumbs = [
     { label: 'Inicio', path: '/' },

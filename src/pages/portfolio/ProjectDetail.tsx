@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { Project } from '@/data/projects';
+import { Project, ContentBlock } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import {
@@ -198,10 +198,30 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
 
   usePageMeta({
     title: project ? `${project.title} | Empresa SparkTree` : 'Proyecto | Empresa SparkTree',
-    description: project?.description || 'Detalle del proyecto de Empresa SparkTree',
-    url: `https://sparktree.pe/portfolio/${projectId}`,
+    description: (project as any)?.seoDescription || project?.description || 'Detalle del proyecto de Empresa SparkTree',
+    url: `https://sparktree.pe/portfolio/${(project as any)?.slug || projectId}`,
     image: project?.heroImage,
-    type: 'article'
+    type: 'article',
+    schemaId: `ld-project-${projectId}`,
+    jsonLd: project ? {
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      "name": project.title,
+      "description": (project as any)?.seoDescription || project.description,
+      "url": `https://sparktree.pe/portfolio/${(project as any)?.slug || projectId}`,
+      "image": project.heroImage,
+      "creator": {
+        "@type": "Organization",
+        "name": "SparkTree",
+        "url": "https://sparktree.pe"
+      },
+      "about": project.category,
+      "keywords": (project as any)?.seoKeywords || project.category,
+      "provider": {
+        "@type": "Organization",
+        "name": project.client
+      }
+    } : undefined
   });
 
   useEffect(() => {
@@ -338,6 +358,81 @@ export default function ProjectDetail({ projectId, onNavigate, initialData, isPr
             <div className="max-w-3xl mx-auto mb-24 md:mb-32 text-center reveal">
               <p className="text-2xl md:text-4xl font-black text-gray-800 leading-tight tracking-tight italic">"{project.description}"</p>
             </div>
+
+            {/* === Rich Content Blocks (Publicación) === */}
+            {((project as any).contentBlocks as ContentBlock[] | undefined)?.length ? (
+              <div className="mb-24 md:mb-32 max-w-3xl mx-auto">
+                <div className="flex items-center justify-center gap-4 mb-12">
+                  <div className="w-8 h-1 bg-gray-200 rounded-full"></div>
+                  <h2 className="text-2xl font-black text-gray-900 tracking-tight">Sobre el Proyecto</h2>
+                  <div className="w-8 h-1 bg-gray-200 rounded-full"></div>
+                </div>
+                <div className="space-y-8">
+                  {((project as any).contentBlocks as ContentBlock[]).map((block, idx) => {
+                    switch (block.type) {
+                      case 'heading':
+                        const HeadingTag = `h${block.level || 2}` as keyof JSX.IntrinsicElements;
+                        return (
+                          <HeadingTag key={block.id || idx} className={`font-black text-gray-900 tracking-tight reveal ${
+                            block.level === 2 ? 'text-3xl' : block.level === 3 ? 'text-2xl' : 'text-xl'
+                          }`}>
+                            {block.content}
+                          </HeadingTag>
+                        );
+                      case 'paragraph':
+                        return (
+                          <p key={block.id || idx} className="text-gray-600 leading-[1.9] font-medium text-lg reveal">
+                            {block.content}
+                          </p>
+                        );
+                      case 'image':
+                        return (
+                          <figure key={block.id || idx} className="reveal">
+                            <div className="rounded-[2rem] overflow-hidden shadow-lg border border-gray-100">
+                              <img src={block.mediaUrl} alt={block.caption || block.content || 'Imagen del proyecto'} className="w-full h-auto" loading="lazy" />
+                            </div>
+                            {block.caption && (
+                              <figcaption className="text-center text-xs text-gray-400 mt-3 font-medium italic">{block.caption}</figcaption>
+                            )}
+                          </figure>
+                        );
+                      case 'video':
+                        return (
+                          <div key={block.id || idx} className="reveal">
+                            <div className="rounded-[2rem] overflow-hidden shadow-lg border border-gray-100 aspect-video bg-gray-900">
+                              {renderMedia(block.mediaUrl || '', block.caption || 'Video del proyecto', 'w-full h-full object-cover', true, 'video')}
+                            </div>
+                            {block.caption && (
+                              <p className="text-center text-xs text-gray-400 mt-3 font-medium italic">{block.caption}</p>
+                            )}
+                          </div>
+                        );
+                      case 'quote':
+                        return (
+                          <blockquote key={block.id || idx} className="reveal border-l-4 border-[#41F0A5] pl-8 py-4 my-8">
+                            <p className="text-xl md:text-2xl font-bold text-gray-700 italic leading-relaxed">
+                              "{block.content}"
+                            </p>
+                          </blockquote>
+                        );
+                      case 'list':
+                        return (
+                          <ul key={block.id || idx} className="reveal space-y-3 pl-2">
+                            {(block.items || []).map((item, i) => (
+                              <li key={i} className="flex items-start gap-3">
+                                <div className="w-2 h-2 bg-[#41F0A5] rounded-full mt-2 shrink-0"></div>
+                                <span className="text-gray-600 font-medium text-lg leading-relaxed">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                </div>
+              </div>
+            ) : null}
 
             {/* Results */}
             <div className="mb-24 md:mb-32">

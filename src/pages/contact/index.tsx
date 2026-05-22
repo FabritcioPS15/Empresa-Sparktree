@@ -4,11 +4,24 @@ import { FaXmark } from 'react-icons/fa6';
 import { MdOutlineHeadsetMic } from "react-icons/md";
 import { ChevronDown } from 'lucide-react';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import es from 'react-phone-input-2/lang/es.json';
 
 export default function Contact() {
+  usePageMeta({
+    title: 'Contacto | SparkTree - Agencia de Marketing Digital en Lima',
+    description: 'Contáctanos para una asesoría gratuita. Especialistas en diseño web, SEO, branding y marketing digital en Lima, Perú. Respuesta en menos de 24 horas.',
+    url: 'https://sparktree.pe/contact',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": "Contacto SparkTree",
+      "description": "Página de contacto de SparkTree, agencia de marketing digital en Lima",
+      "url": "https://sparktree.pe/contact"
+    }
+  });
   const [formData, setFormData] = useState<{
     name: string;
     email: string;
@@ -148,11 +161,11 @@ export default function Contact() {
                 </div>
                 <h3 className="text-4xl font-black text-gray-900 mb-4">¡Mensaje recibido!</h3>
                 <p className="text-gray-500 font-medium text-xl mb-10 max-w-md">Te contactaremos muy pronto para conversar sobre tu proyecto.</p>
-                
+
                 <div className="bg-[#f8fafc] rounded-3xl p-8 max-w-md w-full border border-[#41f0a5]/20 shadow-lg shadow-[#41f0a5]/5">
                   <h4 className="text-gray-900 font-black text-lg mb-2">¿Te faltó algo?</h4>
                   <p className="text-gray-500 font-medium text-sm mb-6">Nos puedes enviar lo adicional que faltó agregar creando un nuevo mensaje.</p>
-                  <button 
+                  <button
                     onClick={() => setSubmitStatus('idle')}
                     className="w-full py-4 bg-white border-2 border-[#41f0a5] text-black hover:bg-[#41f0a5] rounded-2xl font-black uppercase tracking-widest transition-all shadow-sm"
                   >
@@ -336,11 +349,11 @@ export default function Contact() {
                     `}</style>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-gray-700 ml-1">Empresa</label>
+                    <label className="text-sm font-bold text-gray-700 ml-1">Empresa/Negocio</label>
                     <input
                       type="text" name="company" value={formData.company} onChange={handleInputChange}
                       className="w-full px-5 py-4 bg-white border border-[#41f0a5]/30 rounded-2xl focus:ring-2 focus:ring-[#41f0a5] focus:border-transparent transition-all outline-none placeholder:text-gray-300"
-                      placeholder="Nombre de empresa"
+                      placeholder="Nombre de empresa/negocio"
                     />
                   </div>
                 </div>
@@ -457,7 +470,7 @@ export default function Contact() {
                       </div>
                       <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isTimelineDropdownOpen ? 'rotate-180' : ''}`} />
                     </div>
-                    
+
                     {isTimelineDropdownOpen && (
                       <>
                         <div className="fixed inset-0 z-10" onClick={() => setIsTimelineDropdownOpen(false)}></div>
@@ -540,11 +553,11 @@ export default function Contact() {
                 <span className="text-41f0a5 font-bold">+51 958 077 827</span>
               </a>
 
-              <a href="mailto:sparktree.pe@gmail.com" className="bg-white hover:bg-gray-50 transition-colors p-4 rounded-xl flex items-center gap-4 cursor-pointer group">
+              <a href="mailto:[EMAIL_ADDRESS]" className="bg-white hover:bg-gray-50 transition-colors p-4 rounded-xl flex items-center gap-4 cursor-pointer group">
                 <div className="w-10 h-10 flex items-center justify-center bg-blue-50 rounded-lg group-hover:scale-110 transition-transform">
                   <FaEnvelope className="text-41f0a5 text-lg" />
                 </div>
-                <span className="text-41f0a5 font-bold">sparktree.pe@gmail.com</span>
+                <span className="text-41f0a5 font-bold">sparktree.rs@gmail.com</span>
               </a>
 
               <div className="bg-white/95 p-4 rounded-xl flex items-center gap-4 border border-white/20">
@@ -559,13 +572,13 @@ export default function Contact() {
             <div className="bg-white rounded-3xl p-8 border border-green-50 shadow-lg shadow-green-50">
               <h4 className="text-41f0a5 font-bold text-center mb-6">Siguenos en nuestras redes sociales</h4>
               <div className="flex justify-center gap-6">
-                <a href="#" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
+                <a href="https://www.instagram.com/sparktree.rs/" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
                   <FaInstagram size={24} />
                 </a>
-                <a href="#" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
+                <a href="https://www.tiktok.com/@sparktreestudio?_t=8T7s42zXw2u&_r=1" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
                   <FaTiktok size={24} />
                 </a>
-                <a href="#" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
+                <a href="https://www.linkedin.com/company/sparktree-studio-marketing-digital" className="w-14 h-14 bg-[#41f0a5] text-black rounded-2xl flex items-center justify-center hover:scale-110 hover:text-white hover:bg-black transition-transform shadow-md shadow-green-100">
                   <FaLinkedin size={24} />
                 </a>
               </div>

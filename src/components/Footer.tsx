@@ -14,7 +14,7 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
     const onScroll = () => {
       setShowBackToTop(window.scrollY > 240);
     };
-    
+
     // Observer for reveal animations
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -45,7 +45,7 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
 
   const socialLinks = [
     { label: 'Instagram', href: 'https://instagram.com', Icon: FaInstagram },
-    { label: 'LinkedIn', href: 'https://linkedin.com', Icon: FaLinkedin },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/company/sparktree-studio-marketing-digital', Icon: FaLinkedin },
     { label: 'Tiktok', href: 'https://tiktok.com', Icon: FaTiktok },
   ];
 
@@ -65,12 +65,12 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
   const isActive = (id: string) => {
     if (!currentPage) return false;
     if (currentPage === id) return true;
-    
+
     // Main sections and their sub-items
     if (id === 'services' && (currentPage.startsWith('service-') || currentPage === 'services')) return true;
     if (id === 'portfolio' && (currentPage.startsWith('portfolio') || currentPage === 'project-detail')) return true;
     if (id === 'blog' && (currentPage.startsWith('blog') || currentPage === 'blog-post')) return true;
-    
+
     return false;
   };
 
@@ -84,13 +84,13 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
         <div className="flex flex-col lg:grid lg:grid-cols-4 gap-12 mb-12 items-center lg:items-start text-center lg:text-left">
           {/* Column 1: Logo */}
           <div className="footer-reveal reveal space-y-6 w-full lg:w-auto flex flex-col items-center lg:items-start">
-            <button 
-              onClick={() => onNavigate('home')} 
+            <button
+              onClick={() => onNavigate('home')}
               className="group flex items-center transition-transform duration-500 hover:scale-105"
             >
-              <img 
-                src="/assets/sparktree-horizontal.png" 
-                alt="SparkTree Logo" 
+              <img
+                src="/assets/sparktree-horizontal.png"
+                alt="SparkTree Logo"
                 className="h-16 lg:h-20 w-auto object-contain brightness-110"
               />
             </button>

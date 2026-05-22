@@ -119,13 +119,7 @@ function App() {
       }
     }
 
-    // Para la página de contacto, navegación inmediata sin animación
-    if (page === 'contact') {
-      navigate(path);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    
+
     setIsExiting(true);
     
     setTimeout(() => {

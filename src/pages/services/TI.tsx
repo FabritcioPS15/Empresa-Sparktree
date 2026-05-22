@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -7,6 +8,20 @@ interface ServicePageProps {
 
 export default function ServiceTI({ onNavigate }: ServicePageProps) {
   const rootRef = useRef<HTMLElement>(null);
+
+  usePageMeta({
+    title: 'Servicios TI en Lima | SparkTree - Infraestructura y Seguridad',
+    description: 'Soluciones de tecnología de la información para empresas en Lima. Infraestructura, ciberseguridad, soporte técnico y optimización de sistemas.',
+    url: 'https://sparktree.pe/services/ti',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Servicios TI",
+      "provider": { "@type": "Organization", "name": "SparkTree" },
+      "description": "Servicios de tecnología, infraestructura y seguridad informática para empresas",
+      "url": "https://sparktree.pe/services/ti"
+    }
+  });
 
   const breadcrumbs = [
     { label: 'Inicio', path: '/' },

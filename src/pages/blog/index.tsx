@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import PageBanner from '@/components/ui/PageBanner';
+import { usePageMeta } from '@/hooks/usePageMeta';
 
 interface BlogProps {
   onViewPost: (slug: string) => void;
@@ -8,6 +9,19 @@ interface BlogProps {
 export default function Blog({ onViewPost }: BlogProps) {
   const blogRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState('');
+
+  usePageMeta({
+    title: 'Blog de Marketing Digital | SparkTree - Estrategias y Tendencias',
+    description: 'Artículos sobre marketing digital, SEO, redes sociales, branding y estrategias de crecimiento para empresas en Perú. Contenido actualizado por expertos.',
+    url: 'https://sparktree.pe/blog',
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Blog de SparkTree",
+      "description": "Artículos sobre marketing digital, SEO y estrategias de crecimiento",
+      "url": "https://sparktree.pe/blog"
+    }
+  });
 
   const breadcrumbs = [
     { label: 'Inicio', path: '/' },

@@ -344,12 +344,11 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             onClick={() => onNavigate('home')}
             className={`transition-transform duration-300 hover:scale-105 ${isMounted ? 'animate-slide-in-top entrance-stagger-1' : 'opacity-0'}`}
           >
-            <img 
-              src="/assets/sparktree-horizontal.png" 
-              alt="SparkTree Logo" 
-              className={`h-10 w-auto object-contain transition-all duration-300 ${
-                shouldNavItemsBeWhite ? 'brightness-0 invert' : 'brightness-0'
-              }`}
+            <img
+              src="/assets/sparktree-horizontal.png"
+              alt="SparkTree Logo"
+              className={`h-10 w-auto object-contain transition-all duration-300 ${shouldNavItemsBeWhite ? 'brightness-0 invert' : 'brightness-0'
+                }`}
             />
           </button>
 
@@ -369,8 +368,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       onClick={handleServicesMainClick}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
                       className={`text-base font-medium tracking-tight transition-all duration-200 relative pl-3.5 pr-2 py-2 rounded-l-md ${shouldNavItemsBeWhite
-                          ? 'text-white hover:text-white'
-                          : 'text-gray-900 hover:text-gray-700'
+                        ? 'text-white hover:text-white'
+                        : 'text-gray-900 hover:text-gray-700'
                         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       {(currentPage === item.id || currentPage.startsWith('service-')) ? (
@@ -383,16 +382,15 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       onClick={handleServicesClick}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
                       className={`text-base font-medium tracking-tight transition-all duration-200 relative -ml-1 pl-1 pr-2.5 py-2 rounded-r-md ${shouldNavItemsBeWhite
-                          ? 'text-white hover:text-white'
-                          : 'text-gray-900 hover:text-gray-700'
+                        ? 'text-white hover:text-white'
+                        : 'text-gray-900 hover:text-gray-700'
                         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       <svg
-                        className={`w-3.5 h-3.5 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''} ${
-                          (currentPage === item.id || currentPage.startsWith('service-')) 
-                            ? (shouldNavItemsBeWhite ? 'text-[#41f0a5] drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]' : 'text-[#0ea161]') 
-                            : ''
-                        }`}
+                        className={`w-3.5 h-3.5 transition-transform duration-200 ${isServicesDropdownOpen ? 'rotate-180' : ''} ${(currentPage === item.id || currentPage.startsWith('service-'))
+                          ? (shouldNavItemsBeWhite ? 'text-[#41f0a5] drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]' : 'text-[#0ea161]')
+                          : ''
+                          }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -406,8 +404,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     onClick={() => onNavigate(item.id)}
                     aria-current={currentPage === item.id ? 'page' : undefined}
                     className={`text-base font-medium tracking-tight transition-all duration-200 relative px-3.5 py-2 rounded-md ${shouldNavItemsBeWhite
-                        ? 'text-white hover:text-white'
-                        : 'text-gray-900 hover:text-gray-700'
+                      ? 'text-white hover:text-white'
+                      : 'text-gray-900 hover:text-gray-700'
                       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                   >
                     {currentPage === item.id ? (
@@ -536,11 +534,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               href="https://wa.me/"
               target="_blank"
               rel="noopener noreferrer"
-              className={`hidden sm:flex items-center gap-2 ${isMounted ? 'animate-slide-in-top entrance-stagger-8' : 'opacity-0'}`}
+              className={`hidden sm:flex items-center gap-2 transition-all duration-300 ${isMounted ? 'animate-slide-in-top entrance-stagger-8' : 'opacity-0'}`}
               variant={shouldNavItemsBeWhite ? 'transparent-white' : 'default'}
             >
               <FaWhatsapp size={18} />
-              <span>Agenda tu consulta</span>
+              <span className="whitespace-nowrap">
+                {isSearchOpen ? 'Contactanos!' : 'Agenda tu consulta'}
+              </span>
             </AnimatedButton>
           </div>
 
@@ -550,8 +550,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             <button
               type="button"
               className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${shouldNavItemsBeWhite
-                  ? 'text-white hover:text-white'
-                  : 'text-gray-700 hover:text-gray-900'
+                ? 'text-white hover:text-white'
+                : 'text-gray-700 hover:text-gray-900'
                 }`}
               aria-label="Abrir búsqueda"
               onClick={() => setIsMobileSearchOpen(true)}
@@ -646,8 +646,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`p-2.5 hover:bg-gray-100 rounded-lg transition-colors duration-300 ${shouldNavItemsBeWhite
-                  ? 'text-white hover:text-white'
-                  : 'text-gray-700 hover:text-gray-900'
+                ? 'text-white hover:text-white'
+                : 'text-gray-700 hover:text-gray-900'
                 }`}
               aria-label="Toggle menu"
             >
@@ -659,8 +659,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
       {/* Mobile Navigation */}
       <div className={`lg:hidden fixed inset-0 z-[100] transition-all duration-300 ${isMobileMenuOpen
-          ? 'opacity-100 pointer-events-auto'
-          : 'opacity-0 pointer-events-none'
+        ? 'opacity-100 pointer-events-auto'
+        : 'opacity-0 pointer-events-none'
         }`} style={{ height: '100dvh' }}>
         {/* Full-Screen Backdrop */}
         <div
@@ -674,13 +674,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             }`}>
           {/* Header Section */}
           <div className="flex items-center justify-between h-20 px-8 shrink-0 bg-white">
-            <button 
+            <button
               onClick={() => { onNavigate('home'); setIsMobileMenuOpen(false); }}
               className="transition-transform active:scale-95"
             >
-              <img 
-                src="/assets/sparktree-horizontal.png" 
-                alt="SparkTree" 
+              <img
+                src="/assets/sparktree-horizontal.png"
+                alt="SparkTree"
                 className="h-9 w-auto object-contain brightness-0"
               />
             </button>
@@ -699,15 +699,14 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               {navItems.map((item) => (
                 <div key={item.id}>
                   {item.hasDropdown ? (
-                    <div className="space-y-1">
+                    <div className="space-y-1" data-nav-item={item.id}>
                       <div className="flex items-center group">
                         <button
                           onClick={handleServicesClick}
-                          className={`flex-1 text-left py-3 px-4 text-4xl font-black tracking-tighter transition-all duration-300 ${
-                            currentPage === item.id || currentPage.startsWith('service-')
-                              ? 'text-[#41f0a5] active-relieve'
-                              : 'text-gray-900 hover:text-[#41f0a5]'
-                          }`}
+                          className={`flex-1 text-left py-3 px-4 text-4xl font-black tracking-tighter transition-all duration-300 ${currentPage === item.id || currentPage.startsWith('service-')
+                            ? 'text-[#41f0a5] active-relieve'
+                            : 'text-gray-900 hover:text-[#41f0a5]'
+                            }`}
                         >
                           {item.label}
                         </button>
@@ -739,9 +738,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                             <button
                               key={service.id}
                               onClick={() => handleServiceClick(service.id)}
-                              className={`w-full text-left text-lg font-semibold transition-colors duration-200 ${
-                                currentPage === service.id ? 'text-[#41f0a5]' : 'text-gray-500 hover:text-gray-900'
-                              }`}
+                              className={`w-full text-left text-lg font-semibold transition-colors duration-200 ${currentPage === service.id ? 'text-[#41f0a5]' : 'text-gray-500 hover:text-gray-900'
+                                }`}
                             >
                               {service.label}
                             </button>
@@ -752,11 +750,10 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   ) : (
                     <button
                       onClick={() => handleNavClick(item.id)}
-                      className={`w-full text-left py-3 px-4 text-4xl font-black tracking-tighter transition-all duration-300 ${
-                        currentPage === item.id 
-                          ? 'text-[#41f0a5] active-relieve' 
-                          : 'text-gray-900 hover:text-[#41f0a5]'
-                      }`}
+                      className={`w-full text-left py-3 px-4 text-4xl font-black tracking-tighter transition-all duration-300 ${currentPage === item.id
+                        ? 'text-[#41f0a5] active-relieve'
+                        : 'text-gray-900 hover:text-[#41f0a5]'
+                        }`}
                     >
                       {item.label}
                     </button>
@@ -787,7 +784,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                 <div className="flex gap-4">
                   {[
                     { icon: FaInstagram, href: 'https://instagram.com' },
-                    { icon: FaLinkedin, href: 'https://linkedin.com' },
+                    { icon: FaLinkedin, href: 'https://www.linkedin.com/company/sparktree-studio-marketing-digital' },
                     { icon: FaTiktok, href: 'https://tiktok.com' }
                   ].map((social, i) => (
                     <a
@@ -805,7 +802,7 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                 {/* Contact Links */}
                 <div className="flex flex-col gap-1 items-end text-xs font-bold text-gray-500 uppercase tracking-tighter">
                   <a href="tel:+51999999999" className="hover:text-gray-900">+51 999 999 999</a>
-                  <a href="mailto:contacto@tuempresa.com" className="hover:text-gray-900">contacto@tuempresa.com</a>
+                  <a href="mailto:sparktree.rs@gmail.com" className="hover:text-gray-900">sparktree.rs@gmail.com</a>
                 </div>
               </div>
 
@@ -813,8 +810,8 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
               <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest pt-2">
                 <span>© 2025 SPARK TREE</span>
                 <div className="flex gap-3">
-                  <a href="#" className="hover:text-gray-900 transition-colors">Privacidad</a>
-                  <a href="#" className="hover:text-gray-900 transition-colors">Términos</a>
+                  <button onClick={() => handleNavClick('privacy')} className="hover:text-gray-900 transition-colors">Privacidad</button>
+                  <button onClick={() => handleNavClick('terms')} className="hover:text-gray-900 transition-colors">Términos</button>
                 </div>
               </div>
             </div>
