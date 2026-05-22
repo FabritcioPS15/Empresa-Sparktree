@@ -1,7 +1,6 @@
 import React from "react";
 import { Project, ContentBlock } from "@/data/projects";
 import {
-  Plus,
   X,
   GripVertical,
   Type,
@@ -155,11 +154,10 @@ export const TabContent: React.FC<TabContentProps> = ({
                   <button
                     key={level}
                     onClick={() => updateBlock(index, { level })}
-                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${
-                      block.level === level
+                    className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${block.level === level
                         ? "bg-indigo-600 text-white shadow-md"
                         : "bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                    }`}
+                      }`}
                   >
                     H{level}
                   </button>
@@ -169,9 +167,8 @@ export const TabContent: React.FC<TabContentProps> = ({
                 type="text"
                 value={block.content}
                 onChange={(e) => updateBlock(index, { content: e.target.value })}
-                className={`w-full px-4 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-300 transition-all outline-none ${
-                  block.level === 2 ? "text-2xl font-black" : block.level === 3 ? "text-xl font-bold" : "text-lg font-semibold"
-                }`}
+                className={`w-full px-4 py-3 bg-gray-50 border-2 border-gray-100 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-300 transition-all outline-none ${block.level === 2 ? "text-2xl font-black" : block.level === 3 ? "text-xl font-bold" : "text-lg font-semibold"
+                  }`}
                 placeholder="Título de la sección..."
               />
             </div>
