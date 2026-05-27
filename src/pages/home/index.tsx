@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, ChevronRight, Star, Rocket, Zap } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Rocket, Zap, Linkedin, Globe } from 'lucide-react';
 import CountUp from '@/components/common/CountUp';
 
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
@@ -133,10 +133,10 @@ export default function Home({ onNavigate }: HomeProps) {
   ];
 
   const team = [
-    { name: 'Fabritcio Peña', role: 'Desarrollador' },
-    { name: 'Roman Reto', role: 'Diseñador UX / UI' },
-    { name: 'Ruth Belén de la Torre Gamarra', role: 'Profesional de Marketing' },
-    { name: 'Alvaro Carpio Lozano', role: 'Desarrollador' },
+    { name: 'Fabritcio Peña', role: 'Desarrollador', linkedin: 'https://linkedin.com/in/fabritcio-peña', portfolio: 'https://portfolio.com' },
+    { name: 'Roman Reto', role: 'Diseñador UX / UI', linkedin: 'https://linkedin.com/in/roman-reto', portfolio: 'https://portfolio.com' },
+    { name: 'Ruth Belén de la Torre Gamarra', role: 'Profesional de Marketing', linkedin: 'https://linkedin.com/in/ruth-belen', portfolio: 'https://portfolio.com' },
+    { name: 'Alvaro Carpio Lozano', role: 'Desarrollador', linkedin: 'https://linkedin.com/in/alvaro-carpio', portfolio: 'https://portfolio.com' },
   ];
 
   return (
@@ -429,7 +429,7 @@ export default function Home({ onNavigate }: HomeProps) {
             {team.map((member, index) => (
               <div
                 key={index}
-                className={`bg-gray-100 rounded-2xl p-6 sm:p-8 text-center scroll-entrance scale-up scroll-stagger-${index + 3} hover:bg-white hover:scale-105 hover:shadow-2xl transition-all duration-500 cursor-default group filter grayscale hover:grayscale-0 border border-transparent hover:border-emerald-100`}
+                className={`relative bg-gray-100 rounded-2xl pt-6 px-6 pb-10 sm:pt-8 sm:px-8 sm:pb-12 text-center scroll-entrance scale-up scroll-stagger-${index + 3} hover:bg-white hover:scale-105 hover:shadow-2xl transition-all duration-500 cursor-default group filter grayscale hover:grayscale-0 border border-transparent hover:border-emerald-100`}
               >
                 <div className="bg-gray-200 w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto mb-4 group-hover:bg-gray-100 group-hover:scale-110 transition-all duration-500 flex items-center justify-center overflow-hidden">
                   <span className="text-gray-400 group-hover:text-emerald-500 transition-colors">
@@ -442,6 +442,18 @@ export default function Home({ onNavigate }: HomeProps) {
                 <p className="text-gray-500 text-xs mt-1 group-hover:text-gray-700 transition-colors duration-500 italic">
                   {member.role}
                 </p>
+                <div className="absolute left-0 right-0 bottom-3 sm:bottom-4 flex justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 pointer-events-none group-hover:pointer-events-auto">
+                  {member.linkedin && (
+                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-500 transition-colors p-1" title="LinkedIn">
+                      <Linkedin className="w-4 h-4" />
+                    </a>
+                  )}
+                  {member.portfolio && (
+                    <a href={member.portfolio} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-500 transition-colors p-1" title="Portafolio">
+                      <Globe className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>

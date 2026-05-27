@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import PageBanner from '@/components/ui/PageBanner';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { FaRocket, FaCheck } from 'react-icons/fa6';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -51,31 +52,44 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
 
   const processSteps = [
     {
-      title: "1. Análisis de marca y mercado",
-      description: "Investigamos tu negocio, competencia y público objetivo."
+      number: "1",
+      title: "Análisis de marca y mercado",
+      description: "Investigamos tu negocio, competencia y público objetivo.",
+      items: ["objetivos del proyecto", "público objetivo", "análisis de la competencia"]
     },
     {
-      title: "2. Definición estratégica",
-      description: "Creamos el ADN de marca: propósito, valores, personalidad y tono."
+      number: "2",
+      title: "Definición estratégica",
+      description: "Creamos el ADN de marca: propósito, valores, personalidad y tono.",
+      items: ["propósito de la marca", "valores y principios", "personalidad de marca", "tono de comunicación"],
+      footer: "Definimos los elementos clave que guiarán la comunicación de tu marca"
     },
     {
-      title: "3. Diseño de identidad visual",
-      description: "Desarrollamos logotipo, colores, tipografías y estilo visual."
+      number: "3",
+      title: "Diseño de identidad visual",
+      description: "Desarrollamos logotipo, colores, tipografías y estilo visual.",
+      items: ["logotipo profesional", "paleta de colores", "tipografías corporativas", "estilo de imágenes"],
+      footer: "Todo lo necesario para que tu marca se vea profesional y coherente en todos los canales"
     },
     {
-      title: "4. Construcción del mensaje",
-      description: "Definimos cómo se comunica tu marca en todos los canales."
+      number: "4",
+      title: "Construcción del mensaje",
+      description: "Definimos cómo se comunica tu marca en todos los canales.",
+      items: ["propuesta de valor", "mensajes clave", "eslogan", "argumentos de venta"],
+      footer: "Esto permite que tu marca se comunique de manera clara y coherente en todos los canales"
     },
     {
-      title: "5. Entrega y guía de uso",
-      description: "Creamos un manual de marca para asegurar coherencia."
+      number: "5",
+      title: "Entrega y guía de uso",
+      description: "Creamos un manual de marca para asegurar coherencia.",
+      items: ["manual de marca completo", "guía de aplicación", "archivos finales", "sesión de entrega"]
     }
   ];
 
   return (
     <div className="pt-[72px]">
-      <PageBanner 
-        title="Branding estratégico para empresas" 
+      <PageBanner
+        title="Branding estratégico para empresas"
         subtitle="Creamos marcas que conectan, destacan y venden."
         breadcrumbs={breadcrumbs}
       />
@@ -89,7 +103,7 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
           {/* Main Hero View - Centered Intro */}
           <div className="text-center mb-16 md:mb-24">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-950 mb-8 tracking-tight reveal">
-              Branding estratégico para <br className="hidden md:block"/>
+              Branding estratégico para <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">empresas en Lima</span>
             </h1>
           </div>
@@ -109,9 +123,9 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
                 Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia.
               </p>
-              
+
               <div className="pt-6 flex justify-center lg:justify-start">
-                <button 
+                <button
                   onClick={() => onNavigate?.('contact')}
                   className="px-8 py-3.5 bg-[#3750f0] text-white rounded-xl font-bold tracking-wide shadow-[0_10px_20px_rgba(55,80,240,0.2)] hover:scale-105 transition-all duration-300 hover:shadow-[0_15px_30px_rgba(55,80,240,0.3)] text-sm md:text-base"
                 >
@@ -123,60 +137,92 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
             {/* Illustration Area */}
             <div className="relative flex justify-center items-center reveal scale-up">
               <div className="w-full max-w-md aspect-[4/3] bg-gradient-to-br from-[#3750f0] to-[#41f0a5] rounded-3xl p-8 relative shadow-2xl overflow-hidden group">
-                 {/* Sparkle Graphic inspired by mockup */}
-                 <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors duration-500 rounded-3xl" />
-                 
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 transition-transform duration-700 group-hover:scale-110">
-                    {/* Center Spark */}
-                    <div 
-                      className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-full w-full bg-white/95 shadow-[0_0_40px_rgba(255,255,255,0.6)]"
-                      style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
-                    ></div>
-                    
-                    {/* Top Left Spark */}
-                    <div 
-                      className="absolute top-4 left-4 w-16 h-16 bg-white/80"
-                      style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
-                    ></div>
+                {/* Sparkle Graphic inspired by mockup */}
+                <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors duration-500 rounded-3xl" />
 
-                    {/* Bottom Right Spark */}
-                    <div 
-                      className="absolute bottom-4 right-4 w-20 h-20 bg-white/80"
-                      style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
-                    ></div>
-                 </div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 transition-transform duration-700 group-hover:scale-110">
+                  {/* Center Spark */}
+                  <div
+                    className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-full w-full bg-white/95 shadow-[0_0_40px_rgba(255,255,255,0.6)]"
+                    style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
+                  ></div>
+
+                  {/* Top Left Spark */}
+                  <div
+                    className="absolute top-4 left-4 w-16 h-16 bg-white/80"
+                    style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
+                  ></div>
+
+                  {/* Bottom Right Spark */}
+                  <div
+                    className="absolute bottom-4 right-4 w-20 h-20 bg-white/80"
+                    style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Process Section */}
-          <div className="py-16 md:py-24 border-t border-gray-100">
-            <div className="text-center mb-12 md:mb-20 scroll-entrance">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-gray-950 mb-4 tracking-tight">
-                Nuestro proceso de Branding
+          <div className="py-24 border-t border-gray-100">
+            <div className="text-center mb-20 scroll-entrance">
+              <h2 className="text-3xl md:text-5xl font-black text-gray-950 mb-6 tracking-tight">
+                Nuestro proceso de diseño y desarrollo web
               </h2>
-              <p className="text-sm md:text-base text-gray-600 max-w-3xl mx-auto font-medium px-4">
+              <p className="text-lg text-gray-500 max-w-3xl mx-auto font-medium">
                 En Spark Tree Studio seguimos un proceso estratégico que garantiza resultados profesionales y alineados con los objetivos de cada cliente.
               </p>
             </div>
 
-            <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto px-4">
+            <div className="space-y-12 max-w-4xl mx-auto">
               {processSteps.map((step, idx) => (
-                <div 
-                  key={idx} 
-                  className="bg-white border-2 border-[#3750f0]/60 hover:border-[#3750f0] rounded-xl p-5 md:p-8 text-left transition-all duration-300 shadow-[0_4px_10px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_20px_rgba(55,80,240,0.08)] scroll-entrance slide-up group"
+                <div
+                  key={idx}
+                  className={`relative p-8 md:p-12 bg-white/40 backdrop-blur-xl border border-gray-100 rounded-[3rem] transition-all duration-500 hover:shadow-2xl hover:border-[#41f0a5]/30 scroll-entrance ${idx % 2 === 0 ? 'slide-left' : 'slide-right'}`}
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
-                  <h3 className="text-lg md:text-xl font-bold text-gray-950 mb-1 group-hover:text-[#3750f0] transition-colors">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm md:text-base text-gray-600 font-medium">
-                    {step.description}
-                  </p>
+                  <div className="absolute top-8 right-12 text-8xl font-black text-gray-950/5 select-none">{step.number}</div>
+
+                  <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start">
+                    <div className="w-16 h-16 bg-gray-950 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl group-hover:rotate-6 transition-all">
+                      <FaRocket className="text-[#41f0a5] text-2xl" />
+                    </div>
+
+                    <div className="flex-1 space-y-6">
+                      <h3 className="text-2xl md:text-3xl font-black text-gray-950 tracking-tight">
+                        {step.number}. {step.title}
+                      </h3>
+                      <p className="text-lg text-gray-600 font-medium leading-relaxed">
+                        {step.description}
+                      </p>
+
+                      {step.items && (
+                        <div className="space-y-4">
+                          <p className="text-sm font-black text-gray-400 uppercase tracking-widest">Definimos:</p>
+                          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+                            {step.items.map((item, i) => (
+                              <li key={i} className="flex items-center gap-3 group/item">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#41f0a5] group-hover/item:scale-150 transition-transform" />
+                                <span className="text-gray-600 font-medium group-hover/item:text-gray-950 transition-colors uppercase text-xs tracking-wider">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {step.footer && (
+                        <div className="pt-4 border-t border-gray-100 flex items-center gap-3 text-[#3750f0] font-bold italic">
+                          <FaCheck size={14} />
+                          <p>{step.footer}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+
 
           {/* Benefits Section */}
           <div className="py-16 md:py-24 border-t border-gray-100">
@@ -197,8 +243,8 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
                 "Conexión emocional con tu audiencia",
                 "Base sólida para estrategias de marketing"
               ].map((benefit, idx) => (
-                <div 
-                  key={idx} 
+                <div
+                  key={idx}
                   className="bg-gradient-to-r from-[#3750f0] to-[#41f0a5] rounded-xl p-5 md:p-6 text-white text-center md:text-left transition-all duration-300 shadow-[0_4px_10px_rgba(55,80,240,0.1)] hover:shadow-[0_12px_24px_rgba(55,80,240,0.2)] hover:-translate-y-1 block md:flex md:items-center scroll-entrance slide-up"
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
@@ -212,13 +258,13 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
 
           {/* Bottom Actions */}
           <div className="mt-16 md:mt-24 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 reveal bounce-in">
-            <button 
+            <button
               onClick={() => onNavigate?.('portfolio')}
               className="px-8 py-4 bg-gray-950 text-white rounded-xl font-black shadow-xl hover:scale-105 transition-all duration-300 tracking-widest uppercase text-sm"
             >
               Ver portafolio
             </button>
-            <button 
+            <button
               onClick={() => onNavigate?.('services')}
               className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-950 rounded-xl font-black hover:border-[#3750f0] transition-all duration-300 tracking-widest uppercase text-sm"
             >
