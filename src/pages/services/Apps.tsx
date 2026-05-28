@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FaRocket, FaCheck, FaMobile, FaDesktop, FaCode, FaDatabase, FaShield } from 'react-icons/fa6';
 import PageBanner from '@/components/ui/PageBanner';
+import { isServiceSelected, toggleServiceSelection } from '@/lib/servicesStore';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -8,6 +9,7 @@ interface ServicePageProps {
 
 export default function ServiceApps({ onNavigate }: ServicePageProps) {
   const rootRef = useRef<HTMLElement>(null);
+  const [isSelected, setIsSelected] = useState(false);
 
   const breadcrumbs = [
     { label: 'Inicio', path: '/' },
@@ -34,6 +36,20 @@ export default function ServiceApps({ onNavigate }: ServicePageProps) {
 
     return () => { clearTimeout(timeoutId); observer.disconnect(); };
   }, []);
+
+  useEffect(() => {
+    setIsSelected(isServiceSelected('Desarrollo de Apps'));
+
+    const handleServiceChange = () => {
+      setIsSelected(isServiceSelected('Desarrollo de Apps'));
+    };
+    window.addEventListener('sparktree_services_changed', handleServiceChange);
+    return () => window.removeEventListener('sparktree_services_changed', handleServiceChange);
+  }, []);
+
+  const handleToggleSelection = () => {
+    toggleServiceSelection('Desarrollo de Apps');
+  };
 
   const appTypes = [
     {
@@ -132,12 +148,25 @@ export default function ServiceApps({ onNavigate }: ServicePageProps) {
                 Utilizamos las tecnologías más avanzadas y metodologías ágiles para entregar soluciones robustas, seguras y con experiencias de usuario excepcionales.
               </p>
               
-              <div className="pt-4">
+              <div className="pt-4 flex flex-wrap gap-4">
                 <button 
-                  onClick={() => onNavigate?.('contact')}
+                  onClick={() => {
+                    if (!isSelected) handleToggleSelection();
+                    onNavigate?.('contact');
+                  }}
                   className="px-10 py-5 bg-[#3750f0] text-white rounded-2xl font-black shadow-[0_20px_40px_rgba(55,80,240,0.3)] hover:scale-105 transition-all duration-500 hover:shadow-[0_25px_50px_rgba(55,80,240,0.4)] tracking-widest uppercase text-sm"
                 >
                   Cotizar proyecto
+                </button>
+                <button
+                  onClick={handleToggleSelection}
+                  className={`px-10 py-5 rounded-2xl font-black tracking-widest uppercase text-sm transition-all duration-300 border-2 ${
+                    isSelected 
+                      ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_10px_20px_rgba(55,80,240,0.15)] animate-pulse'
+                      : 'bg-white text-gray-950 border-gray-200 hover:border-[#3750f0] hover:scale-105 shadow-sm'
+                  }`}
+                >
+                  {isSelected ? '✓ Seleccionado' : 'Añadir a mi Cotización'}
                 </button>
               </div>
             </div>
@@ -252,7 +281,17 @@ export default function ServiceApps({ onNavigate }: ServicePageProps) {
           </div>
 
           {/* Bottom Actions */}
-          <div className="mt-24 flex flex-col sm:flex-row justify-center gap-6 reveal bounce-in">
+          <div className="mt-24 flex flex-col sm:flex-row justify-center items-center gap-6 reveal bounce-in">
+            <button 
+              onClick={handleToggleSelection}
+              className={`px-10 py-5 rounded-2xl font-black tracking-widest uppercase text-sm border-2 transition-all duration-300 ${
+                isSelected 
+                  ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_15px_30px_rgba(55,80,240,0.25)] animate-pulse'
+                  : 'bg-white text-gray-950 border-gray-200 hover:border-[#3750f0] hover:scale-105 shadow-md'
+              }`}
+            >
+              {isSelected ? '✓ Seleccionado para Cotizar' : 'Me interesa este servicio'}
+            </button>
             <button 
               onClick={() => onNavigate?.('portfolio')}
               className="px-10 py-5 bg-gray-950 text-white rounded-2xl font-black shadow-xl hover:scale-105 transition-all duration-500 tracking-widest uppercase text-sm"

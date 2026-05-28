@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import PageBanner from '@/components/ui/PageBanner';
 import { usePageMeta } from '@/hooks/usePageMeta';
 import { FaRocket, FaCheck } from 'react-icons/fa6';
+import { isServiceSelected, toggleServiceSelection } from '@/lib/servicesStore';
 
 interface ServicePageProps {
   onNavigate?: (page: string) => void;
@@ -9,6 +10,7 @@ interface ServicePageProps {
 
 export default function ServiceBranding({ onNavigate }: ServicePageProps) {
   const rootRef = useRef<HTMLElement>(null);
+  const [isSelected, setIsSelected] = useState(false);
 
   usePageMeta({
     title: 'Branding Estratégico en Lima | SparkTree - Identidad Corporativa',
@@ -49,6 +51,20 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
 
     return () => { clearTimeout(timeoutId); observer.disconnect(); };
   }, []);
+
+  useEffect(() => {
+    setIsSelected(isServiceSelected('Branding'));
+
+    const handleServiceChange = () => {
+      setIsSelected(isServiceSelected('Branding'));
+    };
+    window.addEventListener('sparktree_services_changed', handleServiceChange);
+    return () => window.removeEventListener('sparktree_services_changed', handleServiceChange);
+  }, []);
+
+  const handleToggleSelection = () => {
+    toggleServiceSelection('Branding');
+  };
 
   const processSteps = [
     {
@@ -257,7 +273,17 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
           </div>
 
           {/* Bottom Actions */}
-          <div className="mt-16 md:mt-24 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 reveal bounce-in">
+          <div className="mt-16 md:mt-24 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 reveal bounce-in">
+            <button 
+              onClick={handleToggleSelection}
+              className={`px-8 py-4 rounded-xl font-black transition-all duration-300 tracking-widest uppercase text-sm border-2 ${
+                isSelected 
+                  ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_15px_30px_rgba(55,80,240,0.25)] animate-pulse'
+                  : 'bg-white text-gray-950 border-gray-200 hover:border-[#3750f0] hover:scale-105 shadow-md'
+              }`}
+            >
+              {isSelected ? '✓ Seleccionado para Cotizar' : 'Me interesa este servicio'}
+            </button>
             <button
               onClick={() => onNavigate?.('portfolio')}
               className="px-8 py-4 bg-gray-950 text-white rounded-xl font-black shadow-xl hover:scale-105 transition-all duration-300 tracking-widest uppercase text-sm"

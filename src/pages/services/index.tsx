@@ -3,6 +3,7 @@ import { FaHeadset, FaRocket, FaCalendar } from 'react-icons/fa6';
 import { FaCheckCircle } from 'react-icons/fa';
 import PageBanner from '@/components/ui/PageBanner';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { getSelectedServices, toggleServiceSelection, normalizeServiceName } from '@/lib/servicesStore';
 
 interface ServicesProps {
   onNavigate?: (page: string) => void;
@@ -14,6 +15,7 @@ export default function Services({ onNavigate }: ServicesProps) {
   const [lineProgress, setLineProgress] = useState(0);
   const timelineRef = useRef<HTMLDivElement>(null);
   const stepRefs = useRef<HTMLDivElement[]>([]);
+  const [selectedList, setSelectedList] = useState<string[]>([]);
 
   usePageMeta({
     title: 'Servicios Digitales | SparkTree - Diseño Web, SEO, Branding y Más',
@@ -33,6 +35,25 @@ export default function Services({ onNavigate }: ServicesProps) {
     { label: 'Inicio', path: '/' },
     { label: 'Servicios' }
   ];
+
+  useEffect(() => {
+    setSelectedList(getSelectedServices());
+    
+    const handleServiceChange = () => {
+      setSelectedList(getSelectedServices());
+    };
+    window.addEventListener('sparktree_services_changed', handleServiceChange);
+    return () => window.removeEventListener('sparktree_services_changed', handleServiceChange);
+  }, []);
+
+  const handleToggleService = (title: string) => {
+    toggleServiceSelection(title);
+  };
+
+  const isSelected = (title: string) => {
+    const normalized = normalizeServiceName(title);
+    return selectedList.includes(normalized);
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -117,6 +138,11 @@ export default function Services({ onNavigate }: ServicesProps) {
         'Tu sitio será hermoso, rápido y, lo más importante, intuitivo. Nos enfocamos en la Experiencia del Usuario (UX) para que tus visitantes encuentren lo que necesitan sin fricción y realicen la acción que deseas (comprar, contactar, cotizar). Un diseño optimizado significa más clientes con el mismo tráfico.',
     },
     {
+      title: 'SparkBots (Chatbots de IA)',
+      description:
+        'Alquila bots de IA conversacional para WhatsApp y web. Soporte y ventas automatizadas 24/7 con bots calificados con la personalidad de tu marca, agendando citas en tu calendario y cerrando leads calificados de forma autónoma. No dejes escapar ningún cliente potencial.',
+    },
+    {
       title: 'Marketing Digital',
       description:
         'Creamos estrategias integrales de marketing digital para aumentar tu visibilidad y atraer clientes calificados. Desde campañas en redes sociales hasta email marketing y publicidad pagada, te ayudamos a alcanzar tus objetivos de negocio y maximizar tu retorno de inversión.',
@@ -171,12 +197,29 @@ export default function Services({ onNavigate }: ServicesProps) {
                   <p className="text-gray-600 lg:text-lg leading-relaxed group-hover:text-gray-700 transition-colors">
                     {service.description}
                   </p>
-                  <div className="mt-8">
+                  <div className="mt-8 flex flex-wrap gap-4 items-center">
                     <button
-                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo').replace('servicios-ti', 'ti').replace('marketing-digital', 'marketing').replace('desarrollo-de-aplicaciones', 'apps').replace('consultoría-digital', 'consulting')}`)}
-                      className="px-8 py-3.5 bg-gray-950 text-white rounded-full hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-xl smooth-exit"
+                      onClick={() => onNavigate?.(`service-${service.title.toLowerCase().replace(/\s+/g, '-').replace('diseño-de-páginas-web', 'web').replace('posicionamiento-seo', 'seo').replace('servicios-ti', 'ti').replace('marketing-digital', 'marketing').replace('desarrollo-de-aplicaciones', 'apps').replace('consultoría-digital', 'consulting').replace('sparkbots-(chatbots-de-ia)', 'bots')}`)}
+                      className="px-6 py-3 bg-gray-950 text-white rounded-full hover:bg-gray-800 transition-all duration-300 font-medium hover:scale-105 hover:shadow-xl text-sm smooth-exit"
                     >
                       Conoce más
+                    </button>
+                    <button
+                      onClick={() => handleToggleService(service.title)}
+                      className={`px-6 py-3 rounded-full font-bold text-sm border-2 transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
+                        isSelected(service.title)
+                          ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_10px_20px_rgba(55,80,240,0.15)] animate-pulse'
+                          : 'bg-white text-gray-950 border-gray-200 hover:border-gray-950'
+                      }`}
+                    >
+                      {isSelected(service.title) ? (
+                        <>
+                          <FaCheckCircle size={14} className="text-white" />
+                          Seleccionado
+                        </>
+                      ) : (
+                        'Me interesa'
+                      )}
                     </button>
                   </div>
                 </div>

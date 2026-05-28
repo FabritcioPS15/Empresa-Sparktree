@@ -17,6 +17,7 @@ import SparkBots from './pages/services/SparkBots';
 import Privacy from './pages/privacy';
 import ProjectDetail from './pages/portfolio/ProjectDetail';
 import Contact from './pages/contact';
+import FloatingQuoteBar from './components/ui/FloatingQuoteBar';
 import Nosotros from './pages/nosotros';
 import Footer from './components/Footer';
 import CookieConsent from './components/CookieConsent';
@@ -210,6 +211,7 @@ function App() {
           isExiting={isExiting}
         />
         <CookieConsent onNavigate={handleNavigate} />
+        <FloatingQuoteBar onNavigate={handleNavigate} />
       </div>
     </ReactLenis>
   );

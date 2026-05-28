@@ -8,6 +8,7 @@ import { usePageMeta } from '@/hooks/usePageMeta';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import es from 'react-phone-input-2/lang/es.json';
+import { CONTACT_SERVICES, getSelectedServices, saveSelectedServices, clearSelectedServices, normalizeServiceName } from '@/lib/servicesStore';
 
 export default function Contact() {
   usePageMeta({
@@ -22,6 +23,7 @@ export default function Contact() {
       "url": "https://sparktree.pe/contact"
     }
   });
+
   const [formData, setFormData] = useState<{
     name: string;
     email: string;
@@ -67,6 +69,41 @@ export default function Contact() {
     window.scrollTo(0, 0);
   }, []);
 
+  // Hydrate form from localStorage and query parameter
+  useEffect(() => {
+    // Read from search params
+    const params = new URLSearchParams(window.location.search);
+    const serviceParam = params.get('service');
+    
+    // Read from localStorage
+    const storedServices = getSelectedServices();
+    let finalServices = [...storedServices];
+
+    if (serviceParam) {
+      const normalized = normalizeServiceName(serviceParam);
+      if (!finalServices.includes(normalized)) {
+        finalServices.push(normalized);
+      }
+      // Clean up URL parameters to keep the browser address bar clean and prevent stale re-hydration
+      try {
+        const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        window.history.replaceState({ path: cleanUrl }, '', cleanUrl);
+      } catch (e) {
+        console.error('Failed to clean up query parameters', e);
+      }
+    }
+
+    if (finalServices.length > 0) {
+      const uniqueServices = Array.from(new Set(finalServices));
+      setFormData(prev => ({
+        ...prev,
+        service: uniqueServices
+      }));
+      // Keep localStorage in sync
+      saveSelectedServices(uniqueServices);
+    }
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -78,6 +115,7 @@ export default function Contact() {
       const newServices = isSelected
         ? prev.service.filter(s => s !== selectedService)
         : [...prev.service, selectedService];
+      saveSelectedServices(newServices);
       return { ...prev, service: newServices };
     });
   };
@@ -101,6 +139,7 @@ export default function Contact() {
 
       setSubmitStatus('success');
       setFormData({ name: '', email: '', phone: '', company: '', service: [], budget: '', timeline: '', message: '' });
+      clearSelectedServices();
     } catch (error) {
       console.error('Error al enviar el formulario:', error);
       setSubmitStatus('error');
@@ -114,12 +153,14 @@ export default function Contact() {
     setFormData(prev => ({ ...prev, budget: '' }));
   }, [formData.service]);
 
-  const servicesList = ['Diseño Web', 'SEO', 'Branding', 'Social Media', 'Apps Móviles', 'Otro'];
+  const servicesList = CONTACT_SERVICES;
 
   const serviceBasePrices: Record<string, number> = {
     'Diseño Web': 300,
     'SEO': 150,
     'Branding': 400,
+    'SparkBots': 250,
+    'Servicios TI': 350,
     'Social Media': 200,
     'Apps Móviles': 2000,
     'Otro': 300
@@ -135,6 +176,7 @@ export default function Contact() {
   ];
 
   const timelines = ['Inmediato', 'En 1 mes', 'En 3 meses', 'A definir'];
+
 
   return (
     <div className="pt-[72px] bg-[#f8fafc]">

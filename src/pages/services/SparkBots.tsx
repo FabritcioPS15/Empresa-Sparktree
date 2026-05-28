@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MessageSquare, Bot, Users, BarChart3, ArrowRight, CheckCircle2, ShieldCheck, Globe, Cpu } from 'lucide-react';
 import { usePageMeta } from '@/hooks/usePageMeta';
+import { isServiceSelected, toggleServiceSelection } from '@/lib/servicesStore';
 
 interface SparkBotsProps {
   onNavigate?: (page: string) => void;
@@ -9,10 +10,22 @@ interface SparkBotsProps {
 const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
   const [visibleMessages, setVisibleMessages] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isSelected, setIsSelected] = useState(false);
   
   useEffect(() => {
     window.scrollTo(0, 0);
+    setIsSelected(isServiceSelected('SparkBots'));
+
+    const handleServiceChange = () => {
+      setIsSelected(isServiceSelected('SparkBots'));
+    };
+    window.addEventListener('sparktree_services_changed', handleServiceChange);
+    return () => window.removeEventListener('sparktree_services_changed', handleServiceChange);
   }, []);
+
+  const handleToggleSelection = () => {
+    toggleServiceSelection('SparkBots');
+  };
 
   usePageMeta({
     title: 'SparkBots | Alquiler de Bots de IA para Atención al Cliente - SparkTree',
@@ -164,22 +177,44 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
             <p className="text-gray-400 text-xl mb-10 leading-relaxed scroll-entrance delay-100">
               Presentamos <strong>SparkBots</strong>: La solución de IA que califica, responde y agenda citas 24/7 con el tono y la personalidad de tu marca. Ideal para empresas en Lima y Perú que buscan automatizar su atención al cliente.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 scroll-entrance delay-200">
+            <div className="flex flex-wrap items-center justify-center gap-4 scroll-entrance delay-200">
               <button 
-                onClick={() => onNavigate?.('contact')}
-                className="px-10 py-5 bg-emerald-500 text-black font-black rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 flex items-center gap-2 group"
+                onClick={() => {
+                  if (!isSelected) handleToggleSelection();
+                  onNavigate?.('contact');
+                }}
+                className="px-8 py-4 bg-emerald-500 text-black font-black rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 flex items-center gap-2 group text-sm sm:text-base"
               >
                 Alquilar SparkBot Ahora
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
+              
+              <button 
+                onClick={handleToggleSelection}
+                className={`px-8 py-4 font-black rounded-2xl border transition-all flex items-center gap-2 hover:scale-105 active:scale-95 text-sm sm:text-base ${
+                  isSelected 
+                    ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_15px_30px_rgba(55,80,240,0.25)] animate-pulse'
+                    : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
+                }`}
+              >
+                {isSelected ? (
+                  <>
+                    <CheckCircle2 className="w-5 h-5 text-white animate-bounce" />
+                    Seleccionado ✓
+                  </>
+                ) : (
+                  'Me interesa / Cotizar'
+                )}
+              </button>
+              
               <button 
                 onClick={() => {
                   const element = document.getElementById('preview');
                   element?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-10 py-5 bg-white/5 border border-white/10 text-white font-black rounded-2xl hover:bg-white/10 transition-all flex items-center gap-2"
+                className="px-8 py-4 bg-white/5 border border-white/10 text-white font-black rounded-2xl hover:bg-white/10 transition-all text-sm sm:text-base"
               >
-                Ver Demo Interactiva
+                Ver Demo
               </button>
             </div>
           </div>
@@ -477,12 +512,34 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
                   ROI Garantizado
                 </div>
               </div>
-              <button 
-                onClick={() => onNavigate?.('contact')}
-                className="mt-12 px-12 py-6 bg-emerald-500 text-black font-black rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 text-lg"
-              >
-                Solicitar Propuesta Comercial
-              </button>
+              <div className="mt-12 flex flex-wrap justify-center gap-4">
+                <button 
+                  onClick={() => {
+                    if (!isSelected) handleToggleSelection();
+                    onNavigate?.('contact');
+                  }}
+                  className="px-10 py-5 bg-emerald-500 text-black font-black rounded-2xl hover:bg-emerald-400 transition-all shadow-[0_20px_50px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 text-base sm:text-lg"
+                >
+                  Solicitar Propuesta Comercial
+                </button>
+                <button 
+                  onClick={handleToggleSelection}
+                  className={`px-10 py-5 font-black rounded-2xl border transition-all flex items-center gap-2 hover:scale-105 active:scale-95 text-base sm:text-lg ${
+                    isSelected 
+                      ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_15px_30px_rgba(55,80,240,0.25)] animate-pulse'
+                      : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                  }`}
+                >
+                  {isSelected ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 text-white" />
+                      Agregado a Cotización
+                    </>
+                  ) : (
+                    'Añadir a mi Cotización'
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
