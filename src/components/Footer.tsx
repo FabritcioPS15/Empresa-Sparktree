@@ -55,11 +55,13 @@ export default function Footer({ onNavigate, currentPage, isExiting = false }: F
   ];
 
   const servicesLinks = [
-    { id: 'service-web', label: 'Diseño Web' },
-    { id: 'service-seo', label: 'SEO' },
+    { id: 'service-web', label: 'Diseño de paginas web' },
+    { id: 'service-seo', label: 'Posicionamiento SEO' },
     { id: 'service-branding', label: 'Branding' },
-    { id: 'service-ti', label: 'Servicios TI' },
-    { id: 'service-bots', label: 'SparkBots (IA)' },
+    { id: 'service-ti', label: 'Servicio TI' },
+    { id: 'service-automation', label: 'Automatización ( N8N + Flujos)' },
+    { id: 'service-bots', label: 'SparkBots ( IA + Flujos )' },
+    { id: 'service-content', label: 'Marketing de contenido' },
   ];
 
   const isActive = (id: string) => {

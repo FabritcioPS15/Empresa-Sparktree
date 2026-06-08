@@ -349,11 +349,11 @@ const SparkBots: React.FC<SparkBotsProps> = ({ onNavigate }) => {
                   </div>
 
                   {/* Dotted Connection Lines (Improved with animate-dash) */}
-                  <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                    <path d="M 50% 50% Q 30% 30% 20% 25%" stroke="#cbd5e1" strokeWidth="3" strokeDasharray="8,8" fill="none" className="animate-dash" />
-                    <path d="M 50% 50% Q 70% 30% 80% 25%" stroke="#cbd5e1" strokeWidth="3" strokeDasharray="8,8" fill="none" className="animate-dash" />
-                    <path d="M 50% 50% Q 30% 70% 20% 75%" stroke="#cbd5e1" strokeWidth="3" strokeDasharray="8,8" fill="none" className="animate-dash" />
-                    <path d="M 50% 50% Q 70% 70% 80% 75%" stroke="#cbd5e1" strokeWidth="3" strokeDasharray="8,8" fill="none" className="animate-dash" />
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M 50 50 Q 30 30 20 25" stroke="#cbd5e1" strokeWidth="0.5" strokeDasharray="2,2" fill="none" className="animate-dash" />
+                    <path d="M 50 50 Q 70 30 80 25" stroke="#cbd5e1" strokeWidth="0.5" strokeDasharray="2,2" fill="none" className="animate-dash" />
+                    <path d="M 50 50 Q 30 70 20 75" stroke="#cbd5e1" strokeWidth="0.5" strokeDasharray="2,2" fill="none" className="animate-dash" />
+                    <path d="M 50 50 Q 70 70 80 75" stroke="#cbd5e1" strokeWidth="0.5" strokeDasharray="2,2" fill="none" className="animate-dash" />
                   </svg>
 
                   {/* Outer Nodes: Users (Matching the image style) */}

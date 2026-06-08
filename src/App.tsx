@@ -14,6 +14,8 @@ import ServiceSEO from './pages/services/SEO';
 import ServiceBranding from './pages/services/Branding';
 import ServiceTI from './pages/services/TI';
 import SparkBots from './pages/services/SparkBots';
+import ServiceAutomation from './pages/services/Automation';
+import ServiceContentMarketing from './pages/services/ContentMarketing';
 import Privacy from './pages/privacy';
 import ProjectDetail from './pages/portfolio/ProjectDetail';
 import Contact from './pages/contact';
@@ -57,6 +59,8 @@ function App() {
     if (path === '/services/branding') return 'service-branding';
     if (path === '/services/ti') return 'service-ti';
     if (path === '/services/bots') return 'service-bots';
+    if (path === '/services/automation') return 'service-automation';
+    if (path === '/services/content') return 'service-content';
     if (path === '/privacy') return 'privacy';
     if (path === '/nosotros') return 'nosotros';
     if (path === '/contact') return 'contact';
@@ -100,8 +104,14 @@ function App() {
         case 'service-ti':
           path = '/services/ti';
           break;
+        case 'service-automation':
+          path = '/services/automation';
+          break;
         case 'service-bots':
           path = '/services/bots';
+          break;
+        case 'service-content':
+          path = '/services/content';
           break;
         case 'privacy':
           path = '/privacy';
@@ -197,7 +207,9 @@ function App() {
             <Route path="/services/seo" element={<ServiceSEO onNavigate={handleNavigate} />} />
             <Route path="/services/branding" element={<ServiceBranding onNavigate={handleNavigate} />} />
             <Route path="/services/ti" element={<ServiceTI onNavigate={handleNavigate} />} />
+            <Route path="/services/automation" element={<ServiceAutomation onNavigate={handleNavigate} />} />
             <Route path="/services/bots" element={<SparkBots onNavigate={handleNavigate} />} />
+            <Route path="/services/content" element={<ServiceContentMarketing onNavigate={handleNavigate} />} />
             <Route path="/privacy" element={<Privacy onNavigate={handleNavigate} />} />
              <Route path="/contact" element={<Contact />} />
             <Route path="/nosotros" element={<Nosotros />} />

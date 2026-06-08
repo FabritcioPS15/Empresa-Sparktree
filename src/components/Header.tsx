@@ -84,11 +84,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
     { label: 'Blog', type: 'Página', href: 'blog', keywords: 'blog artículos' },
     { label: 'Contacto', type: 'Página', href: 'contact', keywords: 'contacto consulta whatsapp email' },
     // Services
-    { label: 'Diseño de Páginas Web', type: 'Servicio', href: 'service-web', keywords: 'web diseño paginas sitio' },
+    { label: 'Diseño de paginas web', type: 'Servicio', href: 'service-web', keywords: 'web diseño paginas sitio' },
     { label: 'Posicionamiento SEO', type: 'Servicio', href: 'service-seo', keywords: 'seo posicionamiento google' },
     { label: 'Branding', type: 'Servicio', href: 'service-branding', keywords: 'branding identidad marca' },
-    { label: 'Servicios TI', type: 'Servicio', href: 'service-ti', keywords: 'ti tecnologia tecnología soporte sistemas infraestructura' },
-    { label: 'SparkBots (IA)', type: 'Servicio', href: 'service-bots', keywords: 'ia bot sparkbots inteligencia artificial automatizacion' },
+    { label: 'Servicio TI', type: 'Servicio', href: 'service-ti', keywords: 'ti tecnologia tecnología soporte sistemas infraestructura' },
+    { label: 'Automatización ( N8N + Flujos)', type: 'Servicio', href: 'service-automation', keywords: 'automatizacion n8n flujos procesos' },
+    { label: 'SparkBots ( IA + Flujos )', type: 'Servicio', href: 'service-bots', keywords: 'ia bot sparkbots inteligencia artificial automatizacion' },
+    { label: 'Marketing de contenido', type: 'Servicio', href: 'service-content', keywords: 'marketing contenido redes' },
     // Blog categories (navigate to blog)
     { label: 'Marketing', type: 'Categoría', href: 'blog', keywords: 'marketing' },
     { label: 'SEO', type: 'Categoría', href: 'blog', keywords: 'seo' },
@@ -292,11 +294,13 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
   ];
 
   const servicesItems = [
-    { id: 'service-web', label: 'Diseño de Páginas Web', description: 'Sitios web que convierten' },
+    { id: 'service-web', label: 'Diseño de paginas web', description: 'Sitios web que convierten' },
     { id: 'service-seo', label: 'Posicionamiento SEO', description: 'Aparece en Google' },
     { id: 'service-branding', label: 'Branding', description: 'Identidad de marca' },
-    { id: 'service-ti', label: 'Servicios TI', description: 'Soluciones tecnológicas' },
-    { id: 'service-bots', label: 'SparkBots (IA)', description: 'Automatización inteligente' },
+    { id: 'service-ti', label: 'Servicio TI', description: 'Soluciones tecnológicas' },
+    { id: 'service-automation', label: 'Automatización ( N8N + Flujos)', description: 'Optimiza tus procesos' },
+    { id: 'service-bots', label: 'SparkBots ( IA + Flujos )', description: 'Automatización inteligente' },
+    { id: 'service-content', label: 'Marketing de contenido', description: 'Conecta con tu audiencia' },
   ];
 
   const handleNavClick = (pageId: string) => {
@@ -367,9 +371,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     <button
                       onClick={handleServicesMainClick}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
-                      className={`text-base font-medium tracking-tight transition-all duration-200 relative pl-3.5 pr-2 py-2 rounded-l-md ${shouldNavItemsBeWhite
-                        ? 'text-white hover:text-white'
-                        : 'text-gray-900 hover:text-gray-700'
+                      className={`text-base font-medium tracking-tight transition-all duration-300 hover:scale-[1.05] hover:-translate-y-0.5 relative pl-3.5 pr-2 py-2 rounded-l-md ${shouldNavItemsBeWhite
+                        ? 'text-white hover:text-[#41f0a5] hover:drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]'
+                        : 'text-gray-900 hover:text-[#0ea161]'
                         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       {(currentPage === item.id || currentPage.startsWith('service-')) ? (
@@ -381,9 +385,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                     <button
                       onClick={handleServicesClick}
                       aria-current={(currentPage === item.id || currentPage.startsWith('service-')) ? 'page' : undefined}
-                      className={`text-base font-medium tracking-tight transition-all duration-200 relative -ml-1 pl-1 pr-2.5 py-2 rounded-r-md ${shouldNavItemsBeWhite
-                        ? 'text-white hover:text-white'
-                        : 'text-gray-900 hover:text-gray-700'
+                      className={`text-base font-medium tracking-tight transition-all duration-300 hover:scale-[1.05] hover:-translate-y-0.5 relative -ml-1 pl-1 pr-2.5 py-2 rounded-r-md ${shouldNavItemsBeWhite
+                        ? 'text-white hover:text-[#41f0a5] hover:drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]'
+                        : 'text-gray-900 hover:text-[#0ea161]'
                         } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                     >
                       <svg
@@ -403,9 +407,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                   <button
                     onClick={() => onNavigate(item.id)}
                     aria-current={currentPage === item.id ? 'page' : undefined}
-                    className={`text-base font-medium tracking-tight transition-all duration-200 relative px-3.5 py-2 rounded-md ${shouldNavItemsBeWhite
-                      ? 'text-white hover:text-white'
-                      : 'text-gray-900 hover:text-gray-700'
+                    className={`text-base font-medium tracking-tight transition-all duration-300 hover:scale-[1.05] hover:-translate-y-0.5 relative px-3.5 py-2 rounded-md ${shouldNavItemsBeWhite
+                      ? 'text-white hover:text-[#41f0a5] hover:drop-shadow-[0_0_8px_rgba(65,240,165,0.5)]'
+                      : 'text-gray-900 hover:text-[#0ea161]'
                       } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-300`}
                   >
                     {currentPage === item.id ? (
@@ -418,16 +422,22 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
 
                 {/* Services Dropdown */}
                 {item.hasDropdown && isServicesDropdownOpen && (
-                  <div className="services-dropdown absolute top-full left-0 mt-2 w-80 bg-black/70 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/30 py-2 z-50">
+                  <div className="services-dropdown absolute top-full left-0 mt-2 w-[550px] bg-black/70 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/30 p-3 z-50 grid grid-cols-2 gap-2">
                     {servicesItems.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceClick(service.id)}
-                        className={`w-full text-left px-4 py-3 hover:bg-white/15 transition-colors duration-200 ${currentPage === service.id ? 'bg-white/10' : ''
+                        className={`group relative w-full text-left px-5 py-3 rounded-xl transition-all duration-300 hover:bg-[#41f0a5]/10 hover:translate-x-1.5 hover:scale-[1.02] ${currentPage === service.id ? 'bg-[#41f0a5]/10 border border-[#41f0a5]/20' : 'border border-transparent'
                           }`}
                       >
-                        <div className="font-medium text-white text-sm">{service.label}</div>
-                        <div className="text-xs text-gray-300 mt-1">{service.description}</div>
+                        <div className="font-semibold text-white text-sm transition-colors group-hover:text-[#41f0a5]">{service.label}</div>
+                        <div className="text-xs text-gray-400 mt-1 transition-colors group-hover:text-gray-200">{service.description}</div>
+                        
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+                          <svg className="w-5 h-5 text-[#41f0a5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </div>
                       </button>
                     ))}
                   </div>

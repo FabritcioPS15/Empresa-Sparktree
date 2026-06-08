@@ -4,30 +4,34 @@ const EVENT_NAME = 'sparktree_services_changed';
 
 // Map of standard service names to make sure they match across pages and contact form
 export const SERVICE_MAPPING: Record<string, string> = {
-  'web': 'Diseño Web',
-  'seo': 'SEO',
+  'web': 'Diseño de paginas web',
+  'seo': 'Posicionamiento SEO',
   'branding': 'Branding',
-  'bots': 'SparkBots',
-  'ti': 'Servicios TI',
-  'social': 'Social Media',
-  'apps': 'Apps Móviles',
-  'diseño de páginas web': 'Diseño Web',
-  'posicionamiento seo': 'SEO',
-  'sparkbots (chatbots de ia)': 'SparkBots',
-  'servicios ti': 'Servicios TI',
-  'marketing digital': 'Social Media', // Align with contact options
-  'desarrollo de aplicaciones': 'Apps Móviles',
+  'bots': 'SparkBots ( IA + Flujos )',
+  'ti': 'Servicio TI',
+  'social': 'Marketing de contenido',
+  'automation': 'Automatización ( N8N + Flujos)',
+  'diseño de páginas web': 'Diseño de paginas web',
+  'posicionamiento seo': 'Posicionamiento SEO',
+  'sparkbots (chatbots de ia)': 'SparkBots ( IA + Flujos )',
+  'sparkbots ( ia + flujos )': 'SparkBots ( IA + Flujos )',
+  'servicios ti': 'Servicio TI',
+  'servicio ti': 'Servicio TI',
+  'marketing digital': 'Marketing de contenido',
+  'desarrollo de aplicaciones': 'Automatización ( N8N + Flujos)',
+  'automatización ( n8n + flujos)': 'Automatización ( N8N + Flujos)',
+  'marketing de contenido': 'Marketing de contenido'
 };
 
 // Standard list of services for the contact dropdown
 export const CONTACT_SERVICES = [
-  'Diseño Web',
-  'SEO',
+  'Diseño de paginas web',
+  'Posicionamiento SEO',
   'Branding',
-  'SparkBots',
-  'Servicios TI',
-  'Social Media',
-  'Apps Móviles',
+  'Servicio TI',
+  'Automatización ( N8N + Flujos)',
+  'SparkBots ( IA + Flujos )',
+  'Marketing de contenido',
   'Otro'
 ];
 
