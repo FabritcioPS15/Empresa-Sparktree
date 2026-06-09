@@ -212,7 +212,7 @@ function App() {
             <Route path="/services/content" element={<ServiceContentMarketing onNavigate={handleNavigate} />} />
             <Route path="/privacy" element={<Privacy onNavigate={handleNavigate} />} />
              <Route path="/contact" element={<Contact />} />
-            <Route path="/nosotros" element={<Nosotros />} />
+            <Route path="/nosotros" element={<Nosotros onNavigate={handleNavigate} />} />
             <Route path="/admin/portfolio" element={<PortfolioEditor />} />
             <Route path="/PortfolioEditor" element={<PortfolioEditor />} />
           </Routes>

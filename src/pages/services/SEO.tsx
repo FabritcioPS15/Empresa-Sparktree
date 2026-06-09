@@ -211,34 +211,13 @@ export default function ServiceSEO({ onNavigate }: ServicePageProps) {
 
             {/* Illustration Area */}
             <div className="relative flex justify-center items-center reveal scale-up">
-              <div className="w-full max-w-md aspect-[4/3] bg-gradient-to-br from-[#41f0a5] to-[#3750f0] rounded-3xl p-8 relative shadow-2xl overflow-hidden group">
-                <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors duration-500 rounded-3xl" />
-
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[280px] h-[200px] transition-transform duration-700 group-hover:scale-105 flex items-center justify-center">
-                  {/* Simulated Browser/Google window */}
-                  <div className="absolute inset-x-4 top-10 bottom-4 bg-white/95 rounded-xl shadow-2xl flex flex-col overflow-hidden transform -rotate-3 hover:translate-x-1 hover:-translate-y-1 transition-transform">
-                    <div className="h-6 bg-gray-100 border-b border-gray-200 flex items-center px-3 gap-1.5">
-                      <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                      <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
-                      <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                    </div>
-                    <div className="p-4 space-y-3">
-                      <div className="w-20 h-4 bg-gray-200 rounded-md flex items-center px-2"><span className="text-[9px] font-black text-gray-500 tracking-wider">Google</span></div>
-                      <div className="w-full h-8 bg-blue-50 border border-blue-100 rounded-md"></div>
-                      <div className="w-3/4 h-2 bg-gray-200 rounded-md mt-4"></div>
-                      <div className="w-5/6 h-2 bg-gray-100 rounded-md"></div>
-                      <div className="w-4/5 h-2 bg-gray-100 rounded-md"></div>
-                    </div>
-                  </div>
-
-                  {/* Magnifying Glass */}
-                  <div className="absolute top-2 -right-4 w-32 h-32 transform rotate-[15deg] group-hover:rotate-[5deg] transition-transform duration-500 z-10 flex flex-col items-center">
-                    <div className="w-20 h-20 rounded-full border-[6px] border-[#3750f0] bg-white/40 backdrop-blur-[2px] shadow-[0_15px_30px_rgba(55,80,240,0.5)] flex items-center justify-center relative z-20">
-                      <span className="font-black text-[#3750f0] text-xl opacity-90 drop-shadow-sm">SEO?</span>
-                    </div>
-                    <div className="w-5 h-14 bg-blue-900 rounded-b-[10px] rounded-t-sm transform -translate-y-2 relative z-10 shadow-xl"></div>
-                  </div>
-                </div>
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#41f0a5]/20 to-[#3750f0]/10 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+              <div className="w-full max-w-md rounded-3xl relative shadow-2xl overflow-hidden group z-10">
+                <img 
+                  src="/assets/service/SEO%20SERVICIO.webp" 
+                  alt="Posicionamiento SEO - SparkTree" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
               </div>
             </div>
           </div>

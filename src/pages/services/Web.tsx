@@ -209,33 +209,15 @@ export default function ServiceWeb({ onNavigate }: ServicePageProps) {
             </div>
 
             {/* Layered Mockup Area */}
-            <div className="relative group reveal scale-up">
+            <div className="relative flex justify-center items-center reveal scale-up">
               <div className="absolute -inset-4 bg-gradient-to-tr from-[#41f0a5]/20 to-[#3750f0]/10 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
               
-              <div className="relative">
-                {/* Desktop Screen Mockup */}
-                <div className="bg-gray-950 rounded-[2rem] p-3 shadow-2xl transform rotate-1 group-hover:rotate-0 transition-transform duration-700">
-                  <div className="overflow-hidden rounded-xl aspect-[16/10] bg-white">
-                    <img 
-                      src="/assets/web_design.webp" 
-                      alt="Diseño Web Profesional - SparkTree Agencia Digital" 
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
-                    />
-                  </div>
-                </div>
-
-                {/* Mobile Phone Mockup Overlay */}
-                <div className="absolute -bottom-10 -right-4 w-[35%] bg-gray-950 rounded-[2.5rem] p-2 shadow-2xl border-4 border-gray-900 transform -rotate-3 group-hover:rotate-0 transition-transform duration-700 delay-100 hidden sm:block">
-                  <div className="overflow-hidden rounded-[2rem] aspect-[9/19] bg-white">
-                    <img 
-                      src="/assets/web_design.webp" 
-                      alt="Diseño Web Mobile Responsive - SparkTree" 
-                      className="w-full h-full object-cover object-left" 
-                    />
-                  </div>
-                  {/* Speaker detail */}
-                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1 bg-gray-800 rounded-full"></div>
-                </div>
+              <div className="w-full max-w-md rounded-3xl relative shadow-2xl overflow-hidden group z-10">
+                <img 
+                  src="/assets/service/PAGINA%20WEB%20SERVICIO.webp" 
+                  alt="Diseño Web Profesional - SparkTree Agencia Digital" 
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
               </div>
             </div>
           </div>

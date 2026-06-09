@@ -109,25 +109,25 @@ export default function Home({ onNavigate }: HomeProps) {
     {
       title: 'Tu Equipo de Marketing Externo',
       description: 'Olvídate de contratar personal. Nosotros operamos como tu departamento de marketing dedicado, gestionando estrategia, pauta y crecimiento digital con enfoque en ROI.',
-      image: '/assets/seo_positioning.webp',
+      image: '/assets/service/SEO_SERVICIO.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
       title: 'Diseño Web de Alto Rendimiento',
       description: 'Sitios web optimizados para convertir. Nos enfocamos en la experiencia del usuario (UX) para que cada visita se transforme en una oportunidad de venta real.',
-      image: '/assets/web_design.webp',
+      image: '/assets/service/PAGINASWEB_SERVICIO.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
       title: 'Branding',
       description: 'Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia.',
-      image: '/assets/branding.webp',
+      image: '/assets/service/BRANDING_SERVICIO.webp',
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
       title: 'Servicios TI',
       description: 'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable.',
-      image: '/assets/web_design.webp',
+      image: '/assets/service/TI_SERVICIO.webp',
       gradient: 'from-[#3750f0] to-[#41F0A5]',
     },
   ];
@@ -300,12 +300,12 @@ export default function Home({ onNavigate }: HomeProps) {
                 </div>
                 <div className={`${index % 2 === 0 ? 'lg:col-span-5' : 'lg:col-span-5 lg:order-1'} flex items-center justify-center`}>
                   <div
-                    className={`relative w-full max-w-2xl h-[300px] mx-auto p-6 bg-gradient-to-br ${service.gradient} rounded-3xl`}
+                    className="relative w-full max-w-2xl mx-auto p-6 rounded-3xl"
                   >
                     <img
                       src={service.image}
                       alt={service.title}
-                      className="w-full h-auto transform -translate-y-24 scale-132 drop-shadow-2xl"
+                      className="w-full h-auto drop-shadow-2xl rounded-2xl hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 </div>

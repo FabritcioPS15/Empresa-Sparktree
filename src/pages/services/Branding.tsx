@@ -152,29 +152,13 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
 
             {/* Illustration Area */}
             <div className="relative flex justify-center items-center reveal scale-up">
-              <div className="w-full max-w-md aspect-[4/3] bg-gradient-to-br from-[#3750f0] to-[#41f0a5] rounded-3xl p-8 relative shadow-2xl overflow-hidden group">
-                {/* Sparkle Graphic inspired by mockup */}
-                <div className="absolute inset-0 bg-white/5 group-hover:bg-white/10 transition-colors duration-500 rounded-3xl" />
-
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 transition-transform duration-700 group-hover:scale-110">
-                  {/* Center Spark */}
-                  <div
-                    className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-full w-full bg-white/95 shadow-[0_0_40px_rgba(255,255,255,0.6)]"
-                    style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
-                  ></div>
-
-                  {/* Top Left Spark */}
-                  <div
-                    className="absolute top-4 left-4 w-16 h-16 bg-white/80"
-                    style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
-                  ></div>
-
-                  {/* Bottom Right Spark */}
-                  <div
-                    className="absolute bottom-4 right-4 w-20 h-20 bg-white/80"
-                    style={{ clipPath: 'polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)' }}
-                  ></div>
-                </div>
+              <div className="absolute -inset-4 bg-gradient-to-tr from-[#3750f0]/20 to-[#41f0a5]/10 rounded-[3rem] blur-2xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+              <div className="w-full max-w-md rounded-3xl relative shadow-2xl overflow-hidden group z-10">
+                <img
+                  src="/assets/service/BRANDING_SERVICIO.webp"
+                  alt="Branding Estratégico - SparkTree"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
               </div>
             </div>
           </div>
@@ -274,13 +258,12 @@ export default function ServiceBranding({ onNavigate }: ServicePageProps) {
 
           {/* Bottom Actions */}
           <div className="mt-16 md:mt-24 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 reveal bounce-in">
-            <button 
+            <button
               onClick={handleToggleSelection}
-              className={`px-8 py-4 rounded-xl font-black transition-all duration-300 tracking-widest uppercase text-sm border-2 ${
-                isSelected 
-                  ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_15px_30px_rgba(55,80,240,0.25)] animate-pulse'
-                  : 'bg-white text-gray-950 border-gray-200 hover:border-[#3750f0] hover:scale-105 shadow-md'
-              }`}
+              className={`px-8 py-4 rounded-xl font-black transition-all duration-300 tracking-widest uppercase text-sm border-2 ${isSelected
+                ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_15px_30px_rgba(55,80,240,0.25)] animate-pulse'
+                : 'bg-white text-gray-950 border-gray-200 hover:border-[#3750f0] hover:scale-105 shadow-md'
+                }`}
             >
               {isSelected ? '✓ Seleccionado para Cotizar' : 'Me interesa este servicio'}
             </button>
