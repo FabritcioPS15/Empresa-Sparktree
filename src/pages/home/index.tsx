@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Project } from '@/data/projects';
 import { supabase } from '@/lib/supabase';
-import { ChevronLeft, ChevronRight, Star, Rocket, Zap, Linkedin, Globe } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Rocket, Zap, Linkedin } from 'lucide-react';
 import CountUp from '@/components/common/CountUp';
 
 import { TextRevealButton } from '@/components/ui/shadcn-io/text-reveal-button';
@@ -125,7 +125,19 @@ export default function Home({ onNavigate }: HomeProps) {
       gradient: 'from-[#41F0A5] to-[#3750F0]',
     },
     {
-      title: 'Servicios TI',
+      title: 'Automatización con IA (SaaS)',
+      description: 'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable.',
+      image: '/assets/service/TI_SERVICIO.webp',
+      gradient: 'from-[#3750f0] to-[#41F0A5]',
+    },
+    {
+      title: 'Consultoría IT',
+      description: 'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable.',
+      image: '/assets/service/TI_SERVICIO.webp',
+      gradient: 'from-[#3750f0] to-[#41F0A5]',
+    },
+    {
+      title: 'Desarrollo de Software a la Medida',
       description: 'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable.',
       image: '/assets/service/TI_SERVICIO.webp',
       gradient: 'from-[#3750f0] to-[#41F0A5]',
@@ -133,10 +145,11 @@ export default function Home({ onNavigate }: HomeProps) {
   ];
 
   const team = [
-    { name: 'Fabritcio Peña', role: 'Desarrollador', linkedin: 'https://linkedin.com/in/fabritcio-peña', portfolio: 'https://portfolio.com' },
-    { name: 'Roman Reto', role: 'Diseñador UX / UI', linkedin: 'https://linkedin.com/in/roman-reto', portfolio: 'https://portfolio.com' },
-    { name: 'Ruth Belén de la Torre Gamarra', role: 'Profesional de Marketing', linkedin: 'https://linkedin.com/in/ruth-belen', portfolio: 'https://portfolio.com' },
-    { name: 'Alvaro Carpio Lozano', role: 'Desarrollador', linkedin: 'https://linkedin.com/in/alvaro-carpio', portfolio: 'https://portfolio.com' },
+    { name: 'Fabritcio Peña', role: 'Desarrollador', linkedin: 'https://www.linkedin.com/in/fabritciops15/' },
+    { name: 'Roman Reto', role: 'Diseñador UX / UI', linkedin: 'https://www.linkedin.com/in/roman-reto-dise%C3%B1o-gr%C3%A1fico-14447625a/' },
+    { name: 'Ruth Belén de la Torre Gamarra', role: 'Profesional de Marketing', linkedin: 'https://www.linkedin.com/in/belen-de-la-torre-8058a6213/' },
+    { name: 'Jimmy Sebastian Peña Flores', role: 'Desarrollador', linkedin: 'https://www.linkedin.com/in/jflorespe02/' },
+    { name: 'Alvaro Carpio Lozano', role: 'Desarrollador', linkedin: 'https://www.linkedin.com/in/alvaro-adrian-carpio-lozano-b685172b8/' },
   ];
 
   return (
@@ -446,11 +459,6 @@ export default function Home({ onNavigate }: HomeProps) {
                   {member.linkedin && (
                     <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-500 transition-colors p-1" title="LinkedIn">
                       <Linkedin className="w-4 h-4" />
-                    </a>
-                  )}
-                  {member.portfolio && (
-                    <a href={member.portfolio} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-emerald-500 transition-colors p-1" title="Portafolio">
-                      <Globe className="w-4 h-4" />
                     </a>
                   )}
                 </div>

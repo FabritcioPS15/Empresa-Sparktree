@@ -12,18 +12,10 @@ interface Service {
 
 const services: Service[] = [
   {
-    title: 'Hub de Soluciones Tecnológicas',
-    subtitle: 'Ingeniería',
-    description: 'Desarrollamos software a medida y soluciones de IT que escalan con tu negocio. El motor técnico que tu empresa necesita.',
-    image: '/assets/hero_web.png',
-    cta: 'Ver Soluciones',
-    path: 'service-ti'
-  },
-  {
     title: 'Tu Equipo de Marketing Externo',
     subtitle: 'Outsourcing',
     description: 'No necesitas contratar un equipo interno. Nosotros somos tu departamento de marketing dedicado a resultados.',
-    image: '/assets/hero_seo.png',
+    image: '/assets/service/heroimages/Marketing_externo.png',
     cta: 'Empezar ahora',
     path: 'contact'
   },
@@ -31,7 +23,7 @@ const services: Service[] = [
     title: 'Automatización con IA (SaaS)',
     subtitle: 'SparkBots',
     description: 'Alquila nuestros bots inteligentes para atención al cliente y ventas. Automatiza tu área de respuestas 24/7.',
-    image: '/assets/hero_branding.png',
+    image: '/assets/service/heroimages/Automatización_IA_Imagen.png',
     cta: 'Ver SparkBots',
     path: 'service-ti'
   },
@@ -39,9 +31,17 @@ const services: Service[] = [
     title: 'Diseño Web de Alto Impacto',
     subtitle: 'Presencia',
     description: 'Convertimos tu marca en una experiencia digital única que atrae y fideliza clientes.',
-    image: '/assets/hero_web.png',
+    image: '/assets/service/heroimages/Diseñoweb.png',
     cta: 'Crear mi Web',
     path: 'service-web'
+  },
+  {
+    title: 'Hub de Soluciones Tecnológicas',
+    subtitle: 'Ingeniería',
+    description: 'Desarrollamos software a medida y soluciones de IT que escalan con tu negocio. El motor técnico que tu empresa necesita.',
+    image: '/assets/service/heroimages/Soluciones_tecnologicas.png',
+    cta: 'Ver Soluciones',
+    path: 'service-ti'
   }
 ];
 
@@ -87,9 +87,8 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
       {services.map((service, index) => (
         <div
           key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent z-10" />
 
@@ -107,9 +106,8 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
           {services.map((service, index) => (
             <div
               key={index}
-              className={`${
-                index === currentSlide ? 'block animate-fade-in-up' : 'hidden'
-              }`}
+              className={`${index === currentSlide ? 'block animate-fade-in-up' : 'hidden'
+                }`}
             >
               <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-widest uppercase border border-emerald-400 text-emerald-400 rounded-full">
                 {service.subtitle}
@@ -125,7 +123,7 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
                 {service.description}
               </p>
               <div className="flex flex-wrap gap-4">
-                <button 
+                <button
                   onClick={() => onNavigate?.(service.path)}
                   className="group relative px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-black font-bold rounded-lg transition-all duration-300 overflow-hidden"
                 >
@@ -149,9 +147,8 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
                   setIsPaused(true);
                   setTimeout(() => setIsPaused(false), 10000);
                 }}
-                className={`h-1 transition-all duration-500 rounded-full ${
-                  index === currentSlide ? 'w-12 bg-emerald-400' : 'w-6 bg-gray-600'
-                }`}
+                className={`h-1 transition-all duration-500 rounded-full ${index === currentSlide ? 'w-12 bg-emerald-400' : 'w-6 bg-gray-600'
+                  }`}
               />
             ))}
           </div>

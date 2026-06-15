@@ -38,7 +38,7 @@ export default function Services({ onNavigate }: ServicesProps) {
 
   useEffect(() => {
     setSelectedList(getSelectedServices());
-    
+
     const handleServiceChange = () => {
       setSelectedList(getSelectedServices());
     };
@@ -163,11 +163,6 @@ export default function Services({ onNavigate }: ServicesProps) {
         'Convertimos tu negocio en una marca memorable y de confianza. Más allá de un logo, definimos la voz, los valores y la personalidad que te diferenciarán de tu competencia. Una marca sólida genera lealtad y te permite cobrar lo que realmente vale tu servicio',
     },
     {
-      title: 'Consultoría Digital',
-      description:
-        'Asesoramos a tu empresa en su transformación digital. Analizamos tus procesos, identificamos oportunidades de mejora y diseñamos estrategias tecnológicas que optimizan operaciones, reducen costos y preparan tu negocio para el futuro digital.',
-    },
-    {
       title: 'Servicios TI',
       description:
         'Impulsamos la eficiencia y seguridad tecnológica de tu negocio. Ofrecemos soluciones integrales y estratégicas que permiten a tu empresa operar de forma más ágil, segura y escalable, protegiendo tu información y optimizando tu rendimiento digital.',
@@ -176,8 +171,8 @@ export default function Services({ onNavigate }: ServicesProps) {
 
   return (
     <div className="pt-[72px]">
-      <PageBanner 
-        title="Nuestros servicios, impulsan resultados" 
+      <PageBanner
+        title="Nuestros servicios, impulsan resultados"
         subtitle="Descubre cómo ayudamos a tu negocio a crecer en el mundo digital con estrategias personalizadas."
         breadcrumbs={breadcrumbs}
       />
@@ -206,11 +201,10 @@ export default function Services({ onNavigate }: ServicesProps) {
                     </button>
                     <button
                       onClick={() => handleToggleService(service.title)}
-                      className={`px-6 py-3 rounded-full font-bold text-sm border-2 transition-all duration-300 flex items-center gap-2 hover:scale-105 ${
-                        isSelected(service.title)
+                      className={`px-6 py-3 rounded-full font-bold text-sm border-2 transition-all duration-300 flex items-center gap-2 hover:scale-105 ${isSelected(service.title)
                           ? 'bg-gradient-to-r from-[#3750f0] to-[#41f0a5] text-white border-transparent shadow-[0_10px_20px_rgba(55,80,240,0.15)] animate-pulse'
                           : 'bg-white text-gray-950 border-gray-200 hover:border-gray-950'
-                      }`}
+                        }`}
                     >
                       {isSelected(service.title) ? (
                         <>
@@ -331,7 +325,7 @@ export default function Services({ onNavigate }: ServicesProps) {
               {/* Dynamic Bubbles */}
               <div className="absolute top-[-10%] left-[-10%] w-72 h-72 bubble-float-1 bubble-cyan opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
               <div className="absolute bottom-[-20%] right-[10%] w-96 h-96 bubble-float-2 bubble-neon opacity-15 group-hover:opacity-30 transition-opacity duration-700" />
-              
+
               {/* Content Overlay */}
               <div className="relative z-10">
                 <h3 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-8 leading-tight">
