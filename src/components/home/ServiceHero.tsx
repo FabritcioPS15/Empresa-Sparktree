@@ -15,7 +15,7 @@ const services: Service[] = [
     title: 'Tu Equipo de Marketing Externo',
     subtitle: 'Outsourcing',
     description: 'No necesitas contratar un equipo interno. Nosotros somos tu departamento de marketing dedicado a resultados.',
-    image: '/assets/service/heroimages/Marketing_externo.png',
+    image: '/assets/heroimages/Marketing_externo.png',
     cta: 'Empezar ahora',
     path: 'contact'
   },
@@ -23,7 +23,7 @@ const services: Service[] = [
     title: 'Automatización con IA (SaaS)',
     subtitle: 'SparkBots',
     description: 'Alquila nuestros bots inteligentes para atención al cliente y ventas. Automatiza tu área de respuestas 24/7.',
-    image: '/assets/service/heroimages/Automatización_IA_Imagen.png',
+    image: '/assets/heroimages/Automatización_IA_Imagen.png',
     cta: 'Ver SparkBots',
     path: 'service-ti'
   },
@@ -31,7 +31,7 @@ const services: Service[] = [
     title: 'Diseño Web de Alto Impacto',
     subtitle: 'Presencia',
     description: 'Convertimos tu marca en una experiencia digital única que atrae y fideliza clientes.',
-    image: '/assets/service/heroimages/Diseñoweb.png',
+    image: '/assets/heroimages/Diseñoweb.png',
     cta: 'Crear mi Web',
     path: 'service-web'
   },
@@ -39,25 +39,21 @@ const services: Service[] = [
     title: 'Hub de Soluciones Tecnológicas',
     subtitle: 'Ingeniería',
     description: 'Desarrollamos software a medida y soluciones de IT que escalan con tu negocio. El motor técnico que tu empresa necesita.',
-    image: '/assets/service/heroimages/Soluciones_tecnologicas.png',
+    image: '/assets/heroimages/Soluciones_tecnologicas.png',
     cta: 'Ver Soluciones',
     path: 'service-ti'
   }
 ];
 
 
-
 const logos = [
-  { name: 'Logos', src: '/assets/client_logos.jpg' },
-  { name: 'Logos', src: '/assets/client_logos.jpg' },
-  { name: 'Logos', src: '/assets/client_logos.jpg' },
-  { name: 'Logos', src: '/assets/client_logos.jpg' },
+  { name: 'Empresa 1', src: '/assets/EmpresasSparktreekeadas/logo1.png' },
+  { name: 'Empresa 2', src: '/assets/EmpresasSparktreekeadas/LogoRTPSanCristobal.png' },
+  { name: 'Empresa 3', src: '/assets/EmpresasSparktreekeadas/logo3.png' },
+  { name: 'Empresa 4', src: '/assets/EmpresasSparktreekeadas/logo4.png' },
+  { name: 'Empresa 5', src: '/assets/EmpresasSparktreekeadas/logo5.png' },
+  { name: 'Empresa 6', src: '/assets/EmpresasSparktreekeadas/logo6.png' },
 ];
-
-
-
-
-
 
 
 
@@ -95,7 +91,7 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
           <img
             src={service.image}
             alt={service.title}
-            className="h-full w-full object-cover object-center scale-105 animate-slow-zoom"
+            className="h-full w-full object-cover object-center md:object-contain md:object-right scale-105 animate-slow-zoom"
           />
         </div>
       ))}
@@ -157,21 +153,27 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
 
       {/* Logo Marquee */}
       <div className="absolute bottom-0 left-0 w-full z-30 bg-black/40 backdrop-blur-lg border-t border-white/10 py-6 overflow-hidden group/marquee">
-        <div className="flex animate-marquee whitespace-nowrap items-center">
+        <div className="flex w-max animate-marquee items-center">
           {[...logos, ...logos, ...logos, ...logos].map((logo, index) => (
             <div
               key={index}
-              className="mx-16 md:mx-24 flex items-center justify-center transition-all duration-500 cursor-pointer scale-100 hover:scale-110 select-none group/logo"
+              className="mx-12 md:mx-20 shrink-0 flex items-center justify-center transition-all duration-500 cursor-pointer scale-100 hover:scale-110 select-none group/logo"
             >
               <img
                 src={logo.src}
                 alt={logo.name}
-                className="h-10 md:h-12 w-auto object-contain grayscale opacity-40 hover:opacity-100 transition-all duration-500"
+                className="h-20 md:h-20 w-auto max-w-none object-contain brightness-0 invert opacity-60 hover:opacity-100 transition-all duration-500"
                 onError={(e) => {
-                  console.log('Error loading logo:', e.currentTarget.src);
-                  e.currentTarget.style.display = 'none';
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.style.display = 'none';
+                  if (target.nextElementSibling) {
+                    (target.nextElementSibling as HTMLElement).style.display = 'block';
+                  }
                 }}
               />
+              <span className="hidden text-white font-bold text-xl md:text-2xl opacity-60 hover:opacity-100 transition-all duration-500">
+                {logo.name}
+              </span>
             </div>
           ))}
         </div>
