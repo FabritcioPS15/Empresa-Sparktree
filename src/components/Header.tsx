@@ -703,9 +703,9 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
             </button>
           </div>
 
-          {/* Navigation Links - Centered */}
-          <div className="flex-1 flex flex-col justify-center px-8">
-            <nav className="space-y-1">
+          {/* Navigation Links - Scrollable on small screens */}
+          <div className="flex-1 flex flex-col overflow-y-auto px-8">
+            <nav className="space-y-1 py-4">
               {navItems.map((item) => (
                 <div key={item.id}>
                   {item.hasDropdown ? (
@@ -774,24 +774,25 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
           </div>
 
           {/* Bottom Section - Social & Contact (Sticky at bottom) */}
-          <div className="px-8 pb-10 pt-6 bg-white shrink-0">
-            <div className="grid grid-cols-1 gap-6">
+          <div className="px-4 sm:px-8 pb-6 sm:pb-10 pt-4 sm:pt-6 bg-white shrink-0">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
               {/* WhatsApp Button */}
               <AnimatedButton
-                href="https://wa.me/"
+                href="https://wa.me/51999999999"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-lg font-bold shadow-xl shadow-[#41f0a5]/20"
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-sm sm:text-lg font-bold shadow-xl shadow-[#41f0a5]/20"
                 variant="default"
               >
-                <FaWhatsapp size={22} />
-                <span>Agenda tu consulta</span>
+                <FaWhatsapp size={18} />
+                <span className="hidden sm:inline">Agenda tu consulta</span>
+                <span className="sm:hidden">WhatsApp</span>
               </AnimatedButton>
 
               {/* Social & Contact Row */}
-              <div className="flex flex-wrap items-center justify-between gap-6 border-t border-gray-100 pt-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-6 border-t border-gray-100 pt-3 sm:pt-6">
                 {/* Socials */}
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   {[
                     { icon: FaInstagram, href: 'https://instagram.com' },
                     { icon: FaLinkedin, href: 'https://www.linkedin.com/company/sparktree-studio-marketing-digital' },
@@ -804,22 +805,22 @@ export default function Header({ currentPage, onNavigate, isExiting = false }: H
                       rel="noopener noreferrer"
                       className="text-gray-900 hover:text-[#0ea161] transition-colors"
                     >
-                      <social.icon size={22} />
+                      <social.icon size={18} />
                     </a>
                   ))}
                 </div>
 
                 {/* Contact Links */}
-                <div className="flex flex-col gap-1 items-end text-xs font-bold text-gray-500 uppercase tracking-tighter">
+                <div className="flex flex-col gap-0.5 items-end text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-tighter">
                   <a href="tel:+51999999999" className="hover:text-gray-900">+51 999 999 999</a>
                   <a href="mailto:sparktree.rs@gmail.com" className="hover:text-gray-900">sparktree.rs@gmail.com</a>
                 </div>
               </div>
 
               {/* Footer Mini */}
-              <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest pt-2">
+              <div className="flex justify-between items-center text-[9px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest pt-2">
                 <span>© 2025 SPARK TREE</span>
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   <button onClick={() => handleNavClick('privacy')} className="hover:text-gray-900 transition-colors">Privacidad</button>
                   <button onClick={() => handleNavClick('terms')} className="hover:text-gray-900 transition-colors">Términos</button>
                 </div>

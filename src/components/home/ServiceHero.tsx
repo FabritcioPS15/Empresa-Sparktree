@@ -151,7 +151,7 @@ export const ServiceHero: React.FC<ServiceHeroProps> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Logo Marquee */}
+      {/* Marcas de logos con carrusel y fondo de glassmorfismo*/}
       <div className="absolute bottom-0 left-0 w-full z-30 bg-black/40 backdrop-blur-lg border-t border-white/10 py-6 overflow-hidden group/marquee">
         <div className="flex w-max animate-marquee items-center">
           {[...logos, ...logos, ...logos, ...logos].map((logo, index) => (
